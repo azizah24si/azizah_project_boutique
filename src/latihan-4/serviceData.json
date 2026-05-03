@@ -1,0 +1,222 @@
+[
+  {
+    "id": 1,
+    "name": "Laundry Express",
+    "category": "Laundry",
+    "price": 15000,
+    "rating": 4.5,
+    "image": "https://picsum.photos/200?1",
+    "details": { "provider": "Fresh Laundry", "location": "Pekanbaru", "year": 2020 },
+    "contact": { "phone": "0811111111", "email": "laundry@mail.com", "website": "https://laundry.com" },
+    "status": { "available": true, "open": "08:00", "close": "20:00" }
+  },
+  {
+    "id": 2,
+    "name": "Salon Cantik",
+    "category": "Salon",
+    "price": 50000,
+    "rating": 4.7,
+    "image": "https://picsum.photos/200?2",
+    "details": { "provider": "Beauty Salon", "location": "Pekanbaru", "year": 2019 },
+    "contact": { "phone": "0822222222", "email": "salon@mail.com", "website": "https://salon.com" },
+    "status": { "available": true, "open": "09:00", "close": "21:00" }
+  },
+  {
+    "id": 3,
+    "name": "Cuci Mobil Kilat",
+    "category": "Otomotif",
+    "price": 30000,
+    "rating": 4.3,
+    "image": "https://picsum.photos/200?3",
+    "details": { "provider": "Auto Clean", "location": "Pekanbaru", "year": 2021 },
+    "contact": { "phone": "0833333333", "email": "auto@mail.com", "website": "https://auto.com" },
+    "status": { "available": true, "open": "08:00", "close": "18:00" }
+  },
+  {
+    "id": 4,
+    "name": "Service AC",
+    "category": "Teknisi",
+    "price": 75000,
+    "rating": 4.6,
+    "image": "https://picsum.photos/200?4",
+    "details": { "provider": "Cool Service", "location": "Pekanbaru", "year": 2018 },
+    "contact": { "phone": "0844444444", "email": "ac@mail.com", "website": "https://ac.com" },
+    "status": { "available": true, "open": "08:00", "close": "17:00" }
+  },
+  {
+    "id": 5,
+    "name": "Jasa Desain",
+    "category": "Digital",
+    "price": 100000,
+    "rating": 4.8,
+    "image": "https://picsum.photos/200?5",
+    "details": { "provider": "DesignPro", "location": "Jakarta", "year": 2022 },
+    "contact": { "phone": "0855555555", "email": "design@mail.com", "website": "https://design.com" },
+    "status": { "available": true, "open": "09:00", "close": "22:00" }
+  },
+  {
+    "id": 6,
+    "name": "Fotografi Wedding",
+    "category": "Fotografi",
+    "price": 500000,
+    "rating": 4.9,
+    "image": "https://picsum.photos/200?6",
+    "details": { "provider": "PhotoPro", "location": "Bandung", "year": 2017 },
+    "contact": { "phone": "0866666666", "email": "photo@mail.com", "website": "https://photo.com" },
+    "status": { "available": true, "open": "07:00", "close": "23:00" }
+  },
+  {
+    "id": 7,
+    "name": "Les Privat",
+    "category": "Edukasi",
+    "price": 80000,
+    "rating": 4.4,
+    "image": "https://picsum.photos/200?7",
+    "details": { "provider": "Smart Edu", "location": "Medan", "year": 2021 },
+    "contact": { "phone": "0877777777", "email": "edu@mail.com", "website": "https://edu.com" },
+    "status": { "available": true, "open": "10:00", "close": "20:00" }
+  },
+  {
+    "id": 8,
+    "name": "Catering Harian",
+    "category": "Kuliner",
+    "price": 25000,
+    "rating": 4.2,
+    "image": "https://picsum.photos/200?8",
+    "details": { "provider": "Food Service", "location": "Padang", "year": 2019 },
+    "contact": { "phone": "0888888888", "email": "food@mail.com", "website": "https://food.com" },
+    "status": { "available": true, "open": "06:00", "close": "19:00" }
+  },
+  {
+    "id": 9,
+    "name": "Makeup Artist",
+    "category": "Salon",
+    "price": 200000,
+    "rating": 4.7,
+    "image": "https://picsum.photos/200?9",
+    "details": { "provider": "Beauty Pro", "location": "Jakarta", "year": 2020 },
+    "contact": { "phone": "0899999999", "email": "makeup@mail.com", "website": "https://makeup.com" },
+    "status": { "available": true, "open": "09:00", "close": "21:00" }
+  },
+  {
+    "id": 10,
+    "name": "Jasa Cleaning",
+    "category": "Kebersihan",
+    "price": 120000,
+    "rating": 4.3,
+    "image": "https://picsum.photos/200?10",
+    "details": { "provider": "CleanPro", "location": "Pekanbaru", "year": 2018 },
+    "contact": { "phone": "0810101010", "email": "clean@mail.com", "website": "https://clean.com" },
+    "status": { "available": true, "open": "08:00", "close": "17:00" }
+  },
+  {
+    "id": 11,
+    "name": "Service Laptop",
+    "category": "Teknisi",
+    "price": 90000,
+    "rating": 4.6,
+    "image": "https://picsum.photos/200?11",
+    "details": { "provider": "TechFix", "location": "Batam", "year": 2021 },
+    "contact": { "phone": "0820202020", "email": "tech@mail.com", "website": "https://tech.com" },
+    "status": { "available": true, "open": "09:00", "close": "18:00" }
+  },
+  {
+    "id": 12,
+    "name": "Barber Shop",
+    "category": "Salon",
+    "price": 35000,
+    "rating": 4.5,
+    "image": "https://picsum.photos/200?12",
+    "details": { "provider": "BarberPro", "location": "Pekanbaru", "year": 2019 },
+    "contact": { "phone": "0830303030", "email": "barber@mail.com", "website": "https://barber.com" },
+    "status": { "available": true, "open": "10:00", "close": "22:00" }
+  },
+  {
+    "id": 13,
+    "name": "Jasa Editing Video",
+    "category": "Digital",
+    "price": 150000,
+    "rating": 4.8,
+    "image": "https://picsum.photos/200?13",
+    "details": { "provider": "EditPro", "location": "Jakarta", "year": 2022 },
+    "contact": { "phone": "0840404040", "email": "edit@mail.com", "website": "https://edit.com" },
+    "status": { "available": true, "open": "09:00", "close": "23:00" }
+  },
+  {
+    "id": 14,
+    "name": "Rental Mobil",
+    "category": "Otomotif",
+    "price": 300000,
+    "rating": 4.4,
+    "image": "https://picsum.photos/200?14",
+    "details": { "provider": "RentCar", "location": "Medan", "year": 2020 },
+    "contact": { "phone": "0850505050", "email": "rent@mail.com", "website": "https://rent.com" },
+    "status": { "available": true, "open": "07:00", "close": "22:00" }
+  },
+  {
+    "id": 15,
+    "name": "Service Motor",
+    "category": "Otomotif",
+    "price": 60000,
+    "rating": 4.3,
+    "image": "https://picsum.photos/200?15",
+    "details": { "provider": "MotoFix", "location": "Padang", "year": 2018 },
+    "contact": { "phone": "0860606060", "email": "moto@mail.com", "website": "https://moto.com" },
+    "status": { "available": true, "open": "08:00", "close": "17:00" }
+  },
+  {
+    "id": 16,
+    "name": "Jasa Pindahan",
+    "category": "Logistik",
+    "price": 250000,
+    "rating": 4.5,
+    "image": "https://picsum.photos/200?16",
+    "details": { "provider": "MoveIt", "location": "Jakarta", "year": 2019 },
+    "contact": { "phone": "0870707070", "email": "move@mail.com", "website": "https://move.com" },
+    "status": { "available": true, "open": "06:00", "close": "20:00" }
+  },
+  {
+    "id": 17,
+    "name": "Cuci Sepatu",
+    "category": "Laundry",
+    "price": 20000,
+    "rating": 4.2,
+    "image": "https://picsum.photos/200?17",
+    "details": { "provider": "ShoeClean", "location": "Pekanbaru", "year": 2021 },
+    "contact": { "phone": "0880808080", "email": "shoe@mail.com", "website": "https://shoe.com" },
+    "status": { "available": true, "open": "09:00", "close": "19:00" }
+  },
+  {
+    "id": 18,
+    "name": "Les Musik",
+    "category": "Edukasi",
+    "price": 70000,
+    "rating": 4.6,
+    "image": "https://picsum.photos/200?18",
+    "details": { "provider": "MusicSchool", "location": "Bandung", "year": 2020 },
+    "contact": { "phone": "0890909090", "email": "music@mail.com", "website": "https://music.com" },
+    "status": { "available": true, "open": "10:00", "close": "21:00" }
+  },
+  {
+    "id": 19,
+    "name": "Jasa Fotokopi",
+    "category": "Percetakan",
+    "price": 500,
+    "rating": 4.1,
+    "image": "https://picsum.photos/200?19",
+    "details": { "provider": "CopyCenter", "location": "Pekanbaru", "year": 2015 },
+    "contact": { "phone": "0819191919", "email": "copy@mail.com", "website": "https://copy.com" },
+    "status": { "available": true, "open": "07:00", "close": "22:00" }
+  },
+  {
+    "id": 20,
+    "name": "Jasa Printing",
+    "category": "Percetakan",
+    "price": 2000,
+    "rating": 4.3,
+    "image": "https://picsum.photos/200?20",
+    "details": { "provider": "PrintPro", "location": "Pekanbaru", "year": 2016 },
+    "contact": { "phone": "0828282828", "email": "print@mail.com", "website": "https://print.com" },
+    "status": { "available": true, "open": "08:00", "close": "21:00" }
+  }
+]
