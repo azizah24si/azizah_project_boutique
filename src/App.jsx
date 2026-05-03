@@ -1,65 +1,87 @@
 import { Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import Orders from "./pages/Orders";
-import Customers from "./pages/Customers";
-import NotFound from "./pages/NotFound";
-import ErrorPage from "./pages/ErrorPage";
+import { lazy, Suspense } from "react";
+
 import { MainLayout } from "./layouts/MainLayout";
 import AuthLayout from "./layouts/AuthLayout";
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
-import Forgot from "./pages/auth/Forgot";
+
+// Lazy Load Pages
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Product = lazy(() => import("./pages/Product"));
+const Orders = lazy(() => import("./pages/Orders"));
+const Customers = lazy(() => import("./pages/Customers"));
+
+const NotFound = lazy(() => import("./pages/NotFound"));
+const ErrorPage = lazy(() => import("./pages/ErrorPage"));
+
+const Login = lazy(() => import("./pages/auth/Login"));
+const Register = lazy(() => import("./pages/auth/Register"));
+const Forgot = lazy(() => import("./pages/auth/Forgot"));
 
 function App() {
   return (
-    <Routes>
-      <Route element={<MainLayout />}>
-      
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/customers" element={<Customers />} />
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center 
+        min-h-screen text-pink-500 font-semibold">
+          Loading...
+        </div>
+      }
+    >
+      <Routes>
 
-        <Route
-          path="/400"
-          element={
-            <ErrorPage
-              code="400"
-              description="Permintaan Gagal (Bad Request)"
-              image="https://cdn-icons-png.flaticon.com/512/5804/5804978.png"
-            />
-          }
-        />
+        {/* 🔹 MAIN LAYOUT */}
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/product" element={<Product />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/customers" element={<Customers />} />
 
-        <Route
-          path="/401"
-          element={
-            <ErrorPage
-              code="401"
-              description="Akses Tidak Diizinkan (Unauthorized)"
-              image="https://cdn-icons-png.flaticon.com/512/3064/3064197.png"
-            />
-          }
-        />
+          {/* 🔸 ERROR PAGES */}
+          <Route
+            path="/400"
+            element={
+              <ErrorPage
+                code="400"
+                description="Permintaan tidak valid pada sistem boutique"
+                image="https://cdn-icons-png.flaticon.com/512/4076/4076506.png"
+              />
+            }
+          />
 
-        <Route
-          path="/403"
-          element={
-            <ErrorPage
-              code="403"
-              description="Akses Dilarang (Forbidden)"
-              image="https://cdn-icons-png.flaticon.com/512/2599/2599810.png"
-            />
-          }
-        />
+          <Route
+            path="/401"
+            element={
+              <ErrorPage
+                code="401"
+                description="Kamu belum login ke sistem boutique"
+                image="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
+              />
+            }
+          />
 
-        <Route path="*" element={<NotFound />} />
-      </Route>
-      <Route element={<AuthLayout/>}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register/>} />
-            <Route path="/forgot" element={<Forgot/>} />
+          <Route
+            path="/403"
+            element={
+              <ErrorPage
+                code="403"
+                description="Akses ke halaman ini dibatasi"
+                image="https://cdn-icons-png.flaticon.com/512/4076/4076555.png"
+              />
+            }
+          />
+
+          <Route path="*" element={<NotFound />} />
         </Route>
-    </Routes>
+
+        {/* 🔹 AUTH LAYOUT */}
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot" element={<Forgot />} />
+        </Route>
+
+      </Routes>
+    </Suspense>
   );
 }
 

@@ -1,23 +1,20 @@
 import { Outlet } from "react-router-dom";
 
 export default function AuthLayout() {
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
-                <div className="flex items-center justify-center mb-6">
-                    <h1 className="text-4xl font-poppins font-extrabold text-gray-800">
-                        <span className="text-black">Sedap</span>
-                        <span className="text-green-500">.</span>
-                    </h1>
-                </div>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-pink-50">
+      <div className="bg-white p-8 rounded-2xl shadow w-full max-w-md">
 
-                <Outlet/>
+        <h1 className="text-3xl font-bold text-center mb-6">
+          Boutique
+        </h1>
 
-                <p className="text-center text-sm text-gray-500 mt-6">
-                    © 2025 Sedap Restaurant Admin Dashboard. All rights
-                    reserved.
-                </p>
-            </div>
-        </div>
-    )
+        <Outlet />
+
+        <p className="text-center text-sm mt-6">
+          © 2025 Boutique System
+        </p>
+      </div>
+    </div>
+  );
 }

@@ -4,79 +4,103 @@ import PageHeader from "../components/PageHeader";
 export default function Orders() {
   const [showForm, setShowForm] = useState(false);
 
-  const ordersData = Array.from({ length: 30 }, (_, i) => ({
-    id: `ORD-2026-${100 + i}`,
-    customer: `Customer Name ${i + 1}`,
-    status: ["Pending", "Completed", "Cancelled"][i % 3],
-    price: `Rp ${(i + 1) * 15000}`,
-    date: `2026-04-${(i % 28) + 1}`,
-  }));
+  const ordersData = [
+    {
+      id: "ORD-101",
+      customer: "Aisyah",
+      product: "Dress Floral Pink",
+      status: "Selesai",
+      price: "Rp 150.000",
+      date: "2026-05-01",
+    },
+    {
+      id: "ORD-102",
+      customer: "Nadia",
+      product: "Blouse Korean",
+      status: "Pending",
+      price: "Rp 120.000",
+      date: "2026-05-02",
+    },
+    {
+      id: "ORD-103",
+      customer: "Salsa",
+      product: "Outer Vintage",
+      status: "Batal",
+      price: "Rp 175.000",
+      date: "2026-05-03",
+    },
+  ];
 
   return (
     <div className="p-4">
-      <PageHeader 
-        title="Orders Management" 
-        breadcrumb={["Dashboard", "Orders List"]}
+
+      <PageHeader
+        title="Data Penjualan Boutique"
+        breadcrumb={["Dashboard", "Penjualan"]}
       >
-        <button 
+        <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-hijau text-white px-6 py-2 rounded-xl font-bold shadow-md hover:scale-105 transition-all"
+          className="bg-pink-500 text-white px-5 py-2 rounded-xl font-bold shadow hover:bg-pink-600"
         >
-          {showForm ? "Close Form" : "+ Add Orders"}
+          {showForm ? "Tutup Form" : "+ Tambah Penjualan"}
         </button>
       </PageHeader>
 
-      {/* Form Add Order */}
+      {/* FORM */}
       {showForm && (
-        <div className="bg-white p-6 rounded-2xl shadow-sm mb-6 border-l-4 border-hijau animate-in fade-in zoom-in duration-300">
-          <h3 className="font-bold text-gray-700 mb-4">Form Add New Order</h3>
+        <div className="bg-white p-6 rounded-2xl shadow mb-6 border-l-4 border-pink-400">
+          <h3 className="font-bold mb-4">Tambah Penjualan</h3>
+
           <div className="grid grid-cols-2 gap-4">
-            <input type="text" placeholder="Order ID (e.g. ORD-001)" className="border p-2 rounded-lg focus:outline-hijau" />
-            <input type="text" placeholder="Customer Name" className="border p-2 rounded-lg focus:outline-hijau" />
-            <select className="border p-2 rounded-lg focus:outline-hijau">
+            <input type="text" placeholder="ID Order" className="border p-2 rounded-lg" />
+            <input type="text" placeholder="Nama Pelanggan" className="border p-2 rounded-lg" />
+            <input type="text" placeholder="Nama Produk" className="border p-2 rounded-lg" />
+            <input type="number" placeholder="Total Harga" className="border p-2 rounded-lg" />
+
+            <select className="border p-2 rounded-lg">
+              <option>Selesai</option>
               <option>Pending</option>
-              <option>Completed</option>
-              <option>Cancelled</option>
+              <option>Batal</option>
             </select>
-            <input type="number" placeholder="Total Price" className="border p-2 rounded-lg focus:outline-hijau" />
-            <input type="date" className="border p-2 rounded-lg focus:outline-hijau col-span-2" />
-            <button className="bg-hijau text-white p-2 rounded-lg font-bold col-span-2">Submit Order</button>
+
+            <input type="date" className="border p-2 rounded-lg" />
+
+            <button className="bg-pink-500 text-white p-2 rounded-lg col-span-2 font-bold">
+              Simpan
+            </button>
           </div>
         </div>
       )}
 
-      {/* Tabel Data */}
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+      {/* TABLE */}
+      <div className="bg-white rounded-2xl shadow overflow-hidden">
         <table className="w-full text-left">
-          <thead className="bg-gray-50 text-gray-400 text-sm uppercase">
+          <thead className="bg-pink-50 text-gray-500 text-sm uppercase">
             <tr>
-              <th className="p-4">Order ID</th>
-              <th className="p-4">Customer</th>
+              <th className="p-4">ID</th>
+              <th className="p-4">Pelanggan</th>
+              <th className="p-4">Produk</th>
               <th className="p-4">Status</th>
-              <th className="p-4">Total Price</th>
-              <th className="p-4">Date</th>
+              <th className="p-4">Harga</th>
+              <th className="p-4">Tanggal</th>
             </tr>
           </thead>
-          <tbody className="text-sm">
-            {ordersData.map((order) => (
-              <tr key={order.id} className="border-t border-gray-50 hover:bg-gray-50">
-                <td className="p-4 font-bold text-gray-800">{order.id}</td>
-                <td className="p-4">{order.customer}</td>
-                <td className="p-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                    order.status === "Completed" ? "bg-green-100 text-green-600" : 
-                    order.status === "Pending" ? "bg-yellow-100 text-yellow-600" : "bg-red-100 text-red-600"
-                  }`}>
-                    {order.status}
-                  </span>
-                </td>
-                <td className="p-4 font-semibold">{order.price}</td>
-                <td className="p-4 text-gray-500">{order.date}</td>
+
+          <tbody>
+            {ordersData.map((item) => (
+              <tr key={item.id} className="border-t hover:bg-pink-50">
+                <td className="p-4 font-bold">{item.id}</td>
+                <td className="p-4">{item.customer}</td>
+                <td className="p-4">{item.product}</td>
+                <td className="p-4">{item.status}</td>
+                <td className="p-4">{item.price}</td>
+                <td className="p-4">{item.date}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
     </div>
   );
 }

@@ -13,16 +13,18 @@
 @theme {
     --font-barlow: "Barlow", sans-serif;
     --font-poppins: "Poppins", sans-serif;
-    --color-latar: #f3f4f6;
-    --color-teks: #374151; 
-    --color-teks-samping: #6b7280;
-    --color-garis: #e5e7eb; 
-    --color-hijau: #00B074; 
-    --color-merah: #ef4444; 
-    --color-biru: #3b82f6;
-    --color-kuning: #f59e0b; 
+
+    --color-latar: #fdf2f8;
+    --color-teks: #4b5563; 
+    --color-teks-samping: #9ca3af;
+    --color-garis: #f1f5f9;
+
+    --color-hijau: #ec4899; /* pink */
+    --color-merah: #f43f5e; 
+    --color-biru: #a78bfa;
+    --color-kuning: #fbbf24;
 }
 
 body {
-    @apply font-barlow;
+    @apply font-barlow bg-latar;
 }
