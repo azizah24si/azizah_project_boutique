@@ -7,7 +7,9 @@ import AuthLayout from "./layouts/AuthLayout";
 // Lazy Load Pages
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Product = lazy(() => import("./pages/Product"));
+const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const Orders = lazy(() => import("./pages/Orders"));
+const OrderDetail = lazy(() => import("./pages/OrderDetail"));
 const Customers = lazy(() => import("./pages/Customers"));
 
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -33,7 +35,9 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/product" element={<Product />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/orders/:id" element={<OrderDetail />} />
           <Route path="/customers" element={<Customers />} />
 
           {/* 🔸 ERROR PAGES */}

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 
 export default function Orders() {
+  const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
 
   const ordersData = [
@@ -83,6 +85,7 @@ export default function Orders() {
               <th className="p-4">Status</th>
               <th className="p-4">Harga</th>
               <th className="p-4">Tanggal</th>
+              <th className="p-4">Aksi</th>
             </tr>
           </thead>
 
@@ -95,6 +98,14 @@ export default function Orders() {
                 <td className="p-4">{item.status}</td>
                 <td className="p-4">{item.price}</td>
                 <td className="p-4">{item.date}</td>
+                <td className="p-4">
+                  <button
+                    onClick={() => navigate(`/orders/${item.id}`)}
+                    className="bg-pink-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-pink-600 transition"
+                  >
+                    Lihat Detail
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
