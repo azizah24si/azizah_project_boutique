@@ -3,32 +3,37 @@ import { Link } from "react-router-dom";
 
 export default function ErrorPage({ code, description, image }) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] text-center p-5 bg-pink-50">
+    <div className="flex flex-col items-center justify-center min-h-[70vh] text-center p-6 bg-[#f8f9fb]">
 
-      <img 
-        src={image} 
-        alt="Error Illustration" 
-        className="w-64 mb-6"
-      />
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-10 max-w-lg w-full">
 
-      <h1 className="text-7xl font-black text-pink-500">
-        {code}
-      </h1>
+        <img
+          src={image}
+          alt="Error Illustration"
+          className="w-64 mx-auto mb-6"
+        />
 
-      <p className="text-xl font-bold text-gray-800 mt-4">
-        {description}
-      </p>
+        <h1 className="text-7xl font-black text-cyan-400">
+          {code}
+        </h1>
 
-      <p className="text-gray-500 mt-2">
-        Terjadi kendala pada sistem boutique. Silakan coba lagi atau kembali ke dashboard.
-      </p>
+        <p className="text-2xl font-bold text-gray-700 mt-4">
+          {description}
+        </p>
 
-      <Link 
-        to="/" 
-        className="mt-8 px-6 py-2 bg-pink-500 text-white rounded-xl font-bold shadow hover:bg-pink-600 transition-all"
-      >
-        Kembali ke Dashboard
-      </Link>
+        <p className="text-gray-400 mt-3 leading-relaxed">
+          Terjadi kendala pada sistem boutique.
+          Silakan coba lagi atau kembali ke dashboard.
+        </p>
+
+        <Link
+          to="/"
+          className="inline-block mt-8 px-6 py-3 bg-cyan-400 text-white rounded-2xl font-semibold shadow hover:bg-cyan-500 transition"
+        >
+          Kembali ke Dashboard
+        </Link>
+
+      </div>
 
     </div>
   );
