@@ -1,188 +1,185 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaPlus, FaEye, FaSearch } from "react-icons/fa";
+
 import PageHeader from "../components/PageHeader";
+import Button from "../components/Button";
+import Badge from "../components/Badge";
+import Modal from "../components/Modal";
+import Input from "../components/Input";
+import Select from "../components/Select";
+import Table from "../components/Table";
+import Pagination from "../components/Pagination";
+import Alert from "../components/Alert";
+import Tabs from "../components/Tabs";
+
+const ALL_ORDERS = [
+  { id: "ORD-101", customer: "Aisyah", product: "Dress Floral Pink", status: "Selesai", price: "Rp 150.000", date: "2026-05-01" },
+  { id: "ORD-102", customer: "Nadia", product: "Blouse Korean", status: "Pending", price: "Rp 120.000", date: "2026-05-02" },
+  { id: "ORD-103", customer: "Salsa", product: "Outer Vintage", status: "Batal", price: "Rp 175.000", date: "2026-05-03" },
+  { id: "ORD-104", customer: "Rara", product: "Dress Floral White", status: "Selesai", price: "Rp 160.000", date: "2026-05-04" },
+  { id: "ORD-105", customer: "Dina", product: "Hijab Satin", status: "Pending", price: "Rp 85.000", date: "2026-05-05" },
+  { id: "ORD-106", customer: "Putri", product: "Blouse Batik", status: "Selesai", price: "Rp 135.000", date: "2026-05-06" },
+];
+
+const PAGE_SIZE = 4;
+
+const statusVariant = {
+  Selesai: "green",
+  Pending: "yellow",
+  Batal: "red",
+};
 
 export default function Orders() {
   const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [search, setSearch] = useState("");
+  const [activeTab, setActiveTab] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const ordersData = [
+  const tabFiltered =
+    activeTab === "all"
+      ? ALL_ORDERS
+      : ALL_ORDERS.filter((o) => o.status.toLowerCase() === activeTab);
+
+  const filtered = tabFiltered.filter(
+    (o) =>
+      o.customer.toLowerCase().includes(search.toLowerCase()) ||
+      o.product.toLowerCase().includes(search.toLowerCase()) ||
+      o.id.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+  const tabs = [
+    { key: "all", label: "Semua", badge: ALL_ORDERS.length },
+    { key: "selesai", label: "Selesai", badge: ALL_ORDERS.filter((o) => o.status === "Selesai").length },
+    { key: "pending", label: "Pending", badge: ALL_ORDERS.filter((o) => o.status === "Pending").length },
+    { key: "batal", label: "Batal", badge: ALL_ORDERS.filter((o) => o.status === "Batal").length },
+  ];
+
+  const columns = [
     {
-      id: "ORD-101",
-      customer: "Aisyah",
-      product: "Dress Floral Pink",
-      status: "Selesai",
-      price: "Rp 150.000",
-      date: "2026-05-01",
+      key: "id",
+      label: "ID",
+      render: (val) => <span className="font-semibold text-gray-700">{val}</span>,
+    },
+    { key: "customer", label: "Pelanggan" },
+    { key: "product", label: "Produk" },
+    {
+      key: "status",
+      label: "Status",
+      render: (val) => (
+        <Badge variant={statusVariant[val]} dot>
+          {val}
+        </Badge>
+      ),
     },
     {
-      id: "ORD-102",
-      customer: "Nadia",
-      product: "Blouse Korean",
-      status: "Pending",
-      price: "Rp 120.000",
-      date: "2026-05-02",
+      key: "price",
+      label: "Harga",
+      render: (val) => <span className="text-cyan-500 font-semibold">{val}</span>,
     },
+    { key: "date", label: "Tanggal" },
     {
-      id: "ORD-103",
-      customer: "Salsa",
-      product: "Outer Vintage",
-      status: "Batal",
-      price: "Rp 175.000",
-      date: "2026-05-03",
+      key: "id",
+      label: "Aksi",
+      render: (val) => (
+        <Button size="sm" icon={<FaEye />} onClick={() => navigate(`/orders/${val}`)}>
+          Detail
+        </Button>
+      ),
     },
   ];
 
-  const statusColor = {
-    Selesai: "bg-green-100 text-green-500",
-    Pending: "bg-yellow-100 text-yellow-500",
-    Batal: "bg-red-100 text-red-500",
+  const handleSave = () => {
+    setSaving(true);
+    setTimeout(() => {
+      setSaving(false);
+      setShowForm(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    }, 1500);
   };
 
   return (
     <div className="p-6 bg-[#f8f9fb] min-h-screen">
-
-      <PageHeader
-        title="Data Penjualan Boutique"
-        breadcrumb={["Dashboard", "Penjualan"]}
-      >
-
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-cyan-400 text-white px-5 py-3 rounded-2xl font-semibold shadow hover:bg-cyan-500 transition"
-        >
-          {showForm ? "Tutup Form" : "+ Tambah Penjualan"}
-        </button>
-
+      <PageHeader title="Data Penjualan Boutique" breadcrumb={["Dashboard", "Penjualan"]}>
+        <Button icon={<FaPlus />} onClick={() => setShowForm(true)}>
+          Tambah Penjualan
+        </Button>
       </PageHeader>
 
-      {/* FORM */}
-      {showForm && (
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 mb-6">
-
-          <h3 className="text-lg font-bold text-gray-700 mb-5">
-            Tambah Penjualan
-          </h3>
-
-          <div className="grid grid-cols-2 gap-4">
-
-            <input
-              type="text"
-              placeholder="ID Order"
-              className="w-full border border-gray-200 rounded-2xl px-4 py-3 outline-none focus:border-cyan-400 transition"
-            />
-
-            <input
-              type="text"
-              placeholder="Nama Pelanggan"
-              className="w-full border border-gray-200 rounded-2xl px-4 py-3 outline-none focus:border-cyan-400 transition"
-            />
-
-            <input
-              type="text"
-              placeholder="Nama Produk"
-              className="w-full border border-gray-200 rounded-2xl px-4 py-3 outline-none focus:border-cyan-400 transition"
-            />
-
-            <input
-              type="number"
-              placeholder="Total Harga"
-              className="w-full border border-gray-200 rounded-2xl px-4 py-3 outline-none focus:border-cyan-400 transition"
-            />
-
-            <select className="w-full border border-gray-200 rounded-2xl px-4 py-3 outline-none focus:border-cyan-400 transition">
-
-              <option>Selesai</option>
-              <option>Pending</option>
-              <option>Batal</option>
-
-            </select>
-
-            <input
-              type="date"
-              className="w-full border border-gray-200 rounded-2xl px-4 py-3 outline-none focus:border-cyan-400 transition"
-            />
-
-            <button className="w-full bg-cyan-400 hover:bg-cyan-500 text-white font-semibold py-3 rounded-2xl transition col-span-2">
-              Simpan
-            </button>
-
-          </div>
-
-        </div>
+      {saved && (
+        <Alert variant="success" title="Penjualan berhasil disimpan!" dismissible onDismiss={() => setSaved(false)} className="mb-4">
+          Data transaksi baru telah ditambahkan.
+        </Alert>
       )}
 
-      {/* TABLE */}
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+      {/* TABS FILTER */}
+      <Tabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={(key) => { setActiveTab(key); setCurrentPage(1); }}
+        variant="pill"
+        className="mb-4"
+      />
 
-        <table className="w-full text-left">
-
-          <thead className="bg-gray-50 text-gray-400 uppercase text-sm">
-            <tr>
-              <th className="p-4">ID</th>
-              <th className="p-4">Pelanggan</th>
-              <th className="p-4">Produk</th>
-              <th className="p-4">Status</th>
-              <th className="p-4">Harga</th>
-              <th className="p-4">Tanggal</th>
-              <th className="p-4">Aksi</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {ordersData.map((item) => (
-              <tr
-                key={item.id}
-                className="border-b border-gray-100 hover:bg-cyan-50 transition"
-              >
-
-                <td className="p-4 font-semibold text-gray-700">
-                  {item.id}
-                </td>
-
-                <td className="p-4 text-gray-600">
-                  {item.customer}
-                </td>
-
-                <td className="p-4 text-gray-600">
-                  {item.product}
-                </td>
-
-                <td className="p-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${statusColor[item.status]}`}
-                  >
-                    {item.status}
-                  </span>
-                </td>
-
-                <td className="p-4 text-cyan-500 font-semibold">
-                  {item.price}
-                </td>
-
-                <td className="p-4 text-gray-500">
-                  {item.date}
-                </td>
-
-                <td className="p-4">
-
-                  <button
-                    onClick={() => navigate(`/orders/${item.id}`)}
-                    className="bg-cyan-400 text-white px-4 py-2 rounded-2xl text-sm font-semibold hover:bg-cyan-500 transition"
-                  >
-                    Lihat Detail
-                  </button>
-
-                </td>
-
-              </tr>
-            ))}
-          </tbody>
-
-        </table>
-
+      {/* SEARCH */}
+      <div className="mb-4 max-w-sm">
+        <Input
+          placeholder="Cari order, pelanggan, produk..."
+          icon={<FaSearch />}
+          value={search}
+          onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
+        />
       </div>
 
+      {/* TABLE */}
+      <Table columns={columns} data={paginated} emptyText="Tidak ada penjualan ditemukan" />
+
+      {/* PAGINATION */}
+      <div className="mt-4">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages || 1}
+          onPageChange={setCurrentPage}
+        />
+      </div>
+
+      {/* MODAL */}
+      <Modal
+        isOpen={showForm}
+        onClose={() => setShowForm(false)}
+        title="Tambah Penjualan Baru"
+        description="Isi form di bawah untuk mencatat transaksi penjualan"
+        footer={
+          <div className="flex gap-3">
+            <Button className="flex-1" onClick={handleSave} loading={saving}>
+              {saving ? "Menyimpan..." : "Simpan Penjualan"}
+            </Button>
+            <Button variant="secondary" onClick={() => setShowForm(false)}>
+              Batal
+            </Button>
+          </div>
+        }
+      >
+        <div className="grid grid-cols-2 gap-5">
+          <Input label="ID Order" placeholder="ORD-107" required />
+          <Input label="Nama Pelanggan" placeholder="Contoh: Aisyah" required />
+          <Input label="Nama Produk" placeholder="Contoh: Dress Floral Pink" required />
+          <Input label="Total Harga" type="number" placeholder="150000" required />
+          <Select
+            label="Status"
+            options={["Selesai", "Pending", "Batal"]}
+            required
+          />
+          <Input label="Tanggal" type="date" required />
+        </div>
+      </Modal>
     </div>
   );
 }

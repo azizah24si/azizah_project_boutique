@@ -1,59 +1,81 @@
-import {
-  FaSearch,
-  FaBell,
-  FaCog,
-} from "react-icons/fa";
+import { FaSearch, FaBell, FaCog, FaUser, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
+import Avatar from "./Avatar";
+import Dropdown from "./Dropdown";
+import Tooltip from "./Tooltip";
+import Badge from "./Badge";
+import Input from "./Input";
 
 export default function Header() {
-  return (
-    <div className="flex justify-between items-center mb-6">
+  const notifItems = [
+    { label: "Pesanan baru #ORD-107", onClick: () => {} },
+    { label: "Stok Dress Floral hampir habis", onClick: () => {} },
+    { label: "Pelanggan baru: Rara", onClick: () => {} },
+    { divider: true },
+    { label: "Lihat semua notifikasi", onClick: () => {} },
+  ];
 
-      
+  const profileItems = [
+    { label: "Profil Saya", icon: <FaUserCircle />, onClick: () => {} },
+    { label: "Pengaturan", icon: <FaCog />, onClick: () => {} },
+    { divider: true },
+    { label: "Logout", icon: <FaSignOutAlt />, danger: true, onClick: () => {} },
+  ];
+
+  return (
+    <div className="flex justify-between items-center mb-8 bg-white rounded-2xl px-6 py-4 shadow-sm">
+
+      {/* LEFT */}
+      <div>
+        <p className="text-xs text-gray-400 mb-1">Pages / Dashboard</p>
+        <h1 className="text-lg font-bold text-gray-700">Dashboard</h1>
+      </div>
 
       {/* RIGHT */}
       <div className="flex items-center gap-4">
 
         {/* SEARCH */}
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Type here..."
-            className="bg-white border border-gray-100 rounded-2xl py-2 pl-10 pr-4 text-sm outline-none w-64 shadow-sm"
-          />
+        <Input
+          placeholder="Type here..."
+          icon={<FaSearch />}
+          className="w-56"
+        />
 
-          <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
-        </div>
+        {/* NOTIFICATIONS */}
+        <Dropdown
+          align="right"
+          trigger={
+            <Tooltip content="Notifikasi" position="bottom">
+              <div className="relative cursor-pointer text-gray-400 hover:text-cyan-400 text-lg transition-colors">
+                <FaBell />
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-400 rounded-full flex items-center justify-center">
+                  <span className="text-white text-[9px] font-bold">3</span>
+                </span>
+              </div>
+            </Tooltip>
+          }
+          items={notifItems}
+        />
 
-        {/* ICON */}
-        <button className="text-gray-400 hover:text-cyan-400">
-          <FaBell />
-        </button>
+        {/* SETTINGS */}
+        <Tooltip content="Pengaturan" position="bottom">
+          <button className="text-gray-400 hover:text-cyan-400 text-lg transition-colors">
+            <FaCog />
+          </button>
+        </Tooltip>
 
-        <button className="text-gray-400 hover:text-cyan-400">
-          <FaCog />
-        </button>
-
-        {/* PROFILE */}
-        <div className="flex items-center gap-3">
-          <img
-            src="https://avatar.iran.liara.run/public/28"
-            alt=""
-            className="w-10 h-10 rounded-full"
-          />
-
-          <div>
-            <h3 className="text-sm font-semibold text-gray-700">
-              Admin Boutique
-            </h3>
-
-            <p className="text-xs text-gray-400">
-              Administrator
-            </p>
-          </div>
-        </div>
+        {/* PROFILE DROPDOWN */}
+        <Dropdown
+          align="right"
+          trigger={
+            <div className="flex items-center gap-2 cursor-pointer">
+              <Avatar name="Admin Jijah" size="sm" color="cyan" status="online" />
+              <span className="text-sm font-semibold text-gray-700">Admin</span>
+            </div>
+          }
+          items={profileItems}
+        />
 
       </div>
-
     </div>
   );
 }

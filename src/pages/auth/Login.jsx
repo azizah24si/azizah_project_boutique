@@ -1,86 +1,50 @@
 import { NavLink } from "react-router-dom";
+import { FaEnvelope, FaLock } from "react-icons/fa";
+import Input from "../../components/Input";
+import Button from "../../components/Button";
 
 export default function Login() {
   return (
-    <div>
-
-      <h2 className="text-3xl font-bold text-center text-gray-700">
-        Welcome Back
-      </h2>
-
-      <p className="text-center text-gray-400 mt-2 mb-8">
-        Enter your email and password to sign in
-      </p>
+    <div className="bg-white rounded-2xl shadow-xl p-10">
+      <h2 className="text-3xl font-bold text-cyan-400 mb-2">Welcome Back</h2>
+      <p className="text-gray-400 mb-8">Enter your email and password to sign in</p>
 
       <form>
-
-        {/* EMAIL */}
-        <div className="mb-5">
-
-          <label className="block text-sm font-semibold text-gray-600 mb-2">
-            Email
-          </label>
-
-          <input
+        <div className="space-y-5 mb-6">
+          <Input
+            label="Email"
             type="email"
             placeholder="Your email address"
-            className="w-full border border-gray-200 rounded-2xl px-4 py-3 outline-none focus:border-cyan-400 transition"
+            icon={<FaEnvelope />}
+            required
           />
-
-        </div>
-
-        {/* PASSWORD */}
-        <div className="mb-5">
-
-          <label className="block text-sm font-semibold text-gray-600 mb-2">
-            Password
-          </label>
-
-          <input
+          <Input
+            label="Password"
             type="password"
             placeholder="Your password"
-            className="w-full border border-gray-200 rounded-2xl px-4 py-3 outline-none focus:border-cyan-400 transition"
+            icon={<FaLock />}
+            required
           />
-
         </div>
 
-        {/* REMEMBER */}
         <div className="flex items-center gap-2 mb-6">
-
-          <input
-            type="checkbox"
-            className="accent-cyan-400"
-          />
-
-          <p className="text-sm text-gray-500">
+          <input type="checkbox" id="remember" className="w-4 h-4 accent-cyan-400 cursor-pointer" />
+          <label htmlFor="remember" className="text-sm text-gray-500 cursor-pointer">
             Remember me
-          </p>
-
+          </label>
         </div>
 
-        {/* BUTTON */}
-        <button
-          type="submit"
-          className="w-full bg-cyan-400 hover:bg-cyan-500 text-white font-semibold py-3 rounded-2xl transition"
-        >
+        <Button type="submit" className="w-full" size="lg">
           SIGN IN
-        </button>
-
+        </Button>
       </form>
 
-      {/* REGISTER LINK */}
-      <p className="text-center text-gray-400 text-sm mt-6">
-        Don't have an account?
-
-        <NavLink
-          to="/register"
-          className="text-cyan-400 font-semibold ml-1 hover:underline"
-        >
-          Sign Up
+      <p className="text-center text-gray-500 text-sm mt-6">
+        Don't have an account?{" "}
+        <NavLink to="/register" className="text-cyan-400 font-semibold hover:underline">
+          Sign up
         </NavLink>
-
       </p>
-
     </div>
   );
 }

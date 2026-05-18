@@ -7,7 +7,7 @@ export function MainLayout() {
     <div>
       <div id="app-container" className="flex min-h-screen bg-gray-50">
         <Sidebar />
-        <div id="main-content" className="flex-1 p-4">
+        <div id="main-content" className="flex-1 p-8">
           <Header />
           <Outlet />
         </div>

@@ -10,30 +10,32 @@ import {
 
 export default function Sidebar() {
   const menuClass = ({ isActive }) =>
-    `flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all
+    `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
     ${
       isActive
-        ? "bg-cyan-400 text-white shadow-sm"
-        : "text-gray-400 hover:bg-cyan-50 hover:text-cyan-400"
+        ? "bg-cyan-400 text-white shadow-md"
+        : "text-gray-500 hover:bg-gray-50"
     }`;
 
   return (
-    <div className="w-64 min-h-screen bg-white border-r border-gray-100 flex flex-col px-6 py-8">
+    <div className="w-72 min-h-screen bg-white flex flex-col px-8 py-8">
+      
       {/* LOGO */}
       <div className="mb-10 flex flex-col items-center">
         <img
           src="/img/logojijah.png"
           alt="Jijah Boutique"
-          className="w-50 h-30 object-contain"
+          className="w-24 h-24 object-contain"
         />
 
-        <h1 className="text-2xl font-bold text-gray-700 mt-2">
+        <h1 className="text-xl font-bold text-gray-700 mt-3">
           Jijah<span className="text-cyan-400">Boutique</span>
         </h1>
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent mt-3"></div>
       </div>
 
       {/* MENU */}
-      <div className="flex flex-col gap-2">
+      <nav className="flex flex-col gap-2">
         <NavLink to="/" className={menuClass}>
           <FaThLarge />
           Dashboard
@@ -53,12 +55,12 @@ export default function Sidebar() {
           <FaUserFriends />
           Pelanggan
         </NavLink>
-      </div>
+      </nav>
 
       {/* SYSTEM */}
       <div className="mt-10">
-        <p className="text-xs text-gray-300 uppercase mb-3 font-semibold">
-          System
+        <p className="text-xs text-gray-400 uppercase mb-3 font-bold tracking-wider">
+          SYSTEM
         </p>
 
         <div className="flex flex-col gap-2">
@@ -78,24 +80,37 @@ export default function Sidebar() {
 
       {/* HELP CARD */}
       <div className="mt-auto">
-        <div className="bg-cyan-400 rounded-3xl p-5 text-white relative overflow-hidden">
-          <FaQuestionCircle className="text-3xl mb-3" />
+        <div className="bg-gradient-to-br from-cyan-400 to-teal-400 rounded-2xl p-6 text-white text-center relative overflow-hidden">
+          
+          <div className="absolute inset-0 opacity-10">
+            <div className="w-full h-full bg-[radial-gradient(circle,white_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+          </div>
 
-          <h3 className="font-bold text-lg">Need help?</h3>
+          <div className="relative z-10">
+            <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mx-auto mb-3">
+              <FaQuestionCircle className="text-2xl text-cyan-400" />
+            </div>
 
-          <p className="text-sm mt-1 opacity-90">Please check our docs</p>
+            <h3 className="font-bold text-sm mb-2">Need help?</h3>
 
-          <button className="bg-white text-cyan-400 w-full mt-4 py-2 rounded-xl font-semibold text-sm">
-            DOCUMENTATION
-          </button>
+            <p className="text-xs opacity-90 mb-4">
+              Please check our docs
+            </p>
+
+            <button className="bg-white text-cyan-400 w-full py-2 rounded-xl font-bold text-xs hover:bg-gray-50 transition">
+              DOCUMENTATION
+            </button>
+          </div>
+
         </div>
 
         {/* LOGOUT */}
-        <button className="w-full mt-5 flex items-center justify-center gap-2 py-3 rounded-2xl bg-gray-50 text-gray-500 hover:bg-red-500 hover:text-white transition-all">
+        <button className="w-full mt-5 flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-50 text-gray-500 hover:bg-red-500 hover:text-white transition-all">
           <FaSignOutAlt />
           Logout
         </button>
       </div>
+
     </div>
   );
 }
