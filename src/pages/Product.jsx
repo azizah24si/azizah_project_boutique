@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaPlus, FaEye, FaSearch } from "react-icons/fa";
+import { FaPlus, FaEye, FaSearch, FaTrash } from "react-icons/fa";
 
 import PageHeader from "../components/PageHeader";
 import Button from "../components/Button";
 import Badge from "../components/Badge";
-import Modal from "../components/Modal";
+import Dialog, { DialogConfirm } from "../components/Dialog";
 import Input from "../components/Input";
 import Select from "../components/Select";
 import Table from "../components/Table";
 import Pagination from "../components/Pagination";
-import Alert from "../components/Alert";
-import Spinner from "../components/Spinner";
+import { SkeletonTable } from "../components/Skeleton";
+import { useToast } from "../components/Toast";
 
 const ALL_PRODUCTS = Array.from({ length: 12 }, (_, i) => ({
   id: `PRD-${i + 1}`,
@@ -25,11 +25,13 @@ const PAGE_SIZE = 5;
 
 export default function Product() {
   const navigate = useNavigate();
+  const { addToast } = useToast();
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [deleteId, setDeleteId] = useState(null);
 
   const filtered = ALL_PRODUCTS.filter(
     (p) =>
@@ -68,13 +70,23 @@ export default function Product() {
       key: "id",
       label: "Aksi",
       render: (val) => (
-        <Button
-          size="sm"
-          icon={<FaEye />}
-          onClick={() => navigate(`/product/${val}`)}
-        >
-          Lihat Detail
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            icon={<FaEye />}
+            onClick={() => navigate(`/product/${val}`)}
+          >
+            Detail
+          </Button>
+          <Button
+            size="sm"
+            variant="danger"
+            icon={<FaTrash />}
+            onClick={() => setDeleteId(val)}
+          >
+            Hapus
+          </Button>
+        </div>
       ),
     },
   ];
@@ -84,9 +96,20 @@ export default function Product() {
     setTimeout(() => {
       setSaving(false);
       setShowForm(false);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
+      addToast({
+        title: "Produk berhasil disimpan!",
+        description: "Produk baru telah ditambahkan ke daftar.",
+        variant: "success",
+      });
     }, 1500);
+  };
+
+  const handleDelete = () => {
+    addToast({
+      title: "Produk dihapus!",
+      description: `Produk ${deleteId} telah dihapus dari sistem.`,
+      variant: "error",
+    });
   };
 
   return (
@@ -96,13 +119,6 @@ export default function Product() {
           Tambah Produk
         </Button>
       </PageHeader>
-
-      {saved && (
-        <Alert variant="success" title="Produk berhasil disimpan!" 
-        dismissible onDismiss={() => setSaved(false)} className="mb-4">
-          Produk baru telah ditambahkan ke daftar.
-        </Alert>
-      )}
 
       {/* SEARCH */}
       <div className="mb-4 max-w-sm">
@@ -114,8 +130,12 @@ export default function Product() {
         />
       </div>
 
-      {/* TABLE */}
-      <Table columns={columns} data={paginated} emptyText="Tidak ada produk ditemukan" />
+      {/* TABLE WITH SKELETON */}
+      {loading ? (
+        <SkeletonTable rows={5} cols={6} />
+      ) : (
+        <Table columns={columns} data={paginated} emptyText="Tidak ada produk ditemukan" />
+      )}
 
       {/* PAGINATION */}
       <div className="mt-4">
@@ -126,8 +146,8 @@ export default function Product() {
         />
       </div>
 
-      {/* MODAL */}
-      <Modal
+      {/* DIALOG FORM */}
+      <Dialog
         isOpen={showForm}
         onClose={() => setShowForm(false)}
         title="Tambah Produk Baru"
@@ -153,7 +173,19 @@ export default function Product() {
           <Input label="Harga" type="number" placeholder="150000" required />
           <Input label="Stok" type="number" placeholder="10" required />
         </div>
-      </Modal>
+      </Dialog>
+
+      {/* DIALOG CONFIRM DELETE */}
+      <DialogConfirm
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={handleDelete}
+        title="Hapus Produk?"
+        description={`Apakah kamu yakin ingin menghapus produk ${deleteId}? Aksi ini tidak dapat dibatalkan.`}
+        confirmText="Ya, Hapus"
+        cancelText="Batal"
+        variant="danger"
+      />
     </div>
   );
 }

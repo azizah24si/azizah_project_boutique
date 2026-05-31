@@ -5,13 +5,14 @@ import { FaPlus, FaEye, FaSearch } from "react-icons/fa";
 import PageHeader from "../components/PageHeader";
 import Button from "../components/Button";
 import Badge from "../components/Badge";
-import Modal from "../components/Modal";
+import Dialog from "../components/Dialog";
 import Input from "../components/Input";
 import Select from "../components/Select";
 import Table from "../components/Table";
 import Pagination from "../components/Pagination";
-import Alert from "../components/Alert";
+import { useToast } from "../components/Toast";
 import Tabs from "../components/Tabs";
+import { SkeletonTable } from "../components/Skeleton";
 
 const ALL_ORDERS = [
   { id: "ORD-101", customer: "Aisyah", product: "Dress Floral Pink", status: "Selesai", price: "Rp 150.000", date: "2026-05-01" },
@@ -32,9 +33,10 @@ const statusVariant = {
 
 export default function Orders() {
   const navigate = useNavigate();
+  const { addToast } = useToast();
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -100,8 +102,11 @@ export default function Orders() {
     setTimeout(() => {
       setSaving(false);
       setShowForm(false);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
+      addToast({
+        title: "Penjualan berhasil disimpan!",
+        description: "Data transaksi baru telah ditambahkan.",
+        variant: "success",
+      });
     }, 1500);
   };
 
@@ -112,12 +117,6 @@ export default function Orders() {
           Tambah Penjualan
         </Button>
       </PageHeader>
-
-      {saved && (
-        <Alert variant="success" title="Penjualan berhasil disimpan!" dismissible onDismiss={() => setSaved(false)} className="mb-4">
-          Data transaksi baru telah ditambahkan.
-        </Alert>
-      )}
 
       {/* TABS FILTER */}
       <Tabs
@@ -138,8 +137,12 @@ export default function Orders() {
         />
       </div>
 
-      {/* TABLE */}
-      <Table columns={columns} data={paginated} emptyText="Tidak ada penjualan ditemukan" />
+      {/* TABLE WITH SKELETON */}
+      {loading ? (
+        <SkeletonTable rows={4} cols={7} />
+      ) : (
+        <Table columns={columns} data={paginated} emptyText="Tidak ada penjualan ditemukan" />
+      )}
 
       {/* PAGINATION */}
       <div className="mt-4">
@@ -150,8 +153,8 @@ export default function Orders() {
         />
       </div>
 
-      {/* MODAL */}
-      <Modal
+      {/* DIALOG FORM */}
+      <Dialog
         isOpen={showForm}
         onClose={() => setShowForm(false)}
         title="Tambah Penjualan Baru"
@@ -179,7 +182,7 @@ export default function Orders() {
           />
           <Input label="Tanggal" type="date" required />
         </div>
-      </Modal>
+      </Dialog>
     </div>
   );
 }
