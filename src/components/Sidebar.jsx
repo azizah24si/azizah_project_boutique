@@ -4,6 +4,7 @@ import {
   FaTshirt,
   FaListUl,
   FaUserFriends,
+  FaTrophy,
   FaSignOutAlt,
   FaQuestionCircle,
 } from "react-icons/fa";
@@ -54,6 +55,11 @@ export default function Sidebar() {
         <NavLink to="/customers" className={menuClass}>
           <FaUserFriends />
           Pelanggan
+        </NavLink>
+
+        <NavLink to="/quest" className={menuClass}>
+          <FaTrophy />
+          Quest
         </NavLink>
       </nav>
 
