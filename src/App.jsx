@@ -12,7 +12,6 @@ const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const Orders = lazy(() => import("./pages/Orders"));
 const OrderDetail = lazy(() => import("./pages/OrderDetail"));
 const Customers = lazy(() => import("./pages/Customers"));
-const Quest = lazy(() => import("./pages/Quest"));
 const ComponentDemo = lazy(() => import("./pages/ComponentDemo"));
 const ShadcnDemo = lazy(() => import("./pages/ShadcnDemo"));
 
@@ -44,7 +43,6 @@ function App() {
             <Route path="/orders" element={<Orders />} />
             <Route path="/orders/:id" element={<OrderDetail />} />
             <Route path="/customers" element={<Customers />} />
-            <Route path="/quest" element={<Quest />} />
             <Route path="/demo" element={<ComponentDemo />} />
             <Route path="/shadcn" element={<ShadcnDemo />} />
 
