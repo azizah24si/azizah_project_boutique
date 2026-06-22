@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   FaThLarge,
   FaTshirt,
@@ -9,6 +9,9 @@ import {
 } from "react-icons/fa";
 
 export default function Sidebar() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  
   const menuClass = ({ isActive }) =>
     `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
     ${
@@ -16,6 +19,10 @@ export default function Sidebar() {
         ? "bg-cyan-400 text-white shadow-md"
         : "text-gray-500 hover:bg-gray-50"
     }`;
+  
+  const isActiveExact = (path) => {
+    return location.pathname === path;
+  };
 
   return (
     <div className="w-72 min-h-screen bg-white flex flex-col px-8 py-8">
@@ -36,7 +43,7 @@ export default function Sidebar() {
 
       {/* MENU */}
       <nav className="flex flex-col gap-2">
-        <NavLink to="/admin" className={menuClass}>
+        <NavLink to="/admin" end className={menuClass}>
           <FaThLarge />
           Dashboard
         </NavLink>
@@ -105,7 +112,13 @@ export default function Sidebar() {
         </div>
 
         {/* LOGOUT */}
-        <button className="w-full mt-5 flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-50 text-gray-500 hover:bg-red-500 hover:text-white transition-all">
+        <button 
+          onClick={() => {
+            localStorage.removeItem("user");
+            navigate("/login");
+          }}
+          className="w-full mt-5 flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-50 text-gray-500 hover:bg-red-500 hover:text-white transition-all"
+        >
           <FaSignOutAlt />
           Logout
         </button>

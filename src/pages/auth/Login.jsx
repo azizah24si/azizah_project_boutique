@@ -35,7 +35,7 @@ export default function Login() {
         const user = users[0];
         localStorage.setItem("user", JSON.stringify(user));
         alert("Login berhasil!");
-        navigate("/");
+        navigate("/admin");
       } else {
         // Login gagal
         setError("Email atau password salah!");

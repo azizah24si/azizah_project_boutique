@@ -1,17 +1,33 @@
 import axios from 'axios';
+import { mockUsersAPI } from './mockUsersAPI';
 
-const API_URL = "https://fwngivshgcslmzkmtnsf.supabase.co/rest/v1";
-const API_KEY = "sb_publishable_j6nRRf7wTeRiQEDgNDL6QA_GHM48xxA";
+// Gunakan environment variable untuk API key yang aman
+const API_URL = import.meta.env.VITE_SUPABASE_URL 
+  ? `${import.meta.env.VITE_SUPABASE_URL}/rest/v1`
+  : "https://fwngivshgcslmzkmtnsf.supabase.co/rest/v1";
 
+const API_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+
+// Cek apakah menggunakan mock atau real API
+const USE_MOCK = !API_KEY || API_KEY === "GANTI_DENGAN_ANON_KEY_YANG_BENAR";
+
+if (USE_MOCK) {
+  console.log("🔧 Mode: DEVELOPMENT dengan Mock API (LocalStorage)");
+  console.log("📝 Default admin: admin@jijahboutique.com / admin123");
+  console.log("💡 Untuk menggunakan Supabase real, edit file .env dan isi VITE_SUPABASE_ANON_KEY");
+} else {
+  console.log("✅ Mode: PRODUCTION dengan Supabase API");
+}
 
 const headers = {
   apikey: API_KEY,
   Authorization: `Bearer ${API_KEY}`,
   "Content-Type": "application/json",
+  "Prefer": "return=representation"
 };
 
-// GET - Fetch all users
-export const usersAPI = {
+// Export API berdasarkan mode (mock atau real)
+export const usersAPI = USE_MOCK ? mockUsersAPI : {
   async fetchUsers() {
     const response = await axios.get(`${API_URL}/users`, { headers });
     return response.data;
