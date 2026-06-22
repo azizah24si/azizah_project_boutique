@@ -3,9 +3,10 @@ import { lazy, Suspense } from "react";
 
 import { MainLayout } from "./layouts/MainLayout";
 import AuthLayout from "./layouts/AuthLayout";
+import GuestLayout from "./guest/layouts/GuestLayout";
 import { ToastProvider } from "./components/Toast";
 
-// Lazy Load Pages
+// Lazy Load Admin Pages
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Product = lazy(() => import("./pages/Product"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
@@ -14,6 +15,15 @@ const OrderDetail = lazy(() => import("./pages/OrderDetail"));
 const Customers = lazy(() => import("./pages/Customers"));
 const ComponentDemo = lazy(() => import("./pages/ComponentDemo"));
 const ShadcnDemo = lazy(() => import("./pages/ShadcnDemo"));
+
+// Lazy Load Guest Pages
+const GuestHome = lazy(() => import("./guest/pages/Home"));
+const GuestProducts = lazy(() => import("./guest/pages/Products"));
+const GuestProductDetail = lazy(() => import("./guest/pages/ProductDetail"));
+const GuestReservation = lazy(() => import("./guest/pages/Reservation"));
+const GuestContact = lazy(() => import("./guest/pages/Contact"));
+const GuestAbout = lazy(() => import("./guest/pages/About"));
+const GuestGallery = lazy(() => import("./guest/pages/Gallery"));
 
 const NotFound = lazy(() => import("./pages/NotFound"));
 const ErrorPage = lazy(() => import("./pages/ErrorPage"));
@@ -35,20 +45,31 @@ function App() {
       >
         <Routes>
 
-          {/* 🔹 MAIN LAYOUT */}
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/product" element={<Product />} />
-            <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/orders/:id" element={<OrderDetail />} />
-            <Route path="/customers" element={<Customers />} />
-            <Route path="/demo" element={<ComponentDemo />} />
-            <Route path="/shadcn" element={<ShadcnDemo />} />
+          {/* 🌐 GUEST LAYOUT - Public Website */}
+          <Route path="/guest" element={<GuestLayout />}>
+            <Route index element={<GuestHome />} />
+            <Route path="products" element={<GuestProducts />} />
+            <Route path="products/:id" element={<GuestProductDetail />} />
+            <Route path="reservation" element={<GuestReservation />} />
+            <Route path="contact" element={<GuestContact />} />
+            <Route path="about" element={<GuestAbout />} />
+            <Route path="gallery" element={<GuestGallery />} />
+          </Route>
+
+          {/* 🔐 ADMIN LAYOUT - Dashboard */}
+          <Route path="/admin" element={<MainLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="product" element={<Product />} />
+            <Route path="product/:id" element={<ProductDetail />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="orders/:id" element={<OrderDetail />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="demo" element={<ComponentDemo />} />
+            <Route path="shadcn" element={<ShadcnDemo />} />
 
             {/* 🔸 ERROR PAGES */}
             <Route
-              path="/400"
+              path="400"
               element={
                 <ErrorPage
                   code="400"
@@ -59,7 +80,7 @@ function App() {
             />
 
             <Route
-              path="/401"
+              path="401"
               element={
                 <ErrorPage
                   code="401"
@@ -70,7 +91,7 @@ function App() {
             />
 
             <Route
-              path="/403"
+              path="403"
               element={
                 <ErrorPage
                   code="403"
@@ -79,8 +100,11 @@ function App() {
                 />
               }
             />
+          </Route>
 
-            <Route path="*" element={<NotFound />} />
+          {/* 🔹 ROOT PATH - Redirect to Guest */}
+          <Route path="/" element={<GuestLayout />}>
+            <Route index element={<GuestHome />} />
           </Route>
 
           {/* 🔹 AUTH LAYOUT */}

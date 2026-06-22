@@ -36,22 +36,22 @@ export default function Sidebar() {
 
       {/* MENU */}
       <nav className="flex flex-col gap-2">
-        <NavLink to="/" className={menuClass}>
+        <NavLink to="/admin" className={menuClass}>
           <FaThLarge />
           Dashboard
         </NavLink>
 
-        <NavLink to="/product" className={menuClass}>
+        <NavLink to="/admin/product" className={menuClass}>
           <FaTshirt />
           Produk
         </NavLink>
 
-        <NavLink to="/orders" className={menuClass}>
+        <NavLink to="/admin/orders" className={menuClass}>
           <FaListUl />
           Penjualan
         </NavLink>
 
-        <NavLink to="/customers" className={menuClass}>
+        <NavLink to="/admin/customers" className={menuClass}>
           <FaUserFriends />
           Pelanggan
         </NavLink>
@@ -64,15 +64,15 @@ export default function Sidebar() {
         </p>
 
         <div className="flex flex-col gap-2">
-          <NavLink to="/400" className={menuClass}>
+          <NavLink to="/admin/400" className={menuClass}>
             400 Bad Request
           </NavLink>
 
-          <NavLink to="/401" className={menuClass}>
+          <NavLink to="/admin/401" className={menuClass}>
             401 Unauthorized
           </NavLink>
 
-          <NavLink to="/403" className={menuClass}>
+          <NavLink to="/admin/403" className={menuClass}>
             403 Forbidden
           </NavLink>
         </div>
