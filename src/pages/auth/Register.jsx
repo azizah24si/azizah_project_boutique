@@ -3,10 +3,11 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaFacebook, FaApple, FaGoogle, FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
-import { usersAPI } from "../../services/usersAPI";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { supabase } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -28,31 +29,41 @@ export default function Register() {
     setError("");
 
     try {
-      // Cek apakah email sudah terdaftar
-      const existingUsers = await usersAPI.checkEmail(formData.email);
-
-      if (existingUsers.length > 0) {
-        setError("Email sudah terdaftar!");
-        setLoading(false);
-        return;
-      }
-
-      // Register user baru
-      await usersAPI.createUser({
-        name: formData.name,
+      console.log("📝 Attempting registration with:", formData.email);
+      
+      // Register via Supabase Auth
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        options: {
+          data: {
+            full_name: formData.name,
+          },
+        },
       });
 
-      // Registrasi berhasil
-      alert("Registrasi berhasil! Silakan login.");
-      navigate("/login");
+      console.log("📥 Registration response:", { data, signUpError });
+
+      if (signUpError) {
+        console.error("❌ Register error:", signUpError);
+        if (signUpError.message.includes("already registered")) {
+          setError("Email sudah terdaftar!");
+        } else {
+          setError(signUpError.message);
+        }
+      } else if (data.user) {
+        console.log("✅ User registered:", data.user);
+        // Registrasi berhasil
+        alert("Registrasi berhasil! Silakan login.");
+        navigate("/login");
+      } else {
+        console.warn("⚠️ No user returned, might need email confirmation");
+        alert("Registrasi berhasil! Cek email untuk konfirmasi.");
+        navigate("/login");
+      }
     } catch (err) {
-      // Tampilkan error lebih detail
-      const errorMessage = err.response?.data?.message || err.message || "Terjadi kesalahan. Silakan coba lagi.";
-      setError(errorMessage);
-      console.error("Register error:", err);
-      console.error("Error response:", err.response);
+      console.error("💥 Unexpected error:", err);
+      setError("Terjadi kesalahan. Silakan coba lagi.");
     } finally {
       setLoading(false);
     }

@@ -4,8 +4,17 @@ import Dropdown from "./Dropdown";
 import Tooltip from "./Tooltip";
 import Badge from "./Badge";
 import Input from "./Input";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
+  const { profile, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  // Use profile data from auth context, fallback to defaults
+  const displayName = profile?.full_name || "User";
+  const displayRole = profile?.role || "member";
+
   const notifItems = [
     { label: "Pesanan baru #ORD-107", onClick: () => {} },
     { label: "Stok Dress Floral hampir habis", onClick: () => {} },
@@ -14,11 +23,16 @@ export default function Header() {
     { label: "Lihat semua notifikasi", onClick: () => {} },
   ];
 
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/login");
+  };
+
   const profileItems = [
     { label: "Profil Saya", icon: <FaUserCircle />, onClick: () => {} },
     { label: "Pengaturan", icon: <FaCog />, onClick: () => {} },
     { divider: true },
-    { label: "Logout", icon: <FaSignOutAlt />, danger: true, onClick: () => {} },
+    { label: "Logout", icon: <FaSignOutAlt />, danger: true, onClick: handleLogout },
   ];
 
   return (
@@ -27,7 +41,9 @@ export default function Header() {
       {/* LEFT */}
       <div>
         <p className="text-xs text-gray-400 mb-1">Pages / Dashboard</p>
-        <h1 className="text-lg font-bold text-gray-700">Dashboard</h1>
+        <h1 className="text-lg font-bold text-gray-700">
+          {displayRole === "admin" ? "Admin Dashboard" : "Member Dashboard"}
+        </h1>
       </div>
 
       {/* RIGHT */}
@@ -68,8 +84,8 @@ export default function Header() {
           align="right"
           trigger={
             <div className="flex items-center gap-2 cursor-pointer">
-              <Avatar name="Admin Jijah" size="sm" color="cyan" status="online" />
-              <span className="text-sm font-semibold text-gray-700">Admin</span>
+              <Avatar name={displayName} size="sm" color="cyan" status="online" />
+              <span className="text-sm font-semibold text-gray-700">{displayName}</span>
             </div>
           }
           items={profileItems}

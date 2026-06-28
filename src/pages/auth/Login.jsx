@@ -3,10 +3,11 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
-import { usersAPI } from "../../services/usersAPI";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { supabase } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,22 +28,50 @@ export default function Login() {
     setError("");
 
     try {
-      // Login via usersAPI
-      const users = await usersAPI.login(formData.email, formData.password);
+      console.log("🔐 Attempting login with:", formData.email);
+      
+      // Login via Supabase Auth
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
 
-      if (users.length > 0) {
-        // Login berhasil
-        const user = users[0];
-        localStorage.setItem("user", JSON.stringify(user));
-        alert("Login berhasil!");
-        navigate("/admin");
-      } else {
-        // Login gagal
-        setError("Email atau password salah!");
+      console.log("📥 Login response:", { data, authError });
+
+      if (authError) {
+        console.error("❌ Login error:", authError);
+        setError(`Email atau password salah! (${authError.message})`);
+      } else if (data.user) {
+        console.log("✅ User logged in:", data.user.email);
+        
+        // Cek role user dari profile
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", data.user.id)
+          .single();
+
+        console.log("👤 User profile:", { profile, profileError });
+
+        if (profileError) {
+          console.error("❌ Profile fetch error:", profileError);
+          setError("Gagal mengambil data profil. Silakan coba lagi.");
+          return;
+        }
+
+        // Redirect berdasarkan role
+        console.log("🚀 Redirecting to:", profile?.role);
+        if (profile?.role === "admin") {
+          navigate("/admin");
+        } else if (profile?.role === "member") {
+          navigate("/member");
+        } else {
+          navigate("/guest");
+        }
       }
     } catch (err) {
+      console.error("💥 Unexpected error:", err);
       setError("Terjadi kesalahan. Silakan coba lagi.");
-      console.error("Login error:", err);
     } finally {
       setLoading(false);
     }

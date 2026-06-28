@@ -5,6 +5,7 @@ import { MainLayout } from "./layouts/MainLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import GuestLayout from "./guest/layouts/GuestLayout";
 import { ToastProvider } from "./components/Toast";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Lazy Load Admin Pages
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -15,6 +16,11 @@ const OrderDetail = lazy(() => import("./pages/OrderDetail"));
 const Customers = lazy(() => import("./pages/Customers"));
 const ComponentDemo = lazy(() => import("./pages/ComponentDemo"));
 const ShadcnDemo = lazy(() => import("./pages/ShadcnDemo"));
+
+// Lazy Load Member Pages
+const MemberDashboard = lazy(() => import("./pages/member/MemberDashboard"));
+const MemberOrders = lazy(() => import("./pages/member/MemberOrders"));
+const MemberProfile = lazy(() => import("./pages/member/MemberProfile"));
 
 // Lazy Load Guest Pages
 const GuestHome = lazy(() => import("./guest/pages/Home"));
@@ -56,50 +62,59 @@ function App() {
             <Route path="gallery" element={<GuestGallery />} />
           </Route>
 
-          {/* 🔐 ADMIN LAYOUT - Dashboard */}
-          <Route path="/admin" element={<MainLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="product" element={<Product />} />
-            <Route path="product/:id" element={<ProductDetail />} />
-            <Route path="orders" element={<Orders />} />
-            <Route path="orders/:id" element={<OrderDetail />} />
-            <Route path="customers" element={<Customers />} />
-            <Route path="demo" element={<ComponentDemo />} />
-            <Route path="shadcn" element={<ShadcnDemo />} />
+          {/* 🔐 ADMIN LAYOUT - Protected (admin role only) */}
+          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+            <Route path="/admin" element={<MainLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="product" element={<Product />} />
+              <Route path="product/:id" element={<ProductDetail />} />
+              <Route path="orders" element={<Orders />} />
+              <Route path="orders/:id" element={<OrderDetail />} />
+              <Route path="customers" element={<Customers />} />
+              <Route path="demo" element={<ComponentDemo />} />
+              <Route path="shadcn" element={<ShadcnDemo />} />
 
-            {/* 🔸 ERROR PAGES */}
-            <Route
-              path="400"
-              element={
-                <ErrorPage
-                  code="400"
-                  description="Permintaan tidak valid pada sistem boutique"
-                  image="https://cdn-icons-png.flaticon.com/512/4076/4076506.png"
-                />
-              }
-            />
+              {/* 🔸 ERROR PAGES */}
+              <Route
+                path="400"
+                element={
+                  <ErrorPage
+                    code="400"
+                    description="Permintaan tidak valid pada sistem boutique"
+                    image="https://cdn-icons-png.flaticon.com/512/4076/4076506.png"
+                  />
+                }
+              />
+              <Route
+                path="401"
+                element={
+                  <ErrorPage
+                    code="401"
+                    description="Kamu belum login ke sistem boutique"
+                    image="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
+                  />
+                }
+              />
+              <Route
+                path="403"
+                element={
+                  <ErrorPage
+                    code="403"
+                    description="Akses ke halaman ini dibatasi"
+                    image="https://cdn-icons-png.flaticon.com/512/4076/4076555.png"
+                  />
+                }
+              />
+            </Route>
+          </Route>
 
-            <Route
-              path="401"
-              element={
-                <ErrorPage
-                  code="401"
-                  description="Kamu belum login ke sistem boutique"
-                  image="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
-                />
-              }
-            />
-
-            <Route
-              path="403"
-              element={
-                <ErrorPage
-                  code="403"
-                  description="Akses ke halaman ini dibatasi"
-                  image="https://cdn-icons-png.flaticon.com/512/4076/4076555.png"
-                />
-              }
-            />
+          {/* 👤 MEMBER LAYOUT - Protected (member role only) */}
+          <Route element={<ProtectedRoute allowedRoles={["member"]} />}>
+            <Route path="/member" element={<MainLayout />}>
+              <Route index element={<MemberDashboard />} />
+              <Route path="orders" element={<MemberOrders />} />
+              <Route path="profile" element={<MemberProfile />} />
+            </Route>
           </Route>
 
           {/* 🔹 ROOT PATH - Redirect to Guest */}

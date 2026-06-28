@@ -6,12 +6,17 @@ import {
   FaUserFriends,
   FaSignOutAlt,
   FaQuestionCircle,
+  FaShoppingBag,
+  FaHistory,
+  FaUserCircle,
 } from "react-icons/fa";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
-  
+  const { profile, signOut } = useAuth();
+
   const menuClass = ({ isActive }) =>
     `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
     ${
@@ -19,9 +24,28 @@ export default function Sidebar() {
         ? "bg-cyan-400 text-white shadow-md"
         : "text-gray-500 hover:bg-gray-50"
     }`;
-  
-  const isActiveExact = (path) => {
-    return location.pathname === path;
+
+  // Role-based menu items
+  const isAdmin = profile?.role === "admin";
+
+  const adminMenu = [
+    { to: "/admin", icon: <FaThLarge />, label: "Dashboard", end: true },
+    { to: "/admin/product", icon: <FaTshirt />, label: "Produk" },
+    { to: "/admin/orders", icon: <FaListUl />, label: "Penjualan" },
+    { to: "/admin/customers", icon: <FaUserFriends />, label: "Pelanggan" },
+  ];
+
+  const memberMenu = [
+    { to: "/member", icon: <FaThLarge />, label: "Dashboard", end: true },
+    { to: "/member/orders", icon: <FaHistory />, label: "Riwayat Pembelian" },
+    { to: "/member/profile", icon: <FaUserCircle />, label: "Profil Saya" },
+  ];
+
+  const menuItems = isAdmin ? adminMenu : memberMenu;
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/login");
   };
 
   return (
@@ -43,47 +67,26 @@ export default function Sidebar() {
 
       {/* MENU */}
       <nav className="flex flex-col gap-2">
-        <NavLink to="/admin" end className={menuClass}>
-          <FaThLarge />
-          Dashboard
-        </NavLink>
+        {menuItems.map((item) => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            end={item.end}
+            className={menuClass}
+          >
+            {item.icon}
+            {item.label}
+          </NavLink>
+        ))}
 
-        <NavLink to="/admin/product" className={menuClass}>
-          <FaTshirt />
-          Produk
-        </NavLink>
-
-        <NavLink to="/admin/orders" className={menuClass}>
-          <FaListUl />
-          Penjualan
-        </NavLink>
-
-        <NavLink to="/admin/customers" className={menuClass}>
-          <FaUserFriends />
-          Pelanggan
-        </NavLink>
+        {/* Member checkout link */}
+        {!isAdmin && (
+          <NavLink to="/guest/products" className={menuClass}>
+            <FaShoppingBag />
+            Belanja Produk
+          </NavLink>
+        )}
       </nav>
-
-      {/* SYSTEM */}
-      <div className="mt-10">
-        <p className="text-xs text-gray-400 uppercase mb-3 font-bold tracking-wider">
-          SYSTEM
-        </p>
-
-        <div className="flex flex-col gap-2">
-          <NavLink to="/admin/400" className={menuClass}>
-            400 Bad Request
-          </NavLink>
-
-          <NavLink to="/admin/401" className={menuClass}>
-            401 Unauthorized
-          </NavLink>
-
-          <NavLink to="/admin/403" className={menuClass}>
-            403 Forbidden
-          </NavLink>
-        </div>
-      </div>
 
       {/* HELP CARD */}
       <div className="mt-auto">
@@ -113,10 +116,7 @@ export default function Sidebar() {
 
         {/* LOGOUT */}
         <button 
-          onClick={() => {
-            localStorage.removeItem("user");
-            navigate("/login");
-          }}
+          onClick={handleLogout}
           className="w-full mt-5 flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-50 text-gray-500 hover:bg-red-500 hover:text-white transition-all"
         >
           <FaSignOutAlt />
