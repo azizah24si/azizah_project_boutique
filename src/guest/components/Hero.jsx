@@ -41,13 +41,6 @@ export default function Hero() {
                 Lihat Koleksi
                 <FaArrowRight className="text-sm" />
               </Link>
-              
-              <Link
-                to="/guest/reservation"
-                className="flex items-center gap-2 px-8 py-4 bg-white text-gray-700 rounded-xl font-semibold border-2 border-gray-200 hover:border-cyan-500 hover:text-cyan-600 transition-all"
-              >
-                Reservasi Sekarang
-              </Link>
             </div>
 
             {/* Stats */}

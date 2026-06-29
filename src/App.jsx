@@ -5,6 +5,7 @@ import { MainLayout } from "./layouts/MainLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import GuestLayout from "./guest/layouts/GuestLayout";
 import { ToastProvider } from "./components/Toast";
+import { CartProvider } from "./contexts/CartContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 // Lazy Load Admin Pages
@@ -19,17 +20,18 @@ const ShadcnDemo = lazy(() => import("./pages/ShadcnDemo"));
 
 // Lazy Load Member Pages
 const MemberDashboard = lazy(() => import("./pages/member/MemberDashboard"));
+const MemberProducts = lazy(() => import("./pages/member/MemberProducts"));
+const MemberProductDetail = lazy(() => import("./pages/member/MemberProductDetail"));
+const MemberCart = lazy(() => import("./pages/member/MemberCart"));
 const MemberOrders = lazy(() => import("./pages/member/MemberOrders"));
 const MemberProfile = lazy(() => import("./pages/member/MemberProfile"));
 
-// Lazy Load Guest Pages
+// Lazy Load Guest Pages (Public - Belum Login)
 const GuestHome = lazy(() => import("./guest/pages/Home"));
 const GuestProducts = lazy(() => import("./guest/pages/Products"));
 const GuestProductDetail = lazy(() => import("./guest/pages/ProductDetail"));
-const GuestReservation = lazy(() => import("./guest/pages/Reservation"));
 const GuestContact = lazy(() => import("./guest/pages/Contact"));
 const GuestAbout = lazy(() => import("./guest/pages/About"));
-const GuestGallery = lazy(() => import("./guest/pages/Gallery"));
 
 const NotFound = lazy(() => import("./pages/NotFound"));
 const ErrorPage = lazy(() => import("./pages/ErrorPage"));
@@ -41,25 +43,25 @@ const Forgot = lazy(() => import("./pages/auth/Forgot"));
 function App() {
   return (
     <ToastProvider>
-      <Suspense
-        fallback={
-          <div className="flex items-center justify-center 
-          min-h-screen text-pink-500 font-semibold">
-            Loading...
-          </div>
-        }
-      >
-        <Routes>
+      <CartProvider>
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center 
+            min-h-screen text-pink-500 font-semibold">
+              Loading...
+            </div>
+          }
+        >
+          <Routes>
 
-          {/* 🌐 GUEST LAYOUT - Public Website */}
+          {/* 🌐 GUEST LAYOUT - Public Website (Untuk Pengunjung Yang BELUM Login) */}
           <Route path="/guest" element={<GuestLayout />}>
             <Route index element={<GuestHome />} />
+            <Route path="home" element={<GuestHome />} />
             <Route path="products" element={<GuestProducts />} />
             <Route path="products/:id" element={<GuestProductDetail />} />
-            <Route path="reservation" element={<GuestReservation />} />
             <Route path="contact" element={<GuestContact />} />
             <Route path="about" element={<GuestAbout />} />
-            <Route path="gallery" element={<GuestGallery />} />
           </Route>
 
           {/* 🔐 ADMIN LAYOUT - Protected (admin role only) */}
@@ -112,6 +114,9 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={["member"]} />}>
             <Route path="/member" element={<MainLayout />}>
               <Route index element={<MemberDashboard />} />
+              <Route path="products" element={<MemberProducts />} />
+              <Route path="products/:id" element={<MemberProductDetail />} />
+              <Route path="cart" element={<MemberCart />} />
               <Route path="orders" element={<MemberOrders />} />
               <Route path="profile" element={<MemberProfile />} />
             </Route>
@@ -131,6 +136,7 @@ function App() {
 
         </Routes>
       </Suspense>
+      </CartProvider>
     </ToastProvider>
   );
 }

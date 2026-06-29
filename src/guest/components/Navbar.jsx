@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { FaShoppingBag, FaBars, FaTimes, FaPhone, FaWhatsapp } from "react-icons/fa";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FaShoppingBag, FaBars, FaTimes, FaPhone, FaWhatsapp, FaShoppingCart, FaUser } from "react-icons/fa";
+import { useCart } from "../../contexts/CartContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { getTotalItems } = useCart();
+  const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const navLinks = [
     { name: "Beranda", path: "/guest" },
     { name: "Produk", path: "/guest/products" },
-    { name: "Reservasi", path: "/guest/reservation" },
-    { name: "Galeri", path: "/guest/gallery" },
     { name: "Tentang Kami", path: "/guest/about" },
     { name: "Kontak", path: "/guest/contact" },
   ];
@@ -71,12 +74,74 @@ export default function Navbar() {
                   {link.name}
                 </Link>
               ))}
+              
+              {/* Cart Icon */}
               <Link
-                to="/login"
-                className="ml-4 px-6 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-lg font-medium text-sm hover:shadow-lg hover:scale-105 transition-all"
+                to={user ? "/member/cart" : "/login"}
+                className="ml-2 relative p-2 text-gray-700 hover:text-cyan-600 transition"
               >
-                Admin Login
+                <FaShoppingCart className="text-2xl" />
+                {getTotalItems() > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {getTotalItems()}
+                  </span>
+                )}
               </Link>
+
+              {/* User / Login */}
+              {user ? (
+                <div className="ml-2 relative group">
+                  <button className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium text-sm transition">
+                    <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                      {(profile?.full_name || "U").charAt(0).toUpperCase()}
+                    </div>
+                    <span className="max-w-[120px] truncate">{profile?.full_name || "Member"}</span>
+                  </button>
+                  
+                  {/* Dropdown */}
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                    <Link
+                      to="/member"
+                      className="block px-4 py-3 text-gray-700 hover:bg-cyan-50 rounded-t-xl transition"
+                    >
+                      <FaUser className="inline mr-2" />
+                      Dashboard
+                    </Link>
+                    <Link
+                      to="/member/orders"
+                      className="block px-4 py-3 text-gray-700 hover:bg-cyan-50 transition"
+                    >
+                      <FaShoppingBag className="inline mr-2" />
+                      Pesanan Saya
+                    </Link>
+                    <Link
+                      to="/member/profile"
+                      className="block px-4 py-3 text-gray-700 hover:bg-cyan-50 transition"
+                    >
+                      <FaUser className="inline mr-2" />
+                      Profil Saya
+                    </Link>
+                    <div className="border-t border-gray-100"></div>
+                    <button
+                      onClick={async () => {
+                        await signOut();
+                        navigate("/guest");
+                      }}
+                      className="block w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-b-xl transition"
+                    >
+                      <span className="inline mr-2">🚪</span>
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  className="ml-2 px-6 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-lg font-medium text-sm hover:shadow-lg hover:scale-105 transition-all"
+                >
+                  Login
+                </Link>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -105,13 +170,52 @@ export default function Navbar() {
                   {link.name}
                 </Link>
               ))}
+              
               <Link
-                to="/login"
+                to={user ? "/member/cart" : "/login"}
                 onClick={() => setIsOpen(false)}
-                className="block mt-4 px-4 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-lg font-medium text-center"
+                className="block px-4 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-all"
               >
-                Admin Login
+                <FaShoppingCart className="inline mr-2" />
+                Keranjang ({getTotalItems()})
               </Link>
+
+              {user ? (
+                <>
+                  <Link
+                    to="/member"
+                    onClick={() => setIsOpen(false)}
+                    className="block px-4 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-all"
+                  >
+                    <FaUser className="inline mr-2" />
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/member/orders"
+                    onClick={() => setIsOpen(false)}
+                    className="block px-4 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-all"
+                  >
+                    <FaShoppingBag className="inline mr-2" />
+                    Pesanan Saya
+                  </Link>
+                  <Link
+                    to="/member/profile"
+                    onClick={() => setIsOpen(false)}
+                    className="block px-4 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-all"
+                  >
+                    <FaUser className="inline mr-2" />
+                    Profil Saya
+                  </Link>
+                </>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="block mt-4 px-4 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-lg font-medium text-center"
+                >
+                  Login
+                </Link>
+              )}
             </div>
           )}
         </div>

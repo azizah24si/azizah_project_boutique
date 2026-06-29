@@ -35,6 +35,8 @@ export default function Button({
       "bg-transparent text-cyan-500 hover:bg-cyan-50 focus:ring-cyan-200",
     outline:
       "border border-cyan-400 text-cyan-500 hover:bg-cyan-50 focus:ring-cyan-200 bg-transparent",
+    gradient:
+      "bg-gradient-to-r from-cyan-500 to-teal-500 text-white hover:shadow-xl hover:scale-105 focus:ring-cyan-300",
   };
 
   const sizes = {

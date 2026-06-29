@@ -1,6 +1,15 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 export default function AuthLayout() {
+  const location = useLocation();
+  const isRegisterPage = location.pathname === "/register";
+
+  // For register page, use full-width layout
+  if (isRegisterPage) {
+    return <Outlet />;
+  }
+
+  // For login and other auth pages, use split layout
   return (
     <div className="min-h-screen bg-white flex">
 

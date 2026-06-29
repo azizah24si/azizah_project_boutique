@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { FaStar, FaHeart, FaShoppingCart, FaWhatsapp, FaShippingFast, FaShieldAlt, FaArrowLeft } from "react-icons/fa";
+import { useCart } from "../../contexts/CartContext";
 
 export default function ProductDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
@@ -47,6 +50,23 @@ export default function ProductDetail() {
     const message = `Halo, saya tertarik dengan produk:\n\nNama: ${product.name}\nHarga: ${product.price}\nUkuran: ${selectedSize}\nWarna: ${selectedColor}\nJumlah: ${quantity}\n\nApakah produk ini tersedia?`;
     const whatsappUrl = `https://wa.me/6281234567890?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
+  };
+
+  const handleAddToCart = () => {
+    if (!selectedSize) {
+      alert("Pilih ukuran terlebih dahulu!");
+      return;
+    }
+    if (!selectedColor) {
+      alert("Pilih warna terlebih dahulu!");
+      return;
+    }
+
+    addToCart(product, quantity, selectedSize, selectedColor);
+    alert("Produk berhasil ditambahkan ke keranjang!");
+    
+    // Optional: redirect to cart
+    // navigate("/guest/cart");
   };
 
   return (
@@ -215,14 +235,17 @@ export default function ProductDetail() {
               {/* Action Buttons */}
               <div className="flex gap-3 mb-6">
                 <button
+                  onClick={handleAddToCart}
+                  className="flex-1 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-bold rounded-xl hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-2"
+                >
+                  <FaShoppingCart className="text-xl" />
+                  Tambah ke Keranjang
+                </button>
+                <button
                   onClick={handleWhatsAppOrder}
-                  className="flex-1 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-xl hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-2"
+                  className="px-6 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:shadow-xl hover:scale-105 transition-all"
                 >
                   <FaWhatsapp className="text-xl" />
-                  Pesan via WhatsApp
-                </button>
-                <button className="px-6 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-bold rounded-xl hover:shadow-xl hover:scale-105 transition-all">
-                  <FaShoppingCart />
                 </button>
               </div>
 

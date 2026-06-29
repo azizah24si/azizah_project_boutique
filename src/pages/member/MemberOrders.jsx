@@ -1,244 +1,247 @@
-import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
-import { FaShoppingBag, FaSearch, FaBoxOpen } from "react-icons/fa";
-
-import PageHeader from "../../components/PageHeader";
-import Badge from "../../components/Badge";
-import Input from "../../components/Input";
-import Tabs from "../../components/Tabs";
-import EmptyState from "../../components/EmptyState";
-import Card from "../../components/Card";
-import Button from "../../components/Button";
-import { useToast } from "../../components/Toast";
+import { useState, useEffect } from "react";
+import { FaShoppingBag, FaCalendar, FaClock } from "react-icons/fa";
 import { useAuth } from "../../contexts/AuthContext";
-import { supabase } from "../../lib/supabase";
-import { ordersAPI } from "../../services/ordersAPI";
-import { formatCurrency, formatDate } from "../../utils/membership";
-
-// Map DB status to display label
-const statusLabel = {
-  completed: "Selesai",
-  pending: "Pending",
-  cancelled: "Batal",
-};
-
-// Map DB status to badge variant
-const statusVariant = {
-  completed: "green",
-  pending: "yellow",
-  cancelled: "red",
-};
+import { getMyOrders } from "../../services/ordersAPI";
+import Card from "../../components/Card";
+import Badge from "../../components/Badge";
 
 export default function MemberOrders() {
-  const { profile } = useAuth();
-  const { addToast } = useToast();
+  const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("all");
 
-  // Fetch member's orders by finding their customer record
-  const fetchOrders = useCallback(async () => {
-    if (!profile?.id) return;
-    setLoading(true);
+  useEffect(() => {
+    if (user) {
+      loadOrders();
+    }
+  }, [user]);
+
+  const loadOrders = async () => {
     try {
-      // Find the member's customer record by user_id
-      const { data: customer, error: custError } = await supabase
-        .from("customers")
-        .select("id")
-        .eq("user_id", profile.id)
-        .single();
-
-      if (custError && custError.code !== "PGRST116") throw custError;
-
-      if (customer) {
-        const data = await ordersAPI.getByCustomerId(customer.id);
-        setOrders(data);
-      } else {
-        setOrders([]);
-      }
-    } catch (err) {
-      addToast({
-        title: "Gagal memuat riwayat pesanan",
-        description: err.message,
-        variant: "error",
-      });
+      setLoading(true);
+      const data = await getMyOrders(user.id);
+      setOrders(data);
+    } catch (error) {
+      console.error("Error loading orders:", error);
     } finally {
       setLoading(false);
     }
-  }, [profile, addToast]);
-
-  useEffect(() => {
-    fetchOrders();
-  }, [fetchOrders]);
-
-  // Filter by tab (status)
-  const tabFiltered =
-    activeTab === "all"
-      ? orders
-      : orders.filter((o) => o.status === activeTab);
-
-  // Filter by search term (product name or order id)
-  const filtered = tabFiltered.filter(
-    (o) =>
-      (o.order_items?.[0]?.product_name || "")
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
-      (o.id || "").toLowerCase().includes(search.toLowerCase())
-  );
-
-  // Tabs with counts
-  const tabs = [
-    { key: "all", label: "Semua", badge: orders.length },
-    {
-      key: "pending",
-      label: "Pending",
-      badge: orders.filter((o) => o.status === "pending").length,
-    },
-    {
-      key: "completed",
-      label: "Selesai",
-      badge: orders.filter((o) => o.status === "completed").length,
-    },
-    {
-      key: "cancelled",
-      label: "Batal",
-      badge: orders.filter((o) => o.status === "cancelled").length,
-    },
-  ];
-
-  // Get product display text from order items
-  const getProductDisplay = (order) => {
-    if (!order.order_items || order.order_items.length === 0) return "-";
-    if (order.order_items.length === 1) return order.order_items[0].product_name;
-    return `${order.order_items[0].product_name} +${order.order_items.length - 1} lainnya`;
   };
 
+  const statusVariants = {
+    pending: "yellow",
+    completed: "green",
+    cancelled: "red",
+  };
+
+  const statusLabels = {
+    pending: "Pending",
+    completed: "Selesai",
+    cancelled: "Dibatalkan",
+  };
+
+  const filtered =
+    activeTab === "all"
+      ? orders
+      : orders.filter((o) => o.order_type === activeTab);
+
   return (
-    <div className="p-6 bg-[#f8f9fb] min-h-screen">
-      <PageHeader
-        title="Riwayat Pembelian"
-        breadcrumb={["Member", "Riwayat"]}
-      />
-
-      {/* TABS FILTER */}
-      <Tabs
-        tabs={tabs}
-        activeTab={activeTab}
-        onChange={(key) => setActiveTab(key)}
-        variant="pill"
-        className="mb-4"
-      />
-
-      {/* SEARCH */}
-      <div className="mb-4 max-w-sm">
-        <Input
-          placeholder="Cari produk atau ID order..."
-          icon={<FaSearch />}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-gray-800">Riwayat Pembelian</h1>
+        <p className="text-gray-600 mt-1">Lihat semua pesanan dan reservasi Anda</p>
       </div>
 
-      {/* ORDER LIST */}
-      {loading ? (
-        <div className="flex items-center justify-center py-16">
-          <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-        </div>
-      ) : filtered.length === 0 ? (
-        <Card className="p-0">
-          <EmptyState
-            icon={<FaBoxOpen />}
-            title="Belum ada pesanan"
-            description="Kamu belum memiliki riwayat pembelian. Mulai belanja untuk mengisi riwayat ini."
-            action={
-              <Link to="/member">
-                <Button>Mulai Belanja</Button>
-              </Link>
-            }
-          />
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="p-4 bg-gradient-to-br from-cyan-50 to-cyan-100 border-cyan-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-cyan-600 font-medium">Total Pesanan</p>
+              <p className="text-3xl font-bold text-cyan-900">{orders.length}</p>
+            </div>
+            <div className="text-4xl">📦</div>
+          </div>
         </Card>
-      ) : (
-        <div className="space-y-3">
-          {filtered.map((order) => (
-            <Card key={order.id} className="p-5">
-              <div className="flex items-start justify-between gap-4 flex-wrap">
-                {/* LEFT: Order info */}
-                <div className="flex items-start gap-3 flex-1 min-w-0">
-                  <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-xl flex items-center justify-center text-white shrink-0">
-                    <FaShoppingBag />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="font-bold text-gray-800 text-sm">
-                        #{order.id.substring(0, 8)}
-                      </p>
-                      <Badge
-                        variant={statusVariant[order.status] || "gray"}
-                        dot
-                        size="sm"
-                      >
-                        {statusLabel[order.status] || order.status}
-                      </Badge>
-                      {order.order_type === "reservation" && (
-                        <Badge variant="purple" size="sm">
-                          Reservasi
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {getProductDisplay(order)}
-                    </p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      {formatDate(order.created_at)}
-                    </p>
-                  </div>
-                </div>
+        
+        <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-green-600 font-medium">Selesai</p>
+              <p className="text-3xl font-bold text-green-900">
+                {orders.filter(o => o.status === "completed").length}
+              </p>
+            </div>
+            <div className="text-4xl">✅</div>
+          </div>
+        </Card>
+        
+        <Card className="p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-yellow-600 font-medium">Pending</p>
+              <p className="text-3xl font-bold text-yellow-900">
+                {orders.filter(o => o.status === "pending").length}
+              </p>
+            </div>
+            <div className="text-4xl">⏳</div>
+          </div>
+        </Card>
+      </div>
 
-                {/* RIGHT: Price breakdown */}
-                <div className="text-right shrink-0">
-                  {order.discount_applied > 0 && (
-                    <p className="text-xs text-gray-400 line-through">
-                      {formatCurrency(order.total_amount)}
+      {/* Filter Tabs */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => setActiveTab("all")}
+          className={`px-6 py-2 rounded-lg font-semibold transition ${
+            activeTab === "all"
+              ? "bg-cyan-500 text-white shadow"
+              : "bg-white text-gray-700 hover:bg-gray-50"
+          }`}
+        >
+          Semua ({orders.length})
+        </button>
+        <button
+          onClick={() => setActiveTab("sales")}
+          className={`px-6 py-2 rounded-lg font-semibold transition ${
+            activeTab === "sales"
+              ? "bg-cyan-500 text-white shadow"
+              : "bg-white text-gray-700 hover:bg-gray-50"
+          }`}
+        >
+          Pembelian ({orders.filter(o => o.order_type === "sales").length})
+        </button>
+        <button
+          onClick={() => setActiveTab("reservation")}
+          className={`px-6 py-2 rounded-lg font-semibold transition ${
+            activeTab === "reservation"
+              ? "bg-cyan-500 text-white shadow"
+              : "bg-white text-gray-700 hover:bg-gray-50"
+          }`}
+        >
+          Reservasi ({orders.filter(o => o.order_type === "reservation").length})
+        </button>
+      </div>
+
+      {/* Loading State */}
+      {loading && (
+        <Card className="p-12 text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
+          <p className="text-gray-600 mt-4">Memuat pesanan...</p>
+        </Card>
+      )}
+
+      {/* Empty State */}
+      {!loading && filtered.length === 0 && (
+        <Card className="p-12 text-center">
+          <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <FaShoppingBag className="text-4xl text-gray-400" />
+          </div>
+          <h3 className="text-2xl font-bold text-gray-800 mb-2">Belum Ada Pesanan</h3>
+          <p className="text-gray-600 mb-8">Mulai belanja dan lihat pesanan Anda di sini</p>
+          <a
+            href="/guest/products"
+            className="inline-block px-8 py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-bold rounded-xl hover:shadow-xl transition"
+          >
+            Belanja Sekarang
+          </a>
+        </Card>
+      )}
+
+      {/* Orders List */}
+      {!loading && filtered.length > 0 && (
+        <div className="space-y-4">
+          {filtered.map((order) => (
+            <Card key={order.id} className="p-6 hover:shadow-lg transition">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-cyan-50 to-teal-50 rounded-xl flex items-center justify-center">
+                    {order.order_type === "sales" ? (
+                      <FaShoppingBag className="text-cyan-500 text-xl" />
+                    ) : (
+                      <FaCalendar className="text-purple-500 text-xl" />
+                    )}
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-800">
+                      {order.order_type === "sales" ? "Pembelian" : "Reservasi"}
                     </p>
-                  )}
-                  <p className="font-bold text-cyan-500">
-                    {formatCurrency(order.net_amount)}
-                  </p>
-                  {order.discount_applied > 0 && (
-                    <p className="text-xs text-green-500 font-semibold">
-                      Hemat {formatCurrency(order.discount_applied)}
+                    <p className="text-sm text-gray-500">
+                      Order ID: {order.id.substring(0, 8).toUpperCase()}
                     </p>
-                  )}
+                  </div>
                 </div>
+                <Badge variant={statusVariants[order.status]} dot>
+                  {statusLabels[order.status]}
+                </Badge>
               </div>
 
-              {/* Items detail (if more than 1 item) */}
-              {order.order_items && order.order_items.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-gray-100">
-                  <p className="text-xs font-semibold text-gray-400 uppercase mb-2">
-                    Detail Item
-                  </p>
-                  <div className="space-y-1.5">
-                    {order.order_items.map((item, idx) => (
-                      <div
-                        key={idx}
-                        className="flex justify-between text-sm text-gray-600"
-                      >
-                        <span>
-                          {item.product_name}{" "}
-                          <span className="text-gray-400">
-                            × {item.quantity}
-                          </span>
-                        </span>
-                        <span className="font-medium">
-                          {formatCurrency(item.price_per_unit * item.quantity)}
-                        </span>
+              <div className="border-t border-gray-100 pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <p className="text-xs text-gray-500 mb-1">Tanggal Order</p>
+                    <p className="text-sm font-semibold text-gray-700">
+                      {new Date(order.created_at).toLocaleDateString("id-ID", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit"
+                      })}
+                    </p>
+                  </div>
+                  {order.order_type === "reservation" && order.reservation_date && (
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Jadwal Reservasi</p>
+                      <p className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                        <FaClock className="text-purple-500" />
+                        {new Date(order.reservation_date).toLocaleDateString("id-ID", {
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit"
+                        })}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mb-4">
+                  <p className="text-xs text-gray-500 mb-2 font-semibold">Items:</p>
+                  <div className="space-y-2">
+                    {order.items?.map((item, idx) => (
+                      <div key={idx} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
+                        <div>
+                          <p className="text-sm font-medium text-gray-800">{item.product_name}</p>
+                          <p className="text-xs text-gray-500">
+                            {item.quantity} x Rp {item.price_per_unit?.toLocaleString("id-ID")}
+                          </p>
+                        </div>
+                        <p className="text-sm font-bold text-gray-800">
+                          Rp {(item.quantity * item.price_per_unit)?.toLocaleString("id-ID")}
+                        </p>
                       </div>
                     ))}
                   </div>
                 </div>
-              )}
+
+                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                  <div>
+                    <p className="text-xs text-gray-500">Total Pembayaran</p>
+                    <p className="text-2xl font-bold text-cyan-600">
+                      Rp {order.net_amount?.toLocaleString("id-ID")}
+                    </p>
+                  </div>
+                  {order.notes && (
+                    <div className="text-right">
+                      <p className="text-xs text-gray-500 mb-1">Catatan:</p>
+                      <p className="text-sm text-gray-600 italic">{order.notes}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </Card>
           ))}
         </div>

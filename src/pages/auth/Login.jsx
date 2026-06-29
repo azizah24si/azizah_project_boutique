@@ -61,12 +61,21 @@ export default function Login() {
 
         // Redirect berdasarkan role
         console.log("🚀 Redirecting to:", profile?.role);
-        if (profile?.role === "admin") {
+        
+        if (!profile) {
+          setError("Profile tidak ditemukan. Silakan hubungi administrator.");
+          return;
+        }
+        
+        if (profile.role === "admin") {
+          console.log("✅ Admin detected, redirecting to /admin");
           navigate("/admin");
-        } else if (profile?.role === "member") {
+        } else if (profile.role === "member") {
+          console.log("✅ Member detected, redirecting to /member");
           navigate("/member");
         } else {
-          navigate("/guest");
+          console.log("⚠️ Unknown role:", profile.role);
+          navigate("/guest/home");
         }
       }
     } catch (err) {
@@ -79,8 +88,8 @@ export default function Login() {
 
   return (
     <div className="bg-white rounded-2xl shadow-xl p-10">
-      <h2 className="text-3xl font-bold text-cyan-400 mb-2">Welcome Back</h2>
-      <p className="text-gray-400 mb-8">Enter your email and password to sign in</p>
+      <h2 className="text-3xl font-bold text-cyan-400 mb-2">Selamat Datang Kembali!</h2>
+      <p className="text-gray-400 mb-8">Login untuk melanjutkan belanja di Jijah Boutique</p>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">

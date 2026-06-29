@@ -4,7 +4,6 @@ import {
   FaTshirt,
   FaListUl,
   FaUserFriends,
-  FaSignOutAlt,
   FaQuestionCircle,
   FaShoppingBag,
   FaHistory,
@@ -15,7 +14,7 @@ import { useAuth } from "../contexts/AuthContext";
 export default function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { profile, signOut } = useAuth();
+  const { profile } = useAuth();
 
   const menuClass = ({ isActive }) =>
     `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
@@ -42,11 +41,6 @@ export default function Sidebar() {
   ];
 
   const menuItems = isAdmin ? adminMenu : memberMenu;
-
-  const handleLogout = async () => {
-    await signOut();
-    navigate("/login");
-  };
 
   return (
     <div className="w-72 min-h-screen bg-white flex flex-col px-8 py-8">
@@ -81,7 +75,7 @@ export default function Sidebar() {
 
         {/* Member checkout link */}
         {!isAdmin && (
-          <NavLink to="/guest/products" className={menuClass}>
+          <NavLink to="/member/products" className={menuClass}>
             <FaShoppingBag />
             Belanja Produk
           </NavLink>
@@ -113,15 +107,6 @@ export default function Sidebar() {
           </div>
 
         </div>
-
-        {/* LOGOUT */}
-        <button 
-          onClick={handleLogout}
-          className="w-full mt-5 flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-50 text-gray-500 hover:bg-red-500 hover:text-white transition-all"
-        >
-          <FaSignOutAlt />
-          Logout
-        </button>
       </div>
 
     </div>

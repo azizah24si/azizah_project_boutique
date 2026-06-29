@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FaShoppingBag,
   FaUsers,
-  FaDollarSign,
   FaChartLine,
 } from "react-icons/fa";
 
@@ -13,39 +12,101 @@ import ProgressBar from "../components/ProgressBar";
 import Tabs from "../components/Tabs";
 import Tooltip from "../components/Tooltip";
 import Alert from "../components/Alert";
+import { productsAPI } from "../services/productsAPI";
+import { getAllOrders } from "../services/ordersAPI";
+import { supabase } from "../lib/supabase";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [showAlert, setShowAlert] = useState(true);
+  const [loading, setLoading] = useState(true);
+  
+  // Real data from database
+  const [stats, setStats] = useState({
+    totalProducts: 0,
+    totalCustomers: 0,
+    newOrders: 0,
+    totalSales: 0,
+  });
+  const [recentOrders, setRecentOrders] = useState([]);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+
+      // 1. Fetch total products
+      const products = await productsAPI.getAll();
+      
+      // 2. Fetch total customers
+      const { data: customers, error: customersError } = await supabase
+        .from("customers")
+        .select("id", { count: "exact" });
+      if (customersError) throw customersError;
+
+      // 3. Fetch all orders
+      const orders = await getAllOrders();
+      
+      // 4. Calculate stats
+      const pendingOrders = orders.filter(o => o.status === "pending").length;
+      const completedOrders = orders.filter(o => o.status === "completed");
+      const totalSalesAmount = completedOrders.reduce((sum, order) => sum + (order.net_amount || 0), 0);
+
+      // 5. Get recent orders (last 6)
+      const recent = orders
+        .slice(0, 6)
+        .map(order => ({
+          item: `${order.customer?.full_name || "Guest"} - ${order.items?.[0]?.product_name || "Order"}`,
+          amount: order.net_amount,
+          date: new Date(order.created_at).toLocaleDateString("id-ID", { 
+            day: "2-digit", 
+            month: "short", 
+            hour: "2-digit", 
+            minute: "2-digit" 
+          }).toUpperCase(),
+          avatar: order.customer?.full_name || "Guest",
+          status: order.status,
+        }));
+
+      setStats({
+        totalProducts: products.length,
+        totalCustomers: customers?.length || 0,
+        newOrders: pendingOrders,
+        totalSales: totalSalesAmount,
+      });
+      setRecentOrders(recent);
+
+    } catch (error) {
+      console.error("Error loading dashboard data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const cards = [
     {
       title: "Total Produk",
-      value: "120",
-      trend: "+55%",
+      value: loading ? "..." : stats.totalProducts.toString(),
+      trend: "+0%",
       icon: <FaShoppingBag />,
       iconColor: "cyan",
     },
     {
       title: "Total Pelanggan",
-      value: "2,300",
-      trend: "+5%",
+      value: loading ? "..." : stats.totalCustomers.toString(),
+      trend: "+0%",
       icon: <FaUsers />,
       iconColor: "pink",
     },
     {
       title: "Pesanan Baru",
-      value: "+15",
-      trend: "-14%",
+      value: loading ? "..." : `${stats.newOrders}`,
+      trend: "+0%",
       icon: <FaChartLine />,
       iconColor: "green",
-    },
-    {
-      title: "Total Sales",
-      value: "Rp 5JT",
-      trend: "+8%",
-      icon: <FaDollarSign />,
-      iconColor: "orange",
     },
   ];
 
@@ -58,13 +119,8 @@ export default function Dashboard() {
     { name: "Redesign Online Shop", budget: "Rp 7.6JT", status: "Canceled", completion: 40 },
   ];
 
-  const orders = [
-    { item: "Rp 2.4JT, Dress Floral - Aisyah", date: "22 DEC 7:20 PM", avatar: "Aisyah" },
-    { item: "New order #B4219423", date: "21 DEC 11:21 PM", avatar: "Order" },
-    { item: "Payment for Korean Blouse", date: "21 DEC 9:28 PM", avatar: "Nadia" },
-    { item: "New order #B3210145 - Nadia", date: "20 DEC 3:52 PM", avatar: "Nadia" },
-    { item: "Outer Vintage - Salsa", date: "19 DEC 11:35 PM", avatar: "Salsa" },
-    { item: "New order #B9851258", date: "18 DEC 4:41 PM", avatar: "Order" },
+  const orders = recentOrders.length > 0 ? recentOrders : [
+    { item: "Belum ada order", date: "-", avatar: "System", status: "pending" },
   ];
 
   const statusBadge = {
@@ -90,12 +146,12 @@ export default function Dashboard() {
           dismissible
           onDismiss={() => setShowAlert(false)}
         >
-          Selamat datang kembali! Ada 15 pesanan baru yang perlu diproses hari ini.
+          Selamat datang kembali! Ada {stats.newOrders} pesanan baru yang perlu diproses hari ini.
         </Alert>
       )}
 
       {/* STAT CARDS */}
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-3 gap-6">
         {cards.map((item, index) => (
           <Tooltip key={index} content={`Lihat detail ${item.title}`} position="top">
             <Card
@@ -160,10 +216,10 @@ export default function Dashboard() {
           </div>
           <div className="grid grid-cols-4 gap-3 text-center">
             {[
-              { icon: <FaUsers className="text-cyan-400 text-xs" />, label: "Users", val: "32,984" },
-              { icon: <FaChartLine className="text-green-400 text-xs" />, label: "Clicks", val: "2.42m" },
-              { icon: <FaShoppingBag className="text-orange-400 text-xs" />, label: "Sales", val: "Rp 2.4JT" },
-              { icon: <FaDollarSign className="text-pink-400 text-xs" />, label: "Items", val: "320" },
+              { icon: <FaUsers className="text-cyan-400 text-xs" />, label: "Customers", val: stats.totalCustomers },
+              { icon: <FaChartLine className="text-green-400 text-xs" />, label: "Orders", val: recentOrders.length },
+              { icon: <FaShoppingBag className="text-orange-400 text-xs" />, label: "Products", val: stats.totalProducts },
+              { icon: <FaChartLine className="text-pink-400 text-xs" />, label: "Pending", val: stats.newOrders },
             ].map((s, i) => (
               <div key={i}>
                 <div className="flex items-center justify-center mb-1">{s.icon}</div>
@@ -175,8 +231,8 @@ export default function Dashboard() {
         </div>
 
         <div className="bg-white rounded-2xl p-6 col-span-2 shadow-sm">
-          <h3 className="text-lg font-bold text-gray-700">Sales overview</h3>
-          <p className="text-green-500 text-sm font-bold mt-1">(+5%) more in 2025</p>
+          <h3 className="text-lg font-bold text-gray-700">Pelanggan Overview</h3>
+          <p className="text-cyan-500 text-sm font-bold mt-1">Total {stats.totalCustomers} pelanggan terdaftar</p>
           <div className="mt-8 h-56 relative">
             <svg viewBox="0 0 500 200" className="w-full h-full" fill="none">
               <defs>
@@ -226,17 +282,28 @@ export default function Dashboard() {
         {/* ORDERS TAB */}
         {activeTab === "orders" && (
           <div className="space-y-4">
-            {orders.map((item, index) => (
-              <div key={index} className="flex gap-4 items-center">
-                <Avatar name={item.avatar} size="sm" color={["cyan", "pink", 
-                  "green", "orange", "purple"][index % 5]} />
-                <div className="flex-1">
-                  <p className="text-sm font-semibold text-gray-700">{item.item}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{item.date}</p>
+            {recentOrders.length > 0 ? (
+              recentOrders.map((item, index) => (
+                <div key={index} className="flex gap-4 items-center">
+                  <Avatar name={item.avatar} size="sm" color={["cyan", "pink", 
+                    "green", "orange", "purple"][index % 5]} />
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-gray-700">{item.item}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{item.date}</p>
+                  </div>
+                  <Badge 
+                    variant={item.status === "completed" ? "green" : item.status === "pending" ? "yellow" : "red"} 
+                    size="sm"
+                  >
+                    {item.status === "completed" ? "Selesai" : item.status === "pending" ? "Pending" : "Batal"}
+                  </Badge>
                 </div>
-                <Badge variant="gray" size="sm">{item.date.split(" ")[0]}</Badge>
+              ))
+            ) : (
+              <div className="text-center py-8 text-gray-400">
+                <p>Belum ada order</p>
               </div>
-            ))}
+            )}
           </div>
         )}
 
@@ -259,15 +326,24 @@ export default function Dashboard() {
             <div>
               <h3 className="font-bold text-gray-700 mb-4">Recent Orders</h3>
               <div className="space-y-3">
-                {orders.slice(0, 4).map((item, index) => (
-                  <div key={index} className="flex gap-3 items-center">
-                    <div className="w-2 h-2 bg-green-400 rounded-full shrink-0 mt-1"></div>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-700">{item.item}</p>
-                      <p className="text-xs text-gray-400">{item.date}</p>
+                {recentOrders.length > 0 ? (
+                  recentOrders.slice(0, 4).map((item, index) => (
+                    <div key={index} className="flex gap-3 items-center">
+                      <div className={`w-2 h-2 rounded-full shrink-0 mt-1 ${
+                        item.status === "completed" ? "bg-green-400" : 
+                        item.status === "pending" ? "bg-yellow-400" : "bg-red-400"
+                      }`}></div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-700">{item.item}</p>
+                        <p className="text-xs text-gray-400">{item.date}</p>
+                      </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="text-center py-4 text-gray-400 text-sm">
+                    Belum ada order
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>

@@ -44,7 +44,7 @@ export default function Home() {
       rating: 5.0,
       stock: 45,
       badge: "New",
-      image: "https://images.unsplash.com/photo-1583003457779-325c24f1aa00?w=400&h=500&fit=crop"
+      image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400&h=500&fit=crop"
     }
   ];
 
@@ -139,23 +139,6 @@ export default function Home() {
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* CTA Banner Section */}
-      <section className="py-16 bg-gradient-to-r from-cyan-500 to-teal-500">
-        <div className="container mx-auto px-4 text-center text-white">
-          <h2 className="text-4xl font-bold mb-4">Ready to Transform Your Style?</h2>
-          <p className="text-lg mb-8 opacity-90">
-            Reservasi sekarang dan dapatkan konsultasi fashion gratis!
-          </p>
-          <Link
-            to="/guest/reservation"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-white text-cyan-600 rounded-xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all"
-          >
-            Reservasi Sekarang
-            <FaArrowRight />
-          </Link>
         </div>
       </section>
 

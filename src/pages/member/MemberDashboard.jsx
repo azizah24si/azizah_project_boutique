@@ -1,421 +1,181 @@
-import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
-import { FaShoppingBag, FaStar, FaGift, FaHistory, FaCheckCircle } from "react-icons/fa";
-
-import Card from "../../components/Card";
-import Button from "../../components/Button";
-import Badge from "../../components/Badge";
-import Select from "../../components/Select";
-import Modal from "../../components/Modal";
-import { useToast } from "../../components/Toast";
+import { useState, useEffect } from "react";
+import { FaShoppingBag, FaStar, FaGift, FaHistory } from "react-icons/fa";
 import { useAuth } from "../../contexts/AuthContext";
-import { supabase } from "../../lib/supabase";
-import { productsAPI } from "../../services/productsAPI";
-import { customersAPI } from "../../services/customersAPI";
-import { ordersAPI } from "../../services/ordersAPI";
-import {
-  getDiscountRate,
-  calculatePoints,
-  getTierFromSpending,
-  formatCurrency,
-  formatDate,
-} from "../../utils/membership";
-
-// Tier color mapping for badges
-const tierColors = {
-  Bronze: "orange",
-  Silver: "gray",
-  Gold: "yellow",
-  Platinum: "cyan",
-};
-
-// Tier spending thresholds for progress display
-const tierThresholds = {
-  Bronze: { min: 0, max: 1000000 },
-  Silver: { min: 1000000, max: 5000000 },
-  Gold: { min: 5000000, max: 15000000 },
-  Platinum: { min: 15000000, max: null },
-};
+import { getMyOrders } from "../../services/ordersAPI";
 
 export default function MemberDashboard() {
-  const { profile, refreshProfile } = useAuth();
-  const { addToast } = useToast();
-
-  const [products, setProducts] = useState([]);
-  const [recentOrders, setRecentOrders] = useState([]);
-  const [totalSpending, setTotalSpending] = useState(0);
+  const { profile, user } = useAuth();
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Checkout modal state
-  const [showCheckout, setShowCheckout] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState("");
-  const [quantity, setQuantity] = useState(1);
-  const [placing, setPlacing] = useState(false);
+  useEffect(() => {
+    if (user) {
+      loadOrders();
+    }
+  }, [user]);
 
-  // Fetch products and member orders
-  const fetchData = useCallback(async () => {
-    setLoading(true);
+  const loadOrders = async () => {
     try {
-      // Fetch all products for the checkout dropdown
-      const productsData = await productsAPI.getAll();
-      setProducts(productsData);
-
-      // Find the member's customer record by user_id
-      const { data: customer } = await supabase
-        .from("customers")
-        .select("id")
-        .eq("user_id", profile.id)
-        .single();
-
-      if (customer) {
-        // Fetch member's orders
-        const orders = await ordersAPI.getByCustomerId(customer.id);
-        setRecentOrders(orders.slice(0, 5));
-
-        // Calculate total spending from completed orders
-        const completed = orders.filter((o) => o.status === "completed");
-        const spending = completed.reduce(
-          (sum, o) => sum + Number(o.net_amount),
-          0
-        );
-        setTotalSpending(spending);
-      }
-    } catch (err) {
-      console.error("Dashboard fetch error:", err);
+      const data = await getMyOrders(user.id);
+      setOrders(data);
+    } catch (error) {
+      console.error("Error loading orders:", error);
     } finally {
       setLoading(false);
     }
-  }, [profile]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  // Get selected product for checkout preview
-  const selectedProduct = products.find((p) => p.id === selectedProductId);
-  const totalPrice = selectedProduct ? selectedProduct.price * quantity : 0;
-  const discountRate = getDiscountRate(profile?.member_level || "Bronze");
-  const discountAmount = totalPrice * discountRate;
-  const netAmount = totalPrice - discountAmount;
-  const pointsEarned = calculatePoints(netAmount);
-
-  // Place order: creates customer if needed, then creates sales_order + updates profile
-  const handlePlaceOrder = async () => {
-    if (!selectedProduct) return;
-    setPlacing(true);
-
-    try {
-      // 1. Find or create the member's customer record
-      const customer = await customersAPI.findOrCreate({
-        full_name: profile.full_name,
-        email: profile.email || `${profile.id}@member.local`,
-        phone: "",
-        user_id: profile.id,
-      });
-
-      // 2. Create the sales order with order items
-      await ordersAPI.create({
-        customer_id: customer.id,
-        total_amount: totalPrice,
-        discount_applied: discountAmount,
-        net_amount: netAmount,
-        status: "pending",
-        order_type: "sales",
-        items: [
-          {
-            product_id: selectedProduct.id,
-            product_name: selectedProduct.name,
-            quantity: quantity,
-            price_per_unit: selectedProduct.price,
-          },
-        ],
-      });
-
-      // 3. Update loyalty points on the profile
-      const newPoints = (profile.loyalty_points || 0) + pointsEarned;
-
-      // 4. Recalculate tier based on total completed spending + this order
-      // (pending orders don't count toward tier, but we update points immediately)
-      const newTier = getTierFromSpending(totalSpending + netAmount);
-
-      await supabase
-        .from("profiles")
-        .update({
-          loyalty_points: newPoints,
-          member_level: newTier,
-        })
-        .eq("id", profile.id);
-
-      // 5. Refresh the auth context profile
-      await refreshProfile();
-
-      addToast({
-        title: "Pesanan berhasil dibuat!",
-        description: `Kamu mendapatkan ${pointsEarned} loyalty points.`,
-        variant: "success",
-      });
-
-      setShowCheckout(false);
-      setSelectedProductId("");
-      setQuantity(1);
-      fetchData();
-    } catch (err) {
-      addToast({
-        title: "Gagal membuat pesanan",
-        description: err.message,
-        variant: "error",
-      });
-    } finally {
-      setPlacing(false);
-    }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  // Tier progress calculation
-  const currentTier = profile?.member_level || "Bronze";
-  const tierRange = tierThresholds[currentTier];
-  const tierProgress = tierRange.max
-    ? Math.min(100, ((totalSpending - tierRange.min) / (tierRange.max - tierRange.min)) * 100)
-    : 100;
+  const totalSpent = orders
+    .filter(o => o.status === "completed")
+    .reduce((sum, order) => sum + (order.net_amount || 0), 0);
 
   return (
-    <div className="space-y-6">
-      {/* MEMBER INFO CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {/* Welcome Card */}
-        <Card className="p-6 bg-gradient-to-br from-cyan-400 to-teal-500 text-white col-span-1 md:col-span-2">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
-              <FaStar className="text-3xl text-white" />
+    <div className="p-6 space-y-6">
+      {/* Welcome Header */}
+      <div className="bg-gradient-to-r from-cyan-500 to-teal-500 rounded-2xl p-8 text-white">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+            <FaStar className="text-3xl" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold">Selamat Datang, {profile?.full_name}!</h1>
+            <p className="text-cyan-100 mt-1">Member Dashboard - Nikmati kemudahan berbelanja</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-white rounded-2xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+              <FaStar className="text-2xl text-yellow-600" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold">Halo, {profile?.full_name}!</h2>
-              <p className="text-sm opacity-90 mt-1">
-                Selamat datang di Member Dashboard
+              <p className="text-sm text-gray-500">Member Level</p>
+              <p className="text-2xl font-bold text-gray-800">{profile?.member_level || "Bronze"}</p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-400">Status membership Anda saat ini</p>
+        </div>
+
+        <div className="bg-white rounded-2xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center">
+              <FaGift className="text-2xl text-pink-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Loyalty Points</p>
+              <p className="text-2xl font-bold text-gray-800">{profile?.loyalty_points || 0}</p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-400">Poin yang sudah Anda kumpulkan</p>
+        </div>
+
+        <div className="bg-white rounded-2xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center">
+              <FaShoppingBag className="text-2xl text-cyan-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Total Pesanan</p>
+              <p className="text-2xl font-bold text-gray-800">
+                {loading ? "..." : orders.length}
               </p>
             </div>
           </div>
-        </Card>
+          <p className="text-xs text-gray-400">Pesanan yang telah dibuat</p>
+        </div>
 
-        {/* Points Card */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-2">
-            <FaGift className="text-2xl text-cyan-500" />
-            <Badge variant={tierColors[currentTier]}>{currentTier}</Badge>
+        <div className="bg-white rounded-2xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+              <span className="text-2xl">💰</span>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Total Belanja</p>
+              <p className="text-xl font-bold text-gray-800">
+                {loading ? "..." : `Rp ${(totalSpent / 1000).toFixed(0)}k`}
+              </p>
+            </div>
           </div>
-          <p className="text-3xl font-bold text-gray-800">
-            {profile?.loyalty_points || 0}
-          </p>
-          <p className="text-sm text-gray-500">Loyalty Points</p>
-        </Card>
-
-        {/* Discount Card */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-2">
-            <FaStar className="text-2xl text-yellow-500" />
-            <Badge variant="green">{discountRate * 100}% Off</Badge>
-          </div>
-          <p className="text-3xl font-bold text-gray-800">
-            {formatCurrency(totalSpending)}
-          </p>
-          <p className="text-sm text-gray-500">Total Belanja</p>
-        </Card>
+          <p className="text-xs text-gray-400">Total transaksi selesai</p>
+        </div>
       </div>
 
-      {/* TIER PROGRESS */}
-      <Card className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <h3 className="font-bold text-gray-800">Status Membership</h3>
-            <p className="text-sm text-gray-500">
-              Tier saat ini: <span className="font-semibold">{currentTier}</span>
-            </p>
-          </div>
-          {tierRange.max && (
-            <p className="text-sm text-gray-500">
-              Belanja {formatCurrency(tierRange.max - totalSpending)} lagi untuk naik tier!
-            </p>
-          )}
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-3">
-          <div
-            className="bg-gradient-to-r from-cyan-400 to-teal-500 h-3 rounded-full transition-all"
-            style={{ width: `${Math.max(tierProgress, 5)}%` }}
-          ></div>
-        </div>
-        <div className="flex justify-between mt-2 text-xs text-gray-400">
-          <span>Bronze</span>
-          <span>Silver</span>
-          <span>Gold</span>
-          <span>Platinum</span>
-        </div>
-      </Card>
-
-      {/* QUICK ACTIONS */}
+      {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* New Order */}
-        <Card className="p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <FaShoppingBag className="text-2xl text-cyan-500" />
-            <h3 className="font-bold text-gray-800">Beli Produk</h3>
+        <a href="/member/products" className="block">
+          <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition group cursor-pointer">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+                <FaShoppingBag className="text-2xl text-white" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-800 text-lg">Belanja Sekarang</h3>
+                <p className="text-sm text-gray-500">Lihat katalog produk kami</p>
+              </div>
+            </div>
           </div>
-          <p className="text-sm text-gray-500 mb-4">
-            Pilih produk dan checkout dengan diskon membership kamu.
-          </p>
-          <Button onClick={() => setShowCheckout(true)}>
-            Mulai Belanja
-          </Button>
-        </Card>
+        </a>
 
-        {/* View Orders */}
-        <Card className="p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <FaHistory className="text-2xl text-purple-500" />
-            <h3 className="font-bold text-gray-800">Riwayat Pembelian</h3>
+        <a href="/member/orders" className="block">
+          <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition group cursor-pointer">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+                <FaHistory className="text-2xl text-white" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-800 text-lg">Riwayat Pesanan</h3>
+                <p className="text-sm text-gray-500">Lihat pesanan Anda</p>
+              </div>
+            </div>
           </div>
-          <p className="text-sm text-gray-500 mb-4">
-            Lihat semua transaksi yang pernah kamu lakukan.
-          </p>
-          <Link to="/member/orders">
-            <Button variant="secondary">Lihat Riwayat</Button>
-          </Link>
-        </Card>
+        </a>
       </div>
 
-      {/* RECENT ORDERS */}
-      <Card className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold text-gray-800">Pesanan Terbaru</h3>
-          <Link to="/member/orders" className="text-sm text-cyan-500 font-semibold hover:underline">
-            Lihat Semua
-          </Link>
-        </div>
-        {recentOrders.length === 0 ? (
-          <p className="text-center text-gray-400 py-8">Belum ada pesanan.</p>
-        ) : (
-          <div className="space-y-3">
-            {recentOrders.map((order) => (
-              <div
-                key={order.id}
-                className="flex items-center justify-between p-4 bg-gray-50 rounded-xl"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-lg flex items-center justify-center text-white">
-                    <FaShoppingBag className="text-sm" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-800 text-sm">
-                      {order.order_items?.[0]?.product_name || "Order"}
-                      {order.order_items?.length > 1 && ` +${order.order_items.length - 1}`}
-                    </p>
-                    <p className="text-xs text-gray-400">{formatDate(order.created_at)}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold text-cyan-500 text-sm">
-                    {formatCurrency(order.net_amount)}
-                  </p>
-                  <Badge
-                    variant={
-                      order.status === "completed" ? "green" :
-                      order.status === "pending" ? "yellow" : "red"
-                    }
-                    size="sm"
-                  >
-                    {order.status}
-                  </Badge>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </Card>
-
-      {/* CHECKOUT MODAL */}
-      <Modal
-        isOpen={showCheckout}
-        onClose={() => setShowCheckout(false)}
-        title="Checkout Produk"
-        description="Pilih produk dan quantity untuk membuat pesanan baru"
-        footer={
-          <div className="flex gap-3">
-            <Button className="flex-1" onClick={handlePlaceOrder} loading={placing}>
-              {placing ? "Memproses..." : `Buat Pesanan (${formatCurrency(netAmount)})`}
-            </Button>
-            <Button variant="secondary" onClick={() => setShowCheckout(false)}>
-              Batal
-            </Button>
-          </div>
-        }
-      >
-        <div className="space-y-4">
-          <Select
-            label="Pilih Produk"
-            value={selectedProductId}
-            onChange={(e) => setSelectedProductId(e.target.value)}
-            placeholder="Pilih produk..."
-            options={products.map((p) => ({
-              value: p.id,
-              label: `${p.name} - ${formatCurrency(p.price)}`,
-            }))}
-          />
-
-          <div>
-            <label className="text-sm font-medium text-gray-600 mb-1.5 block">
-              Jumlah
-            </label>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-10 h-10 bg-gray-100 rounded-lg font-bold hover:bg-gray-200 transition"
-              >
-                -
-              </button>
-              <input
-                type="number"
-                value={quantity}
-                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                className="w-20 h-10 text-center border border-gray-200 rounded-lg font-bold focus:border-cyan-400 focus:outline-none"
-              />
-              <button
-                onClick={() => setQuantity(quantity + 1)}
-                className="w-10 h-10 bg-gray-100 rounded-lg font-bold hover:bg-gray-200 transition"
-              >
-                +
-              </button>
+      {/* Info Section */}
+      <div className="bg-white rounded-2xl p-6 shadow-sm">
+        <h3 className="font-bold text-gray-800 text-lg mb-4">Keuntungan Member</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
+              <span className="text-green-600 font-bold">✓</span>
+            </div>
+            <div>
+              <p className="font-semibold text-gray-700">Diskon Eksklusif</p>
+              <p className="text-sm text-gray-500">Dapatkan diskon sesuai level membership</p>
             </div>
           </div>
-
-          {/* Price breakdown */}
-          {selectedProduct && (
-            <div className="bg-gray-50 p-4 rounded-xl space-y-2">
-              <div className="flex justify-between text-sm text-gray-600">
-                <span>Subtotal</span>
-                <span>{formatCurrency(totalPrice)}</span>
-              </div>
-              <div className="flex justify-between text-sm text-gray-600">
-                <span>Diskon ({discountRate * 100}%)</span>
-                <span className="text-red-500">- {formatCurrency(discountAmount)}</span>
-              </div>
-              <div className="flex justify-between font-bold border-t border-gray-200 pt-2">
-                <span>Total Bayar</span>
-                <span className="text-cyan-500">{formatCurrency(netAmount)}</span>
-              </div>
-              <div className="flex justify-between text-xs text-gray-500">
-                <span><FaGift className="inline mr-1" />Points yang didapat</span>
-                <span className="font-semibold text-green-500">+{pointsEarned} points</span>
-              </div>
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
+              <span className="text-green-600 font-bold">✓</span>
             </div>
-          )}
+            <div>
+              <p className="font-semibold text-gray-700">Loyalty Points</p>
+              <p className="text-sm text-gray-500">Kumpulkan poin setiap transaksi</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
+              <span className="text-green-600 font-bold">✓</span>
+            </div>
+            <div>
+              <p className="font-semibold text-gray-700">Promo Spesial</p>
+              <p className="text-sm text-gray-500">Akses promo khusus member</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
+              <span className="text-green-600 font-bold">✓</span>
+            </div>
+            <div>
+              <p className="font-semibold text-gray-700">Prioritas Layanan</p>
+              <p className="text-sm text-gray-500">Dapatkan layanan prioritas</p>
+            </div>
+          </div>
         </div>
-      </Modal>
+      </div>
     </div>
   );
 }

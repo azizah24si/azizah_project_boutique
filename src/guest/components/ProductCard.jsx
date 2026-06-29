@@ -37,17 +37,13 @@ export default function ProductCard({ product }) {
         </button>
 
         {/* Quick Actions */}
-        <div className="absolute bottom-3 left-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
           <Link
             to={`/guest/products/${product.id}`}
-            className="flex-1 py-2 bg-white text-gray-700 rounded-lg text-sm font-semibold text-center hover:bg-gray-100 transition"
+            className="block w-full py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-white rounded-xl text-sm font-bold text-center hover:shadow-lg transition"
           >
-            Detail
+            Lihat Detail Produk
           </Link>
-          <button className="flex-1 py-2 bg-gradient-to-r from-cyan-500 to-teal-500 text-white rounded-lg text-sm font-semibold flex items-center justify-center gap-2 hover:shadow-lg transition">
-            <FaShoppingCart className="text-xs" />
-            Cart
-          </button>
         </div>
       </div>
 

@@ -42,9 +42,8 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li><Link to="/guest" className="text-gray-400 hover:text-cyan-400 transition">Beranda</Link></li>
               <li><Link to="/guest/products" className="text-gray-400 hover:text-cyan-400 transition">Produk</Link></li>
-              <li><Link to="/guest/reservation" className="text-gray-400 hover:text-cyan-400 transition">Reservasi</Link></li>
-              <li><Link to="/guest/gallery" className="text-gray-400 hover:text-cyan-400 transition">Galeri</Link></li>
               <li><Link to="/guest/about" className="text-gray-400 hover:text-cyan-400 transition">Tentang Kami</Link></li>
+              <li><Link to="/guest/contact" className="text-gray-400 hover:text-cyan-400 transition">Kontak</Link></li>
             </ul>
           </div>
 
@@ -54,7 +53,6 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li className="text-gray-400">✓ Konsultasi Fashion</li>
               <li className="text-gray-400">✓ Custom Order</li>
-              <li className="text-gray-400">✓ Reservasi Online</li>
               <li className="text-gray-400">✓ Home Service</li>
               <li className="text-gray-400">✓ Reseller Program</li>
             </ul>

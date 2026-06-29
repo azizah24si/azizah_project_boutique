@@ -2,7 +2,7 @@
  * Badge Component
  *
  * Props:
- * - variant: "cyan" | "green" | "yellow" | "red" | "gray" | "pink" | "orange" (default: "cyan")
+ * - variant: "cyan" | "green" | "yellow" | "red" | "gray" | "pink" | "orange" | "purple" | "blue" (default: "cyan")
  * - size: "sm" | "md" (default: "md")
  * - dot: boolean — show a colored dot before text
  * - className, children
@@ -22,6 +22,8 @@ export default function Badge({
     gray: "bg-gray-100 text-gray-600",
     pink: "bg-pink-100 text-pink-600",
     orange: "bg-orange-100 text-orange-600",
+    purple: "bg-purple-100 text-purple-600",
+    blue: "bg-blue-100 text-blue-600",
   };
 
   const dotColors = {
@@ -32,6 +34,8 @@ export default function Badge({
     gray: "bg-gray-500",
     pink: "bg-pink-500",
     orange: "bg-orange-500",
+    purple: "bg-purple-500",
+    blue: "bg-blue-500",
   };
 
   const sizes = {

@@ -1,17 +1,22 @@
 import { useState } from "react";
 import { FaCalendar, FaClock, FaUser, FaPhone, FaEnvelope, FaComment, FaCheckCircle } from "react-icons/fa";
+import { useAuth } from "../../contexts/AuthContext";
+import { createReservation } from "../../services/ordersAPI";
 
 export default function Reservation() {
+  const { user, profile } = useAuth();
   const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    email: "",
+    name: profile?.full_name || "",
+    phone: profile?.phone || "",
+    email: user?.email || "",
     date: "",
     time: "",
     service: "",
     notes: ""
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [reservationNumber, setReservationNumber] = useState("");
 
   const services = [
     "Konsultasi Fashion",
@@ -41,24 +46,50 @@ export default function Reservation() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Reservation data:", formData);
-    setIsSubmitted(true);
-    
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({
-        name: "",
-        phone: "",
-        email: "",
-        date: "",
-        time: "",
-        service: "",
-        notes: ""
-      });
-    }, 3000);
+    setLoading(true);
+
+    try {
+      const reservationData = {
+        customerInfo: {
+          full_name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          user_id: user?.id || null,
+        },
+        service: formData.service,
+        date: formData.date,
+        time: formData.time,
+        notes: formData.notes,
+      };
+
+      const order = await createReservation(reservationData);
+      
+      // Generate reservation number
+      const resNumber = `RSV${order.id.substring(0, 8).toUpperCase()}`;
+      setReservationNumber(resNumber);
+      setIsSubmitted(true);
+
+      // Reset form after 5 seconds
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({
+          name: profile?.full_name || "",
+          phone: profile?.phone || "",
+          email: user?.email || "",
+          date: "",
+          time: "",
+          service: "",
+          notes: ""
+        });
+      }, 5000);
+    } catch (error) {
+      console.error("Reservation error:", error);
+      alert("Gagal membuat reservasi: " + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (isSubmitted) {
@@ -74,7 +105,7 @@ export default function Reservation() {
           </p>
           <div className="bg-gradient-to-r from-cyan-50 to-teal-50 p-4 rounded-xl mb-6">
             <p className="text-sm text-gray-700">
-              <strong>Nomor Reservasi:</strong> RSV{Math.floor(Math.random() * 1000000)}
+              <strong>Nomor Reservasi:</strong> {reservationNumber}
             </p>
           </div>
         </div>
@@ -226,9 +257,10 @@ export default function Reservation() {
 
               <button
                 type="submit"
-                className="w-full py-4 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-bold text-lg rounded-xl hover:shadow-xl hover:scale-105 transition-all"
+                disabled={loading}
+                className="w-full py-4 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-bold text-lg rounded-xl hover:shadow-xl hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Kirim Reservasi
+                {loading ? "Mengirim..." : "Kirim Reservasi"}
               </button>
             </form>
           </div>
