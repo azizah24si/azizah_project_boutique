@@ -113,7 +113,7 @@ export default function Products() {
                 placeholder="Cari produk..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-cyan-500 focus:outline-none transition"
+                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-plum-500 focus:outline-none transition"
               />
             </div>
 
@@ -125,7 +125,7 @@ export default function Products() {
                   onClick={() => setSelectedCategory(cat.id)}
                   className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                     selectedCategory === cat.id
-                      ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-lg"
+                      ? "bg-gradient-to-r from-plum-500 to-gold-500 text-white shadow-lg"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
@@ -143,7 +143,7 @@ export default function Products() {
             <select 
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-2 border-2 border-gray-200 rounded-lg text-sm focus:border-cyan-500 focus:outline-none cursor-pointer"
+              className="px-4 py-2 border-2 border-gray-200 rounded-lg text-sm focus:border-plum-500 focus:outline-none cursor-pointer"
             >
               <option value="popular">Urutkan: Terpopuler</option>
               <option value="price-low">Harga: Terendah</option>
@@ -189,7 +189,7 @@ export default function Products() {
                 setSearchQuery("");
                 setSelectedCategory("all");
               }}
-              className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-white rounded-xl font-semibold hover:shadow-lg transition"
+              className="px-6 py-3 bg-gradient-to-r from-plum-500 to-gold-500 text-white rounded-xl font-semibold hover:shadow-lg transition"
             >
               Reset Filter
             </button>
@@ -202,7 +202,7 @@ export default function Products() {
             <button className="px-4 py-2 bg-gray-200 rounded-lg text-gray-600 hover:bg-gray-300 transition">
               Previous
             </button>
-            <button className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-teal-500 text-white rounded-lg font-semibold">
+            <button className="px-4 py-2 bg-gradient-to-r from-plum-500 to-gold-500 text-white rounded-lg font-semibold">
               1
             </button>
             <button className="px-4 py-2 bg-gray-200 rounded-lg text-gray-700 hover:bg-gray-300 transition">

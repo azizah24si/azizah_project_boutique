@@ -9,7 +9,7 @@ export default function MemberProfile() {
       {/* Profile Card */}
       <div className="bg-white rounded-2xl p-8">
         <div className="flex items-center gap-6 mb-8">
-          <div className="w-24 h-24 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-2xl flex items-center justify-center text-white text-4xl font-bold">
+          <div className="w-24 h-24 bg-gradient-to-br from-plum-400 to-gold-500 rounded-2xl flex items-center justify-center text-white text-4xl font-bold">
             {(profile?.full_name || "U").charAt(0).toUpperCase()}
           </div>
           <div>
@@ -41,9 +41,9 @@ export default function MemberProfile() {
             <p className="text-sm text-gray-500 mt-2">Poin yang terkumpul</p>
           </div>
 
-          <div className="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-xl p-6">
+          <div className="bg-gradient-to-br from-plum-50 to-gold-50 rounded-xl p-6">
             <div className="flex items-center gap-3 mb-3">
-              <FaUser className="text-2xl text-cyan-600" />
+              <FaUser className="text-2xl text-plum-600" />
               <span className="font-semibold text-gray-700">Status</span>
             </div>
             <p className="text-3xl font-bold text-gray-800">Aktif</p>
@@ -80,11 +80,11 @@ export default function MemberProfile() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-xl p-6">
+          <div className="bg-gradient-to-br from-plum-50 to-gold-50 rounded-xl p-6">
             <h4 className="font-bold text-gray-800 mb-2">Platinum</h4>
             <p className="text-sm text-gray-600 mb-3">Belanja > Rp 15.000.000</p>
             <div className="flex items-center gap-2">
-              <span className="px-3 py-1 bg-cyan-100 text-cyan-600 rounded-full text-sm font-semibold">15% Diskon</span>
+              <span className="px-3 py-1 bg-plum-100 text-plum-600 rounded-full text-sm font-semibold">15% Diskon</span>
             </div>
           </div>
         </div>

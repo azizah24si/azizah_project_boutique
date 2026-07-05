@@ -20,7 +20,7 @@ export default function Sidebar() {
     `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
     ${
       isActive
-        ? "bg-cyan-400 text-white shadow-md"
+        ? "bg-plum-400 text-white shadow-md"
         : "text-gray-500 hover:bg-gray-50"
     }`;
 
@@ -54,9 +54,9 @@ export default function Sidebar() {
         />
 
         <h1 className="text-xl font-bold text-gray-700 mt-3">
-          Jijah<span className="text-cyan-400">Boutique</span>
+          Jijah<span className="text-plum-400">Boutique</span>
         </h1>
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent mt-3"></div>
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-plum-400 to-transparent mt-3"></div>
       </div>
 
       {/* MENU */}
@@ -84,7 +84,7 @@ export default function Sidebar() {
 
       {/* HELP CARD */}
       <div className="mt-auto">
-        <div className="bg-gradient-to-br from-cyan-400 to-teal-400 rounded-2xl p-6 text-white text-center relative overflow-hidden">
+        <div className="bg-gradient-to-br from-plum-400 to-gold-400 rounded-2xl p-6 text-white text-center relative overflow-hidden">
           
           <div className="absolute inset-0 opacity-10">
             <div className="w-full h-full bg-[radial-gradient(circle,white_1px,transparent_1px)] bg-[size:20px_20px]"></div>
@@ -92,7 +92,7 @@ export default function Sidebar() {
 
           <div className="relative z-10">
             <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mx-auto mb-3">
-              <FaQuestionCircle className="text-2xl text-cyan-400" />
+              <FaQuestionCircle className="text-2xl text-plum-400" />
             </div>
 
             <h3 className="font-bold text-sm mb-2">Need help?</h3>
@@ -101,7 +101,7 @@ export default function Sidebar() {
               Please check our docs
             </p>
 
-            <button className="bg-white text-cyan-400 w-full py-2 rounded-xl font-bold text-xs hover:bg-gray-50 transition">
+            <button className="bg-white text-plum-400 w-full py-2 rounded-xl font-bold text-xs hover:bg-gray-50 transition">
               DOCUMENTATION
             </button>
           </div>

@@ -26,17 +26,19 @@ export default function Button({
 
   const variants = {
     primary:
-      "bg-cyan-400 text-white hover:bg-cyan-500 focus:ring-cyan-300 shadow-sm",
+      "bg-plum-600 text-white hover:bg-plum-700 focus:ring-plum-300 shadow-sm",
     secondary:
       "bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-300",
     danger:
       "bg-red-500 text-white hover:bg-red-600 focus:ring-red-300 shadow-sm",
     ghost:
-      "bg-transparent text-cyan-500 hover:bg-cyan-50 focus:ring-cyan-200",
+      "bg-transparent text-plum-600 hover:bg-plum-50 focus:ring-plum-200",
     outline:
-      "border border-cyan-400 text-cyan-500 hover:bg-cyan-50 focus:ring-cyan-200 bg-transparent",
+      "border border-plum-300 text-plum-600 hover:bg-plum-50 focus:ring-plum-200 bg-transparent",
     gradient:
-      "bg-gradient-to-r from-cyan-500 to-teal-500 text-white hover:shadow-xl hover:scale-105 focus:ring-cyan-300",
+      "bg-gradient-to-r from-plum-500 to-gold-500 text-white hover:shadow-xl hover:shadow-plum-500/30 hover:-translate-y-0.5 focus:ring-plum-300",
+    gold:
+      "bg-gradient-to-r from-gold-500 to-gold-400 text-white hover:shadow-xl hover:shadow-gold-500/30 hover:-translate-y-0.5 focus:ring-gold-300",
   };
 
   const sizes = {

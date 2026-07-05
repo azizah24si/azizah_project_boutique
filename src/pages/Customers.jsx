@@ -86,7 +86,7 @@ export default function Customers() {
   // Fungsi get badge color berdasarkan level
   const getLevelBadgeColor = (level) => {
     switch(level) {
-      case 'Platinum': return 'cyan';
+      case 'Platinum': return 'plum';
       case 'Gold': return 'yellow';
       case 'Silver': return 'gray';
       case 'Bronze': return 'orange';
@@ -101,7 +101,7 @@ export default function Customers() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-2 border-plum-400 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -138,11 +138,11 @@ export default function Customers() {
           </div>
         </Card>
 
-        <Card className="p-4 bg-gradient-to-br from-cyan-50 to-cyan-100 border-cyan-200">
+        <Card className="p-4 bg-gradient-to-br from-plum-50 to-plum-100 border-plum-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-cyan-600 font-medium">Member Platinum</p>
-              <p className="text-2xl font-bold text-cyan-900">{stats.platinum}</p>
+              <p className="text-sm text-plum-600 font-medium">Member Platinum</p>
+              <p className="text-2xl font-bold text-plum-900">{stats.platinum}</p>
             </div>
             <div className="text-4xl">💎</div>
           </div>
@@ -217,7 +217,7 @@ export default function Customers() {
                     <tr key={customer.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold">
+                          <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-br from-plum-400 to-gold-500 rounded-full flex items-center justify-center text-white font-bold">
                             {(customer.full_name || 'U').charAt(0).toUpperCase()}
                           </div>
                           <div className="ml-4">
@@ -241,7 +241,7 @@ export default function Customers() {
                         <button
                           type="button"
                           onClick={() => setSelectedCustomer(customer)}
-                          className="text-cyan-600 hover:text-cyan-900"
+                          className="text-plum-600 hover:text-plum-900"
                         >
                           Detail
                         </button>
@@ -272,7 +272,7 @@ export default function Customers() {
               <div className="p-6">
                 <div className="flex justify-between items-start mb-6">
                   <div className="flex items-center gap-4">
-                    <div className="h-16 w-16 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-2xl">
+                    <div className="h-16 w-16 bg-gradient-to-br from-plum-400 to-gold-500 rounded-full flex items-center justify-center text-white font-bold text-2xl">
                       {(selectedCustomer.full_name || 'U').charAt(0).toUpperCase()}
                     </div>
                     <div>

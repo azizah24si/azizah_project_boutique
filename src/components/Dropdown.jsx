@@ -52,7 +52,7 @@ export default function Dropdown({
                   ${
                     item.danger
                       ? "text-red-500 hover:bg-red-50"
-                      : "text-gray-600 hover:bg-cyan-50 hover:text-cyan-600"
+                      : "text-gray-600 hover:bg-plum-50 hover:text-plum-600"
                   }`}
               >
                 {item.icon && (

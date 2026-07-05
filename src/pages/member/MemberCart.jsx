@@ -36,10 +36,14 @@ export default function MemberCart() {
     }).format(amount);
   };
 
+  // Ongkir gratis untuk member Silver ke atas (sesuai janji di ringkasan pesanan)
+  const isFreeShipping = ["Silver", "Gold", "Platinum"].includes(profile?.member_level);
+  const shippingFee = 15000;
+
   const subtotal = getTotalPrice();
   const discountAmount = subtotal * memberDiscount;
   const afterDiscount = subtotal - discountAmount;
-  const shipping = cartItems.length > 0 ? 15000 : 0;
+  const shipping = cartItems.length === 0 ? 0 : isFreeShipping ? 0 : shippingFee;
   const total = afterDiscount + shipping;
 
   const handleCheckout = async () => {
@@ -81,7 +85,7 @@ export default function MemberCart() {
         discountApplied: discountAmount,
         netAmount: total,
         orderType: "sales",
-        notes: `Member ${profile.member_level} - Diskon ${(memberDiscount * 100).toFixed(0)}% | Sizes: ${cartItems.map(i => i.size || "-").join(", ")} | Colors: ${cartItems.map(i => i.color || "-").join(", ")}`,
+        notes: `Member ${profile.member_level} - Diskon ${(memberDiscount * 100).toFixed(0)}% | Sizes: ${cartItems.map(i => i.size || "-").join(", ")}`,
       });
 
       // Update membership tier after successful order
@@ -129,13 +133,13 @@ export default function MemberCart() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-cyan-500 to-teal-500 rounded-2xl p-6 text-white">
+      <div className="bg-gradient-to-r from-plum-500 to-gold-500 rounded-2xl p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold mb-2">Keranjang Belanja</h1>
-            <p className="text-cyan-100">{cartItems.length} item di keranjang Anda</p>
+            <p className="text-plum-100">{cartItems.length} item di keranjang Anda</p>
           </div>
-          <Badge variant="white" className="text-cyan-600 font-bold text-lg">
+          <Badge variant="white" className="text-plum-600 font-bold text-lg">
             <FaTag className="inline mr-2" />
             Member {profile?.member_level}
           </Badge>
@@ -158,7 +162,6 @@ export default function MemberCart() {
                   <p className="text-sm text-gray-500 mb-2">{item.category}</p>
                   <div className="flex gap-4 text-sm text-gray-600 mb-3">
                     {item.size && <span>Ukuran: <strong>{item.size}</strong></span>}
-                    {item.color && <span>Warna: <strong>{item.color}</strong></span>}
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -177,7 +180,7 @@ export default function MemberCart() {
                       </button>
                     </div>
                     <div className="flex items-center gap-4">
-                      <span className="text-xl font-bold text-cyan-600">
+                      <span className="text-xl font-bold text-plum-600">
                         {formatRupiah(formatPrice(item.price) * item.quantity)}
                       </span>
                       <button
@@ -217,17 +220,24 @@ export default function MemberCart() {
 
               <div className="flex justify-between text-gray-600">
                 <span>Ongkir</span>
-                <span>{formatRupiah(shipping)}</span>
+                {isFreeShipping ? (
+                  <span className="flex items-center gap-2">
+                    <span className="line-through text-gray-400 text-sm">{formatRupiah(shippingFee)}</span>
+                    <span className="font-semibold text-green-600">Gratis</span>
+                  </span>
+                ) : (
+                  <span>{formatRupiah(shipping)}</span>
+                )}
               </div>
             </div>
 
             <div className="flex justify-between text-xl font-bold text-gray-800 mb-6">
               <span>Total</span>
-              <span className="text-cyan-600">{formatRupiah(total)}</span>
+              <span className="text-plum-600">{formatRupiah(total)}</span>
             </div>
 
             {memberDiscount > 0 && (
-              <div className="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-4 mb-4 border border-green-200">
+              <div className="bg-gradient-to-br from-green-50 to-gold-50 rounded-xl p-4 mb-4 border border-green-200">
                 <p className="text-sm font-bold text-green-700 mb-1">
                   🎉 Anda Hemat {formatRupiah(discountAmount)}!
                 </p>
@@ -237,7 +247,7 @@ export default function MemberCart() {
               </div>
             )}
 
-            <div className="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-xl p-4 mb-4">
+            <div className="bg-gradient-to-br from-plum-50 to-gold-50 rounded-xl p-4 mb-4">
               <p className="text-sm text-gray-700 mb-2">
                 <strong>Member {profile.member_level}</strong>
               </p>

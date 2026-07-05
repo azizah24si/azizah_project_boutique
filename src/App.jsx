@@ -28,10 +28,7 @@ const MemberProfile = lazy(() => import("./pages/member/MemberProfile"));
 
 // Lazy Load Guest Pages (Public - Belum Login)
 const GuestHome = lazy(() => import("./guest/pages/Home"));
-const GuestProducts = lazy(() => import("./guest/pages/Products"));
 const GuestProductDetail = lazy(() => import("./guest/pages/ProductDetail"));
-const GuestContact = lazy(() => import("./guest/pages/Contact"));
-const GuestAbout = lazy(() => import("./guest/pages/About"));
 
 const NotFound = lazy(() => import("./pages/NotFound"));
 const ErrorPage = lazy(() => import("./pages/ErrorPage"));
@@ -58,10 +55,7 @@ function App() {
           <Route path="/guest" element={<GuestLayout />}>
             <Route index element={<GuestHome />} />
             <Route path="home" element={<GuestHome />} />
-            <Route path="products" element={<GuestProducts />} />
             <Route path="products/:id" element={<GuestProductDetail />} />
-            <Route path="contact" element={<GuestContact />} />
-            <Route path="about" element={<GuestAbout />} />
           </Route>
 
           {/* 🔐 ADMIN LAYOUT - Protected (admin role only) */}
@@ -133,6 +127,9 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot" element={<Forgot />} />
           </Route>
+
+          {/* 🔹 404 NOT FOUND */}
+          <Route path="*" element={<NotFound />} />
 
         </Routes>
       </Suspense>

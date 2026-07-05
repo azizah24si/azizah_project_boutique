@@ -4,44 +4,101 @@ import { supabase } from "../lib/supabase";
 export const ensureCustomer = async (customerData, userId = null) => {
   const { full_name, email, phone } = customerData;
 
-  // Check if customer exists (remove .single() to avoid error if no record)
-  let { data: existingList, error: searchError } = await supabase
-    .from("customers")
-    .select("*")
-    .eq("email", email);
+  try {
+    console.log("🔍 ensureCustomer called with:", { full_name, email, phone, userId });
 
-  if (searchError) throw searchError;
-
-  const existing = existingList && existingList.length > 0 ? existingList[0] : null;
-
-  if (existing) {
-    // Update user_id if provided and not set
-    if (userId && !existing.user_id) {
-      const { data: updated } = await supabase
+    // First, check if customer exists by user_id (if provided)
+    if (userId) {
+      console.log("Checking by user_id:", userId);
+      const { data: byUserId, error: userIdError } = await supabase
         .from("customers")
-        .update({ user_id: userId })
-        .eq("id", existing.id)
-        .select()
-        .single();
-      return updated || existing;
+        .select("*")
+        .eq("user_id", userId);
+
+      if (userIdError) {
+        console.error("Error checking by user_id:", userIdError);
+        throw userIdError;
+      }
+
+      if (byUserId && byUserId.length > 0) {
+        console.log("✅ Found customer by user_id:", byUserId[0].id);
+        // Update customer info if needed
+        const { data: updated, error: updateError } = await supabase
+          .from("customers")
+          .update({ full_name, phone })
+          .eq("id", byUserId[0].id)
+          .select();
+
+        if (updateError) {
+          console.error("Error updating customer:", updateError);
+          throw updateError;
+        }
+        
+        console.log("✅ Updated customer:", updated);
+        return updated && updated.length > 0 ? updated[0] : byUserId[0];
+      }
     }
-    return existing;
+
+    // Check if customer exists by email
+    console.log("Checking by email:", email);
+    const { data: byEmail, error: emailError } = await supabase
+      .from("customers")
+      .select("*")
+      .eq("email", email);
+
+    if (emailError) {
+      console.error("Error checking by email:", emailError);
+      throw emailError;
+    }
+
+    if (byEmail && byEmail.length > 0) {
+      console.log("✅ Found customer by email:", byEmail[0].id);
+      const customer = byEmail[0];
+      
+      // Update customer info
+      const updateData = { full_name, phone };
+      if (userId && !customer.user_id) {
+        updateData.user_id = userId;
+      }
+
+      const { data: updated, error: updateError } = await supabase
+        .from("customers")
+        .update(updateData)
+        .eq("id", customer.id)
+        .select();
+
+      if (updateError) {
+        console.error("Error updating customer:", updateError);
+        throw updateError;
+      }
+
+      console.log("✅ Updated customer:", updated);
+      return updated && updated.length > 0 ? updated[0] : customer;
+    }
+
+    // Create new customer only if no existing record found
+    console.log("Creating new customer...");
+    const { data: newCustomer, error: insertError } = await supabase
+      .from("customers")
+      .insert([{
+        full_name,
+        email,
+        phone,
+        user_id: userId,
+      }])
+      .select();
+
+    if (insertError) {
+      console.error("Error creating customer:", insertError);
+      throw insertError;
+    }
+
+    console.log("✅ Created new customer:", newCustomer);
+    return newCustomer && newCustomer.length > 0 ? newCustomer[0] : newCustomer;
+  } catch (error) {
+    console.error("❌ Error in ensureCustomer:", error);
+    throw error;
   }
-
-  // Create new customer
-  const { data: newCustomer, error } = await supabase
-    .from("customers")
-    .insert([{
-      full_name,
-      email,
-      phone,
-      user_id: userId,
-    }])
-    .select()
-    .single();
-
-  if (error) throw error;
-  return newCustomer;
 };
 
 // Create a sales order

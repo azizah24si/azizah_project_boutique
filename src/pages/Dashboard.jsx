@@ -29,6 +29,7 @@ export default function Dashboard() {
     totalSales: 0,
   });
   const [recentOrders, setRecentOrders] = useState([]);
+  const [topProducts, setTopProducts] = useState([]);
 
   useEffect(() => {
     loadDashboardData();
@@ -71,6 +72,62 @@ export default function Dashboard() {
           status: order.status,
         }));
 
+      // 6. Calculate top selling products from REAL data
+      const productSales = {};
+      
+      completedOrders.forEach(order => {
+        if (order.items && Array.isArray(order.items)) {
+          order.items.forEach(item => {
+            const productId = item.product_id;
+            if (!productSales[productId]) {
+              productSales[productId] = {
+                id: productId,
+                name: item.product_name || "Unknown Product",
+                totalQty: 0,
+                totalRevenue: 0,
+                orders: 0,
+              };
+            }
+            productSales[productId].totalQty += item.quantity || 0;
+            productSales[productId].totalRevenue += (item.price * item.quantity) || 0;
+            productSales[productId].orders += 1;
+          });
+        }
+      });
+
+      // Convert to array and sort
+      let topProductsArray = Object.values(productSales)
+        .sort((a, b) => b.totalQty - a.totalQty)
+        .slice(0, 6);
+
+      // If no sales data, use sample data from existing products
+      if (topProductsArray.length === 0 && products.length > 0) {
+        topProductsArray = products.slice(0, 6).map((p, idx) => {
+          // Simulate sales data
+          const simulatedQty = Math.floor(Math.random() * 50) + 10; // 10-60 pcs
+          const simulatedRevenue = p.price * simulatedQty;
+          
+          return {
+            id: p.id,
+            name: p.name,
+            totalQty: simulatedQty,
+            totalRevenue: simulatedRevenue,
+            orders: Math.floor(simulatedQty / 3), // Average 3 items per order
+            isSimulated: true, // Flag untuk tahu ini data sample
+          };
+        }).sort((a, b) => b.totalQty - a.totalQty);
+      }
+
+      // Calculate percentage and status
+      if (topProductsArray.length > 0) {
+        const maxQty = Math.max(...topProductsArray.map(x => x.totalQty));
+        topProductsArray = topProductsArray.map(p => ({
+          ...p,
+          salesPercentage: maxQty > 0 ? Math.round((p.totalQty / maxQty) * 100) : 0,
+          status: p.totalQty > maxQty * 0.7 ? "Best Seller" : p.totalQty > maxQty * 0.4 ? "Popular" : "Normal",
+        }));
+      }
+
       setStats({
         totalProducts: products.length,
         totalCustomers: customers?.length || 0,
@@ -78,6 +135,7 @@ export default function Dashboard() {
         totalSales: totalSalesAmount,
       });
       setRecentOrders(recent);
+      setTopProducts(topProductsArray);
 
     } catch (error) {
       console.error("Error loading dashboard data:", error);
@@ -92,7 +150,7 @@ export default function Dashboard() {
       value: loading ? "..." : stats.totalProducts.toString(),
       trend: "+0%",
       icon: <FaShoppingBag />,
-      iconColor: "cyan",
+      iconColor: "plum",
     },
     {
       title: "Total Pelanggan",
@@ -124,14 +182,20 @@ export default function Dashboard() {
   ];
 
   const statusBadge = {
-    Working: <Badge variant="cyan" dot>Working</Badge>,
+    Working: <Badge variant="plum" dot>Working</Badge>,
     Done: <Badge variant="green" dot>Done</Badge>,
     Canceled: <Badge variant="red" dot>Canceled</Badge>,
   };
 
+  const productStatusBadge = {
+    "Best Seller": <Badge variant="green" dot>Best Seller</Badge>,
+    "Popular": <Badge variant="plum" dot>Popular</Badge>,
+    "Normal": <Badge variant="gray" dot>Normal</Badge>,
+  };
+
   const tabs = [
     { key: "overview", label: "Overview" },
-    { key: "projects", label: "Projects", badge: projects.length },
+    { key: "products", label: "Top Products", badge: topProducts.length },
     { key: "orders", label: "Orders", badge: orders.length },
   ];
 
@@ -167,7 +231,7 @@ export default function Dashboard() {
 
       {/* BANNER */}
       <div className="grid grid-cols-3 gap-6">
-        <div className="bg-gradient-to-br from-cyan-400 via-teal-400 to-cyan-500 rounded-2xl p-8 text-white col-span-2 relative overflow-hidden">
+        <div className="bg-gradient-to-br from-plum-400 via-gold-400 to-plum-500 rounded-2xl p-8 text-white col-span-2 relative overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             <div className="w-full h-full bg-[radial-gradient(circle,white_1px,transparent_1px)] bg-[size:25px_25px]"></div>
           </div>
@@ -216,7 +280,7 @@ export default function Dashboard() {
           </div>
           <div className="grid grid-cols-4 gap-3 text-center">
             {[
-              { icon: <FaUsers className="text-cyan-400 text-xs" />, label: "Customers", val: stats.totalCustomers },
+              { icon: <FaUsers className="text-plum-400 text-xs" />, label: "Customers", val: stats.totalCustomers },
               { icon: <FaChartLine className="text-green-400 text-xs" />, label: "Orders", val: recentOrders.length },
               { icon: <FaShoppingBag className="text-orange-400 text-xs" />, label: "Products", val: stats.totalProducts },
               { icon: <FaChartLine className="text-pink-400 text-xs" />, label: "Pending", val: stats.newOrders },
@@ -232,7 +296,7 @@ export default function Dashboard() {
 
         <div className="bg-white rounded-2xl p-6 col-span-2 shadow-sm">
           <h3 className="text-lg font-bold text-gray-700">Pelanggan Overview</h3>
-          <p className="text-cyan-500 text-sm font-bold mt-1">Total {stats.totalCustomers} pelanggan terdaftar</p>
+          <p className="text-plum-500 text-sm font-bold mt-1">Total {stats.totalCustomers} pelanggan terdaftar</p>
           <div className="mt-8 h-56 relative">
             <svg viewBox="0 0 500 200" className="w-full h-full" fill="none">
               <defs>
@@ -253,7 +317,69 @@ export default function Dashboard() {
       <div className="bg-white rounded-2xl shadow-sm p-6">
         <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} variant="underline" className="mb-6" />
 
-        {/* PROJECTS TAB */}
+        {/* TOP PRODUCTS TAB */}
+        {activeTab === "products" && (
+          <>
+            {topProducts.length > 0 ? (
+              <>
+                {/* Info Banner if using simulated data */}
+                {topProducts[0]?.isSimulated && (
+                  <div className="mb-4 p-3 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <span className="text-blue-600">ℹ️</span>
+                      <p className="text-sm text-blue-800">
+                        <strong>Info:</strong> Menampilkan data simulasi. Data akan berubah menjadi data penjualan asli setelah ada transaksi selesai.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <table className="w-full">
+                  <thead>
+                    <tr className="text-left text-xs text-gray-400 uppercase">
+                      <th className="pb-4 font-bold">Nama Produk</th>
+                      <th className="pb-4 font-bold">Total Terjual</th>
+                      <th className="pb-4 font-bold">Status</th>
+                      <th className="pb-4 font-bold">Sales Performance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {topProducts.map((item, index) => (
+                      <tr key={item.id || index} className="border-t border-gray-100">
+                        <td className="py-4 text-sm font-semibold text-gray-700">{item.name}</td>
+                        <td className="py-4 text-sm text-gray-600">
+                          <div>
+                            <span className="font-bold text-lg text-plum-600">{item.totalQty}</span>
+                            <span className="text-xs text-gray-500"> pcs</span>
+                            <p className="text-xs text-gray-400 mt-1">
+                              Revenue: Rp {item.totalRevenue.toLocaleString("id-ID")}
+                            </p>
+                          </div>
+                        </td>
+                        <td className="py-4">{productStatusBadge[item.status]}</td>
+                        <td className="py-4 w-48">
+                          <ProgressBar 
+                            value={item.salesPercentage} 
+                            size="md" 
+                            color={item.status === "Best Seller" ? "green" : item.status === "Popular" ? "plum" : "gray"} 
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </>
+            ) : (
+              <div className="text-center py-12 text-gray-400">
+                <p className="text-2xl mb-2">📊</p>
+                <p>Belum ada data penjualan produk</p>
+                <p className="text-sm mt-1">Data akan muncul setelah ada transaksi selesai</p>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* PROJECTS TAB - KEEP FOR REFERENCE */}
         {activeTab === "projects" && (
           <table className="w-full">
             <thead>
@@ -271,7 +397,7 @@ export default function Dashboard() {
                   <td className="py-4 text-sm text-gray-600">{item.budget}</td>
                   <td className="py-4">{statusBadge[item.status]}</td>
                   <td className="py-4 w-48">
-                    <ProgressBar value={item.completion} size="md" color={item.status === "Canceled" ? "pink" : item.completion === 100 ? "green" : "cyan"} />
+                    <ProgressBar value={item.completion} size="md" color={item.status === "Canceled" ? "pink" : item.completion === 100 ? "green" : "plum"} />
                   </td>
                 </tr>
               ))}
@@ -285,7 +411,7 @@ export default function Dashboard() {
             {recentOrders.length > 0 ? (
               recentOrders.map((item, index) => (
                 <div key={index} className="flex gap-4 items-center">
-                  <Avatar name={item.avatar} size="sm" color={["cyan", "pink", 
+                  <Avatar name={item.avatar} size="sm" color={["plum", "pink", 
                     "green", "orange", "purple"][index % 5]} />
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-gray-700">{item.item}</p>
@@ -311,17 +437,23 @@ export default function Dashboard() {
         {activeTab === "overview" && (
           <div className="grid grid-cols-2 gap-6">
             <div>
-              <h3 className="font-bold text-gray-700 mb-4">Projects Overview</h3>
-              <div className="space-y-4">
-                {projects.slice(0, 4).map((item, i) => (
-                  <ProgressBar
-                    key={i}
-                    label={item.name}
-                    value={item.completion}
-                    color={item.status === "Canceled" ? "pink" : item.completion === 100 ? "green" : "cyan"}
-                  />
-                ))}
-              </div>
+              <h3 className="font-bold text-gray-700 mb-4">Top Selling Products</h3>
+              {topProducts.length > 0 ? (
+                <div className="space-y-4">
+                  {topProducts.slice(0, 4).map((item, i) => (
+                    <ProgressBar
+                      key={i}
+                      label={`${item.name} (${item.totalQty} pcs)`}
+                      value={item.salesPercentage}
+                      color={item.status === "Best Seller" ? "green" : item.status === "Popular" ? "plum" : "gray"}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 bg-gray-50 rounded-lg">
+                  <p className="text-sm text-gray-500">Belum ada data penjualan</p>
+                </div>
+              )}
             </div>
             <div>
               <h3 className="font-bold text-gray-700 mb-4">Recent Orders</h3>

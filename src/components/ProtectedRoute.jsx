@@ -19,7 +19,7 @@ const ProtectedRoute = ({ allowedRoles }) => {
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-2 border-plum-400 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }

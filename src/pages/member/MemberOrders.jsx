@@ -56,11 +56,11 @@ export default function MemberOrders() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="p-4 bg-gradient-to-br from-cyan-50 to-cyan-100 border-cyan-200">
+        <Card className="p-4 bg-gradient-to-br from-plum-50 to-plum-100 border-plum-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-cyan-600 font-medium">Total Pesanan</p>
-              <p className="text-3xl font-bold text-cyan-900">{orders.length}</p>
+              <p className="text-sm text-plum-600 font-medium">Total Pesanan</p>
+              <p className="text-3xl font-bold text-plum-900">{orders.length}</p>
             </div>
             <div className="text-4xl">📦</div>
           </div>
@@ -97,7 +97,7 @@ export default function MemberOrders() {
           onClick={() => setActiveTab("all")}
           className={`px-6 py-2 rounded-lg font-semibold transition ${
             activeTab === "all"
-              ? "bg-cyan-500 text-white shadow"
+              ? "bg-plum-500 text-white shadow"
               : "bg-white text-gray-700 hover:bg-gray-50"
           }`}
         >
@@ -107,7 +107,7 @@ export default function MemberOrders() {
           onClick={() => setActiveTab("sales")}
           className={`px-6 py-2 rounded-lg font-semibold transition ${
             activeTab === "sales"
-              ? "bg-cyan-500 text-white shadow"
+              ? "bg-plum-500 text-white shadow"
               : "bg-white text-gray-700 hover:bg-gray-50"
           }`}
         >
@@ -117,7 +117,7 @@ export default function MemberOrders() {
           onClick={() => setActiveTab("reservation")}
           className={`px-6 py-2 rounded-lg font-semibold transition ${
             activeTab === "reservation"
-              ? "bg-cyan-500 text-white shadow"
+              ? "bg-plum-500 text-white shadow"
               : "bg-white text-gray-700 hover:bg-gray-50"
           }`}
         >
@@ -128,7 +128,7 @@ export default function MemberOrders() {
       {/* Loading State */}
       {loading && (
         <Card className="p-12 text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-plum-500 mx-auto"></div>
           <p className="text-gray-600 mt-4">Memuat pesanan...</p>
         </Card>
       )}
@@ -143,7 +143,7 @@ export default function MemberOrders() {
           <p className="text-gray-600 mb-8">Mulai belanja dan lihat pesanan Anda di sini</p>
           <a
             href="/guest/products"
-            className="inline-block px-8 py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-bold rounded-xl hover:shadow-xl transition"
+            className="inline-block px-8 py-3 bg-gradient-to-r from-plum-500 to-gold-500 text-white font-bold rounded-xl hover:shadow-xl transition"
           >
             Belanja Sekarang
           </a>
@@ -157,9 +157,9 @@ export default function MemberOrders() {
             <Card key={order.id} className="p-6 hover:shadow-lg transition">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-cyan-50 to-teal-50 rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-plum-50 to-gold-50 rounded-xl flex items-center justify-center">
                     {order.order_type === "sales" ? (
-                      <FaShoppingBag className="text-cyan-500 text-xl" />
+                      <FaShoppingBag className="text-plum-500 text-xl" />
                     ) : (
                       <FaCalendar className="text-purple-500 text-xl" />
                     )}
@@ -230,7 +230,7 @@ export default function MemberOrders() {
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                   <div>
                     <p className="text-xs text-gray-500">Total Pembayaran</p>
-                    <p className="text-2xl font-bold text-cyan-600">
+                    <p className="text-2xl font-bold text-plum-600">
                       Rp {order.net_amount?.toLocaleString("id-ID")}
                     </p>
                   </div>

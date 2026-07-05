@@ -20,7 +20,7 @@ export default function Alert({
 }) {
   const variants = {
     info: {
-      wrapper: "bg-cyan-50 border border-cyan-200 text-cyan-700",
+      wrapper: "bg-plum-50 border border-plum-200 text-plum-700",
       icon: "ℹ️",
     },
     success: {

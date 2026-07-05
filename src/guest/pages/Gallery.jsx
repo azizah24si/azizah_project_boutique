@@ -45,7 +45,7 @@ export default function Gallery() {
               onClick={() => setActiveCategory(category)}
               className={`px-6 py-3 rounded-xl font-semibold transition-all ${
                 activeCategory === category
-                  ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-lg scale-105"
+                  ? "bg-gradient-to-r from-plum-500 to-gold-500 text-white shadow-lg scale-105"
                   : "bg-white text-gray-700 hover:bg-gray-100"
               }`}
             >
@@ -70,7 +70,7 @@ export default function Gallery() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                 <div className="absolute bottom-4 left-4 right-4">
                   <p className="text-white font-semibold">{image.title}</p>
-                  <p className="text-cyan-300 text-sm">{image.category}</p>
+                  <p className="text-plum-300 text-sm">{image.category}</p>
                 </div>
               </div>
             </div>
@@ -109,7 +109,7 @@ export default function Gallery() {
             />
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 mt-4 text-white text-center">
               <h3 className="text-xl font-bold mb-1">{selectedImage.title}</h3>
-              <p className="text-cyan-300">{selectedImage.category}</p>
+              <p className="text-plum-300">{selectedImage.category}</p>
             </div>
           </div>
         </div>

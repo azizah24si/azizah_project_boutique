@@ -25,7 +25,7 @@ export default function Tabs({
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all
               ${
                 activeTab === tab.key
-                  ? "bg-cyan-400 text-white shadow-sm"
+                  ? "bg-plum-700 text-white shadow-sm"
                   : "bg-gray-100 text-gray-500 hover:bg-gray-200"
               }`}
           >
@@ -59,7 +59,7 @@ export default function Tabs({
             className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold border-b-2 transition-all -mb-px
               ${
                 activeTab === tab.key
-                  ? "border-cyan-400 text-cyan-500"
+                  ? "border-plum-600 text-plum-700"
                   : "border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-300"
               }`}
           >
@@ -69,7 +69,7 @@ export default function Tabs({
               <span
                 className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
                   activeTab === tab.key
-                    ? "bg-cyan-100 text-cyan-600"
+                    ? "bg-plum-100 text-plum-600"
                     : "bg-gray-100 text-gray-500"
                 }`}
               >

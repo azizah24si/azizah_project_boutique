@@ -39,7 +39,7 @@ export default function Profile() {
           <p className="text-gray-600 mb-8">Silakan login untuk melihat profil Anda</p>
           <Link
             to="/login"
-            className="inline-block px-8 py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-bold rounded-xl hover:shadow-xl transition"
+            className="inline-block px-8 py-3 bg-gradient-to-r from-plum-500 to-gold-500 text-white font-bold rounded-xl hover:shadow-xl transition"
           >
             Login
           </Link>
@@ -54,7 +54,7 @@ export default function Profile() {
         {/* Back Button */}
         <Link
           to="/guest/home"
-          className="inline-flex items-center gap-2 mb-6 text-gray-600 hover:text-cyan-600 transition"
+          className="inline-flex items-center gap-2 mb-6 text-gray-600 hover:text-plum-600 transition"
         >
           <FaArrowLeft />
           <span className="font-medium">Kembali</span>
@@ -69,7 +69,7 @@ export default function Profile() {
         {/* Profile Card */}
         <div className="bg-white rounded-2xl p-8 shadow-sm mb-6">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6 mb-8">
-            <div className="w-24 h-24 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-2xl flex items-center justify-center text-white text-4xl font-bold shrink-0">
+            <div className="w-24 h-24 bg-gradient-to-br from-plum-400 to-gold-500 rounded-2xl flex items-center justify-center text-white text-4xl font-bold shrink-0">
               {(profile?.full_name || "U").charAt(0).toUpperCase()}
             </div>
             <div className="text-center md:text-left flex-1">
@@ -101,9 +101,9 @@ export default function Profile() {
               <p className="text-sm text-gray-500 mt-2">Poin terkumpul</p>
             </div>
 
-            <div className="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-xl p-6">
+            <div className="bg-gradient-to-br from-plum-50 to-gold-50 rounded-xl p-6">
               <div className="flex items-center gap-3 mb-3">
-                <FaShoppingBag className="text-2xl text-cyan-600" />
+                <FaShoppingBag className="text-2xl text-plum-600" />
                 <span className="font-semibold text-gray-700">Total Pesanan</span>
               </div>
               <p className="text-3xl font-bold text-gray-800">
@@ -130,7 +130,7 @@ export default function Profile() {
           <Link to="/guest/products" className="block">
             <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition group">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+                <div className="w-14 h-14 bg-gradient-to-br from-plum-400 to-gold-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
                   <FaShoppingBag className="text-2xl text-white" />
                 </div>
                 <div>
@@ -193,14 +193,14 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-xl p-6 border-2 border-cyan-300">
+            <div className="bg-gradient-to-br from-plum-50 to-gold-50 rounded-xl p-6 border-2 border-plum-300">
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-xl font-bold text-gray-800">Platinum</h4>
                 <span className="text-3xl">💎</span>
               </div>
               <p className="text-sm text-gray-600 mb-3">Belanja &gt; Rp 15.000.000</p>
               <div className="flex items-center gap-2">
-                <span className="px-4 py-2 bg-cyan-200 text-cyan-700 rounded-lg text-sm font-bold">15% Diskon</span>
+                <span className="px-4 py-2 bg-plum-200 text-plum-700 rounded-lg text-sm font-bold">15% Diskon</span>
               </div>
             </div>
           </div>

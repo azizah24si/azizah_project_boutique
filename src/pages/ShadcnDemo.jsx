@@ -180,15 +180,15 @@ export default function ShadcnDemo() {
       </div>
 
       {/* INFO BOX */}
-      <div className="bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-2xl p-6">
-        <h3 className="text-lg font-bold text-cyan-800 mb-2">
+      <div className="bg-gradient-to-r from-plum-50 to-blue-50 border-2 border-plum-200 rounded-2xl p-6">
+        <h3 className="text-lg font-bold text-plum-800 mb-2">
           ✅ Instalasi Berhasil!
         </h3>
-        <p className="text-sm text-cyan-700 mb-4">
+        <p className="text-sm text-plum-700 mb-4">
           Komponen shadcn/ui sudah berhasil diinstall dan siap digunakan untuk project boutique.
         </p>
         <div className="bg-white rounded-lg p-4 text-sm font-mono text-gray-700">
-          <p className="text-cyan-600 font-bold mb-2">Komponen yang terinstall:</p>
+          <p className="text-plum-600 font-bold mb-2">Komponen yang terinstall:</p>
           <ul className="space-y-1 list-disc list-inside">
             <li>✓ Skeleton - Loading placeholder</li>
             <li>✓ Dialog - Modal component</li>

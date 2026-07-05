@@ -67,7 +67,7 @@ export default function Cart() {
         discountApplied: 0,
         netAmount: total,
         orderType: "sales",
-        notes: `Sizes: ${cartItems.map(i => i.size || "-").join(", ")} | Colors: ${cartItems.map(i => i.color || "-").join(", ")}`,
+        notes: `Sizes: ${cartItems.map(i => i.size || "-").join(", ")}`,
       });
 
       // Clear cart
@@ -95,7 +95,7 @@ export default function Cart() {
           <p className="text-gray-600 mb-8">Belum ada produk di keranjang Anda</p>
           <Link
             to="/guest/products"
-            className="inline-block px-8 py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-bold rounded-xl hover:shadow-xl transition"
+            className="inline-block px-8 py-3 bg-gradient-to-r from-plum-500 to-gold-500 text-white font-bold rounded-xl hover:shadow-xl transition"
           >
             Mulai Belanja
           </Link>
@@ -110,7 +110,7 @@ export default function Cart() {
         {/* Back Button */}
         <Link
           to="/guest/products"
-          className="inline-flex items-center gap-2 mb-6 text-gray-600 hover:text-cyan-600 transition"
+          className="inline-flex items-center gap-2 mb-6 text-gray-600 hover:text-plum-600 transition"
         >
           <FaArrowLeft />
           <span className="font-medium">Lanjut Belanja</span>
@@ -138,7 +138,6 @@ export default function Cart() {
                     <p className="text-sm text-gray-500 mb-2">{item.category}</p>
                     <div className="flex gap-4 text-sm text-gray-600 mb-3">
                       {item.size && <span>Ukuran: <strong>{item.size}</strong></span>}
-                      {item.color && <span>Warna: <strong>{item.color}</strong></span>}
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -157,7 +156,7 @@ export default function Cart() {
                         </button>
                       </div>
                       <div className="flex items-center gap-4">
-                        <span className="text-xl font-bold text-cyan-600">
+                        <span className="text-xl font-bold text-plum-600">
                           {formatRupiah(formatPrice(item.price) * item.quantity)}
                         </span>
                         <button
@@ -192,7 +191,7 @@ export default function Cart() {
 
               <div className="flex justify-between text-xl font-bold text-gray-800 mb-6">
                 <span>Total</span>
-                <span className="text-cyan-600">{formatRupiah(total)}</span>
+                <span className="text-plum-600">{formatRupiah(total)}</span>
               </div>
 
               {!user && (
@@ -204,7 +203,7 @@ export default function Cart() {
               )}
 
               {user && profile && (
-                <div className="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-xl p-4 mb-4">
+                <div className="bg-gradient-to-br from-plum-50 to-gold-50 rounded-xl p-4 mb-4">
                   <p className="text-sm text-gray-700 mb-2">
                     <strong>Member {profile.member_level}</strong>
                   </p>
@@ -217,7 +216,7 @@ export default function Cart() {
               <button
                 onClick={handleCheckout}
                 disabled={loading}
-                className="w-full py-4 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-bold text-lg rounded-xl hover:shadow-xl hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-4 bg-gradient-to-r from-plum-500 to-gold-500 text-white font-bold text-lg rounded-xl hover:shadow-xl hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Memproses..." : "Checkout Sekarang"}
               </button>

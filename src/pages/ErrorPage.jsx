@@ -7,7 +7,7 @@ export default function ErrorPage({ code, description, image }) {
     <div className="flex flex-col items-center justify-center min-h-[70vh] text-center p-6 bg-[#f8f9fb]">
       <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-10 max-w-lg w-full">
         <img src={image} alt="Error Illustration" className="w-64 mx-auto mb-6" />
-        <h1 className="text-7xl font-black text-cyan-400">{code}</h1>
+        <h1 className="text-7xl font-black text-plum-400">{code}</h1>
         <p className="text-2xl font-bold text-gray-700 mt-4">{description}</p>
 
         <div className="mt-6">

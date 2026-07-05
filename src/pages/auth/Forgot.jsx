@@ -34,7 +34,7 @@ export default function Forgot() {
 
       <p className="text-center text-gray-500 text-sm mt-6">
         Ingat password?{" "}
-        <NavLink to="/login" className="text-cyan-400 font-semibold hover:underline">
+        <NavLink to="/login" className="text-plum-400 font-semibold hover:underline">
           Sign in
         </NavLink>
       </p>

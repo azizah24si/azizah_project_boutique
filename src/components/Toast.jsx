@@ -72,8 +72,8 @@ function Toast({ title, description, variant, onClose }) {
       icon: <FaExclamationCircle className="text-yellow-500" />,
     },
     info: {
-      bg: "bg-white border-cyan-200",
-      icon: <FaInfoCircle className="text-cyan-500" />,
+      bg: "bg-white border-plum-200",
+      icon: <FaInfoCircle className="text-plum-500" />,
     },
   };
 

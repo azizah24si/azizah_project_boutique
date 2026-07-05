@@ -41,7 +41,7 @@ export default function MyOrders() {
   };
 
   const typeIcons = {
-    sales: <FaShoppingBag className="text-cyan-500" />,
+    sales: <FaShoppingBag className="text-plum-500" />,
     reservation: <FaCalendar className="text-purple-500" />,
   };
 
@@ -58,7 +58,7 @@ export default function MyOrders() {
           <p className="text-gray-600 mb-8">Silakan login untuk melihat pesanan Anda</p>
           <Link
             to="/login"
-            className="inline-block px-8 py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-bold rounded-xl hover:shadow-xl transition"
+            className="inline-block px-8 py-3 bg-gradient-to-r from-plum-500 to-gold-500 text-white font-bold rounded-xl hover:shadow-xl transition"
           >
             Login
           </Link>
@@ -73,7 +73,7 @@ export default function MyOrders() {
         {/* Back Button */}
         <Link
           to="/guest/home"
-          className="inline-flex items-center gap-2 mb-6 text-gray-600 hover:text-cyan-600 transition"
+          className="inline-flex items-center gap-2 mb-6 text-gray-600 hover:text-plum-600 transition"
         >
           <FaArrowLeft />
           <span className="font-medium">Kembali</span>
@@ -91,7 +91,7 @@ export default function MyOrders() {
             onClick={() => setActiveTab("all")}
             className={`px-6 py-3 rounded-xl font-semibold transition ${
               activeTab === "all"
-                ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-lg"
+                ? "bg-gradient-to-r from-plum-500 to-gold-500 text-white shadow-lg"
                 : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
           >
@@ -101,7 +101,7 @@ export default function MyOrders() {
             onClick={() => setActiveTab("sales")}
             className={`px-6 py-3 rounded-xl font-semibold transition ${
               activeTab === "sales"
-                ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-lg"
+                ? "bg-gradient-to-r from-plum-500 to-gold-500 text-white shadow-lg"
                 : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
           >
@@ -111,7 +111,7 @@ export default function MyOrders() {
             onClick={() => setActiveTab("reservation")}
             className={`px-6 py-3 rounded-xl font-semibold transition ${
               activeTab === "reservation"
-                ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-lg"
+                ? "bg-gradient-to-r from-plum-500 to-gold-500 text-white shadow-lg"
                 : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
           >
@@ -122,7 +122,7 @@ export default function MyOrders() {
         {/* Loading State */}
         {loading && (
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-plum-500 mx-auto"></div>
             <p className="text-gray-600 mt-4">Memuat pesanan...</p>
           </div>
         )}
@@ -137,7 +137,7 @@ export default function MyOrders() {
             <p className="text-gray-600 mb-8">Mulai belanja dan lihat pesanan Anda di sini</p>
             <Link
               to="/guest/products"
-              className="inline-block px-8 py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-bold rounded-xl hover:shadow-xl transition"
+              className="inline-block px-8 py-3 bg-gradient-to-r from-plum-500 to-gold-500 text-white font-bold rounded-xl hover:shadow-xl transition"
             >
               Belanja Sekarang
             </Link>
@@ -150,7 +150,7 @@ export default function MyOrders() {
               <div key={order.id} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-cyan-50 to-teal-50 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-plum-50 to-gold-50 rounded-xl flex items-center justify-center">
                       {typeIcons[order.order_type]}
                     </div>
                     <div>
@@ -209,12 +209,12 @@ export default function MyOrders() {
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                     <div>
                       <p className="text-xs text-gray-500">Total</p>
-                      <p className="text-xl font-bold text-cyan-600">
+                      <p className="text-xl font-bold text-plum-600">
                         Rp {order.net_amount?.toLocaleString("id-ID")}
                       </p>
                     </div>
                     {order.notes && (
-                      <button className="text-sm text-cyan-600 hover:underline">
+                      <button className="text-sm text-plum-600 hover:underline">
                         Lihat Detail
                       </button>
                     )}

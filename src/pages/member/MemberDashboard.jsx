@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { FaShoppingBag, FaStar, FaGift, FaHistory } from "react-icons/fa";
+import { FaShoppingBag, FaHistory, FaTag } from "react-icons/fa";
 import { useAuth } from "../../contexts/AuthContext";
 import { getMyOrders } from "../../services/ordersAPI";
+import { getDiscountRate } from "../../utils/membership";
+import MembershipCard from "../../components/MembershipCard";
 
 export default function MemberDashboard() {
   const { profile, user } = useAuth();
@@ -29,53 +31,38 @@ export default function MemberDashboard() {
     .filter(o => o.status === "completed")
     .reduce((sum, order) => sum + (order.net_amount || 0), 0);
 
+  const discountPercent = (getDiscountRate(profile?.member_level) * 100).toFixed(0);
+
   return (
     <div className="p-6 space-y-6">
-      {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-cyan-500 to-teal-500 rounded-2xl p-8 text-white">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-            <FaStar className="text-3xl" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold">Selamat Datang, {profile?.full_name}!</h1>
-            <p className="text-cyan-100 mt-1">Member Dashboard - Nikmati kemudahan berbelanja</p>
-          </div>
-        </div>
-      </div>
+      {/* Membership Card — hero element of the member dashboard */}
+      <MembershipCard
+        name={profile?.full_name}
+        tier={profile?.member_level || "Bronze"}
+        points={profile?.loyalty_points || 0}
+        totalSpending={totalSpent}
+        memberSince={profile?.created_at}
+      />
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-2xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-              <FaStar className="text-2xl text-yellow-600" />
+            <div className="w-12 h-12 bg-plum-100 rounded-xl flex items-center justify-center">
+              <FaTag className="text-2xl text-plum-600" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Member Level</p>
-              <p className="text-2xl font-bold text-gray-800">{profile?.member_level || "Bronze"}</p>
+              <p className="text-sm text-gray-500">Diskon Aktif</p>
+              <p className="text-2xl font-bold text-gray-800">{discountPercent}%</p>
             </div>
           </div>
-          <p className="text-xs text-gray-400">Status membership Anda saat ini</p>
+          <p className="text-xs text-gray-400">Otomatis diterapkan tiap checkout</p>
         </div>
 
         <div className="bg-white rounded-2xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center">
-              <FaGift className="text-2xl text-pink-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Loyalty Points</p>
-              <p className="text-2xl font-bold text-gray-800">{profile?.loyalty_points || 0}</p>
-            </div>
-          </div>
-          <p className="text-xs text-gray-400">Poin yang sudah Anda kumpulkan</p>
-        </div>
-
-        <div className="bg-white rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center">
-              <FaShoppingBag className="text-2xl text-cyan-600" />
+            <div className="w-12 h-12 bg-gold-100 rounded-xl flex items-center justify-center">
+              <FaShoppingBag className="text-2xl text-gold-700" />
             </div>
             <div>
               <p className="text-sm text-gray-500">Total Pesanan</p>
@@ -108,7 +95,7 @@ export default function MemberDashboard() {
         <a href="/member/products" className="block">
           <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition group cursor-pointer">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+              <div className="w-14 h-14 bg-gradient-to-br from-plum-400 to-gold-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
                 <FaShoppingBag className="text-2xl text-white" />
               </div>
               <div>

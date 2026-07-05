@@ -3,14 +3,14 @@
  *
  * Props:
  * - size: "sm" | "md" | "lg" | "xl" (default: "md")
- * - color: "cyan" | "white" | "gray" | "pink" | "green" (default: "cyan")
+ * - color: "plum" | "white" | "gray" | "pink" | "green" (default: "plum")
  * - label: string — accessible screen-reader text (default: "Loading...")
  * - fullScreen: boolean — center in viewport
  * - className
  */
 export default function Spinner({
   size = "md",
-  color = "cyan",
+  color = "plum",
   label = "Loading...",
   fullScreen = false,
   className = "",
@@ -23,7 +23,7 @@ export default function Spinner({
   };
 
   const colors = {
-    cyan: "border-cyan-200 border-t-cyan-500",
+    plum: "border-plum-200 border-t-plum-500",
     white: "border-white/30 border-t-white",
     gray: "border-gray-200 border-t-gray-500",
     pink: "border-pink-200 border-t-pink-500",

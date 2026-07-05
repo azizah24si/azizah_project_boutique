@@ -21,7 +21,7 @@ export default function AuthLayout() {
       </div>
 
       {/* RIGHT SIDE - GRADIENT */}
-      <div className="w-1/2 bg-gradient-to-br from-cyan-400 via-teal-400 to-cyan-500 relative overflow-hidden flex items-center justify-center">
+      <div className="w-1/2 bg-gradient-to-br from-plum-400 via-gold-400 to-plum-500 relative overflow-hidden flex items-center justify-center">
         
         {/* PATTERN */}
         <div className="absolute inset-0 opacity-10">

@@ -1,9 +1,8 @@
-import { Link } from "react-router-dom";
 import { FaArrowRight, FaShoppingBag } from "react-icons/fa";
 
 export default function Hero() {
   return (
-    <div className="relative bg-gradient-to-br from-cyan-50 via-teal-50 to-cyan-100 overflow-hidden">
+    <div className="relative bg-gradient-to-br from-plum-50 via-gold-50 to-plum-100 overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="w-full h-full bg-[radial-gradient(circle,#0891b2_1px,transparent_1px)] bg-[size:30px_30px]"></div>
@@ -14,7 +13,7 @@ export default function Hero() {
           {/* Text Content */}
           <div className="space-y-6">
             <div className="inline-block">
-              <span className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-teal-500 text-white rounded-full text-sm font-semibold shadow-lg">
+              <span className="px-4 py-2 bg-gradient-to-r from-plum-500 to-gold-500 text-white rounded-full text-sm font-semibold shadow-lg">
                 ✨ New Collection 2025
               </span>
             </div>
@@ -22,7 +21,7 @@ export default function Hero() {
             <h1 className="text-5xl md:text-6xl font-bold text-gray-800 leading-tight">
               Temukan Gaya
               <br />
-              <span className="bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-plum-600 to-gold-600 bg-clip-text text-transparent">
                 Fashion Terbaikmu
               </span>
             </h1>
@@ -33,24 +32,28 @@ export default function Hero() {
             </p>
 
             <div className="flex flex-wrap gap-4">
-              <Link
-                to="/guest/products"
-                className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 text-white rounded-xl font-semibold hover:shadow-xl hover:scale-105 transition-all"
+              <a
+                href="#produk"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.querySelector('#produk')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-plum-500 to-gold-500 text-white rounded-xl font-semibold hover:shadow-xl hover:scale-105 transition-all cursor-pointer"
               >
                 <FaShoppingBag />
                 Lihat Koleksi
                 <FaArrowRight className="text-sm" />
-              </Link>
+              </a>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4 pt-8">
               <div className="text-center p-4 bg-white/60 backdrop-blur-sm rounded-xl">
-                <h3 className="text-3xl font-bold text-cyan-600">500+</h3>
+                <h3 className="text-3xl font-bold text-plum-600">500+</h3>
                 <p className="text-sm text-gray-600 mt-1">Produk Fashion</p>
               </div>
               <div className="text-center p-4 bg-white/60 backdrop-blur-sm rounded-xl">
-                <h3 className="text-3xl font-bold text-teal-600">2,300+</h3>
+                <h3 className="text-3xl font-bold text-gold-600">2,300+</h3>
                 <p className="text-sm text-gray-600 mt-1">Pelanggan Setia</p>
               </div>
               <div className="text-center p-4 bg-white/60 backdrop-blur-sm rounded-xl">
@@ -69,13 +72,13 @@ export default function Hero() {
                 className="rounded-3xl shadow-2xl w-full h-[500px] object-cover"
               />
               <div className="absolute -bottom-6 -left-6 w-64 h-64 bg-gradient-to-br from-pink-400 to-rose-400 rounded-3xl -z-10 animate-pulse"></div>
-              <div className="absolute -top-6 -right-6 w-48 h-48 bg-gradient-to-br from-cyan-400 to-teal-400 rounded-3xl -z-10"></div>
+              <div className="absolute -top-6 -right-6 w-48 h-48 bg-gradient-to-br from-plum-400 to-gold-400 rounded-3xl -z-10"></div>
             </div>
 
             {/* Floating Card */}
             <div className="absolute bottom-8 right-8 bg-white p-4 rounded-2xl shadow-xl">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-plum-400 to-gold-500 rounded-xl flex items-center justify-center">
                   <FaShoppingBag className="text-white text-xl" />
                 </div>
                 <div>

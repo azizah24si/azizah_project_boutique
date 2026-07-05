@@ -2,14 +2,92 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/500.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/700.css";
+@import "@fontsource/poppins/800.css";
 
 @custom-variant dark (&:is(.dark *));
 
+/* ============================================================
+   AZIZAH BOUTIQUE — Design Tokens
+   Palette adapted from the "Purity UI Dashboard" (Chakra UI)
+   Figma reference: vivid purple→blue gradient as brand chrome,
+   deep navy sidebar, soft lavender page background, white cards.
+   Tier colors (Bronze/Silver/Gold/Platinum) stay separate so
+   membership badges always read as "status", not brand chrome.
+   ============================================================ */
+@theme {
+  /* brand primary — vivid indigo/purple (was "plum") */
+  --color-plum-50: #f5f3ff;
+  --color-plum-100: #e9e3ff;
+  --color-plum-200: #cabdff;
+  --color-plum-300: #a688ff;
+  --color-plum-400: #7551ff;
+  --color-plum-500: #4318ff;
+  --color-plum-600: #3311db;
+  --color-plum-700: #2610a8;
+  --color-plum-800: #190793;
+  --color-plum-900: #11047a;
+  --color-plum-950: #0b0350;
+
+  /* brand secondary — electric blue (was "gold") */
+  --color-gold-50: #eaf6ff;
+  --color-gold-100: #d2f1ff;
+  --color-gold-200: #a6e4ff;
+  --color-gold-300: #6fd3ff;
+  --color-gold-400: #21d4fd;
+  --color-gold-500: #0080ff;
+  --color-gold-600: #0066cc;
+  --color-gold-700: #004d99;
+  --color-gold-800: #003666;
+  --color-gold-900: #001f3d;
+
+  /* deep navy — sidebar / dark chrome */
+  --color-navy-50: #eef2ff;
+  --color-navy-100: #e0e5f2;
+  --color-navy-300: #a3aed0;
+  --color-navy-400: #707eae;
+  --color-navy-500: #4a5578;
+  --color-navy-600: #2d3562;
+  --color-navy-700: #1b254b;
+  --color-navy-800: #111c44;
+  --color-navy-900: #0b1437;
+
+  /* membership tier identity — intentionally distinct from brand chrome */
+  --color-bronze-50: #fbf3ee;
+  --color-bronze-400: #b57849;
+  --color-bronze-500: #9c5f34;
+  --color-bronze-600: #7c4a28;
+  --color-bronze-700: #5e3820;
+
+  --color-silver-50: #f4f6f8;
+  --color-silver-400: #a9b4c0;
+  --color-silver-500: #8b97a6;
+  --color-silver-600: #6b7684;
+  --color-silver-700: #4d5560;
+
+  --color-platinum-50: #f7f5f9;
+  --color-platinum-400: #7d7490;
+  --color-platinum-500: #574e6b;
+  --color-platinum-600: #3c3450;
+  --color-platinum-700: #241d38;
+
+  --font-display: 'Poppins', 'Geist Variable', ui-sans-serif, sans-serif;
+}
+
 body {
   margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: #f1f5f9; /* Slate 100 bg */
-  color: #0f172a;
+  font-family: 'Geist Variable', 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: #f8f9fa;
+  color: #1b2559;
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 /* Isolate Vite's default global styles behind the class we just made */

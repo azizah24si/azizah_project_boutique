@@ -96,14 +96,14 @@ export default function Reservation() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
         <div className="bg-white rounded-3xl p-12 shadow-xl text-center max-w-md">
-          <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-gold-500 rounded-full flex items-center justify-center mx-auto mb-6">
             <FaCheckCircle className="text-white text-4xl" />
           </div>
           <h2 className="text-3xl font-bold text-gray-800 mb-4">Reservasi Berhasil!</h2>
           <p className="text-gray-600 mb-6">
             Terima kasih telah melakukan reservasi. Kami akan menghubungi Anda melalui WhatsApp untuk konfirmasi.
           </p>
-          <div className="bg-gradient-to-r from-cyan-50 to-teal-50 p-4 rounded-xl mb-6">
+          <div className="bg-gradient-to-r from-plum-50 to-gold-50 p-4 rounded-xl mb-6">
             <p className="text-sm text-gray-700">
               <strong>Nomor Reservasi:</strong> {reservationNumber}
             </p>
@@ -135,7 +135,7 @@ export default function Reservation() {
                 {/* Name */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <FaUser className="inline mr-2 text-cyan-500" />
+                    <FaUser className="inline mr-2 text-plum-500" />
                     Nama Lengkap *
                   </label>
                   <input
@@ -144,7 +144,7 @@ export default function Reservation() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-cyan-500 focus:outline-none transition"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-plum-500 focus:outline-none transition"
                     placeholder="Masukkan nama lengkap"
                   />
                 </div>
@@ -152,7 +152,7 @@ export default function Reservation() {
                 {/* Phone */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <FaPhone className="inline mr-2 text-cyan-500" />
+                    <FaPhone className="inline mr-2 text-plum-500" />
                     Nomor WhatsApp *
                   </label>
                   <input
@@ -161,7 +161,7 @@ export default function Reservation() {
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-cyan-500 focus:outline-none transition"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-plum-500 focus:outline-none transition"
                     placeholder="08xx-xxxx-xxxx"
                   />
                 </div>
@@ -169,7 +169,7 @@ export default function Reservation() {
                 {/* Email */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <FaEnvelope className="inline mr-2 text-cyan-500" />
+                    <FaEnvelope className="inline mr-2 text-plum-500" />
                     Email
                   </label>
                   <input
@@ -177,7 +177,7 @@ export default function Reservation() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-cyan-500 focus:outline-none transition"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-plum-500 focus:outline-none transition"
                     placeholder="email@example.com"
                   />
                 </div>
@@ -192,7 +192,7 @@ export default function Reservation() {
                     value={formData.service}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-cyan-500 focus:outline-none transition"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-plum-500 focus:outline-none transition"
                   >
                     <option value="">Pilih layanan...</option>
                     {services.map((service, index) => (
@@ -204,7 +204,7 @@ export default function Reservation() {
                 {/* Date */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <FaCalendar className="inline mr-2 text-cyan-500" />
+                    <FaCalendar className="inline mr-2 text-plum-500" />
                     Tanggal *
                   </label>
                   <input
@@ -214,14 +214,14 @@ export default function Reservation() {
                     onChange={handleChange}
                     required
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-cyan-500 focus:outline-none transition"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-plum-500 focus:outline-none transition"
                   />
                 </div>
 
                 {/* Time */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <FaClock className="inline mr-2 text-cyan-500" />
+                    <FaClock className="inline mr-2 text-plum-500" />
                     Waktu *
                   </label>
                   <select
@@ -229,7 +229,7 @@ export default function Reservation() {
                     value={formData.time}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-cyan-500 focus:outline-none transition"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-plum-500 focus:outline-none transition"
                   >
                     <option value="">Pilih waktu...</option>
                     {timeSlots.map((slot, index) => (
@@ -242,7 +242,7 @@ export default function Reservation() {
               {/* Notes */}
               <div className="mb-6">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  <FaComment className="inline mr-2 text-cyan-500" />
+                  <FaComment className="inline mr-2 text-plum-500" />
                   Catatan Tambahan
                 </label>
                 <textarea
@@ -250,7 +250,7 @@ export default function Reservation() {
                   value={formData.notes}
                   onChange={handleChange}
                   rows="4"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-cyan-500 focus:outline-none transition resize-none"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-plum-500 focus:outline-none transition resize-none"
                   placeholder="Ceritakan kebutuhan Anda..."
                 ></textarea>
               </div>
@@ -258,7 +258,7 @@ export default function Reservation() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-bold text-lg rounded-xl hover:shadow-xl hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-4 bg-gradient-to-r from-plum-500 to-gold-500 text-white font-bold text-lg rounded-xl hover:shadow-xl hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Mengirim..." : "Kirim Reservasi"}
               </button>
@@ -268,7 +268,7 @@ export default function Reservation() {
           {/* Info Sidebar */}
           <div className="space-y-6">
             {/* Contact Info */}
-            <div className="bg-gradient-to-br from-cyan-500 to-teal-500 text-white rounded-2xl p-6 shadow-lg">
+            <div className="bg-gradient-to-br from-plum-500 to-gold-500 text-white rounded-2xl p-6 shadow-lg">
               <h3 className="text-xl font-bold mb-4">Hubungi Kami</h3>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center gap-3">
@@ -302,7 +302,7 @@ export default function Reservation() {
               <ul className="space-y-3 text-sm">
                 {services.map((service, index) => (
                   <li key={index} className="flex items-center gap-3 text-gray-700">
-                    <div className="w-2 h-2 bg-cyan-500 rounded-full shrink-0"></div>
+                    <div className="w-2 h-2 bg-plum-500 rounded-full shrink-0"></div>
                     {service}
                   </li>
                 ))}

@@ -72,7 +72,7 @@ export default function Register() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* TOP GRADIENT SECTION */}
-      <div className="relative bg-gradient-to-br from-cyan-400 via-teal-400 to-cyan-500 py-12">
+      <div className="relative bg-gradient-to-br from-plum-400 via-gold-400 to-plum-500 py-12">
         {/* Decorative diagonal lines */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full opacity-20">
@@ -84,7 +84,7 @@ export default function Register() {
         {/* Welcome Text */}
         <div className="relative text-center text-white px-4">
           <h1 className="text-4xl font-bold mb-3">Selamat Datang!</h1>
-          <p className="text-cyan-50 max-w-md mx-auto">
+          <p className="text-plum-50 max-w-md mx-auto">
             Daftar sekarang dan nikmati koleksi fashion terbaru dengan sistem membership dan diskon eksklusif!
           </p>
         </div>
@@ -133,7 +133,7 @@ export default function Register() {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-cyan-400 focus:bg-white transition text-gray-700"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-plum-400 focus:bg-white transition text-gray-700"
                 />
               </div>
 
@@ -147,7 +147,7 @@ export default function Register() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-cyan-400 focus:bg-white transition text-gray-700"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-plum-400 focus:bg-white transition text-gray-700"
                 />
               </div>
 
@@ -161,7 +161,7 @@ export default function Register() {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-cyan-400 focus:bg-white transition text-gray-700"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-plum-400 focus:bg-white transition text-gray-700"
                 />
               </div>
             </div>
@@ -176,7 +176,7 @@ export default function Register() {
                   onChange={handleChange}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-cyan-400 peer-checked:to-teal-400"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-plum-400 peer-checked:to-gold-400"></div>
               </label>
               <span className="text-sm text-gray-600">Ingat saya</span>
             </div>
@@ -185,7 +185,7 @@ export default function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 bg-gradient-to-r from-cyan-400 to-teal-400 text-white font-bold rounded-xl hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase text-sm tracking-wide"
+              className="w-full py-3.5 bg-gradient-to-r from-plum-400 to-gold-400 text-white font-bold rounded-xl hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase text-sm tracking-wide"
             >
               {loading ? "Memproses..." : "DAFTAR SEKARANG"}
             </button>
@@ -193,7 +193,7 @@ export default function Register() {
 
           <p className="text-center text-gray-500 text-sm mt-6">
             Sudah punya akun?{" "}
-            <NavLink to="/login" className="text-cyan-400 font-semibold hover:underline">
+            <NavLink to="/login" className="text-plum-400 font-semibold hover:underline">
               Login di sini
             </NavLink>
           </p>

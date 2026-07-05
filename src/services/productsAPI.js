@@ -1,6 +1,6 @@
 import { supabase } from "../lib/supabase";
 
-// Service layer for products table - follows the pattern of existing usersAPI.js
+// Service layer for products table (Supabase)
 // All methods throw errors to the caller for handling
 export const productsAPI = {
   // GET - Fetch all products (publicly accessible)
@@ -18,10 +18,15 @@ export const productsAPI = {
     const { data, error } = await supabase
       .from("products")
       .select("*")
-      .eq("id", id)
-      .single();
+      .eq("id", id);
+    
     if (error) throw error;
-    return data;
+    
+    if (!data || data.length === 0) {
+      throw new Error("Produk tidak ditemukan");
+    }
+    
+    return data[0];
   },
 
   // POST - Create new product (admin only)

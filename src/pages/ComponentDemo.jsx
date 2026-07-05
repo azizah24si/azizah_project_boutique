@@ -172,17 +172,17 @@ export default function ComponentDemo() {
           <input
             type="text"
             placeholder="Nama Produk"
-            className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl focus:border-cyan-400 focus:outline-none"
+            className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl focus:border-plum-400 focus:outline-none"
           />
           <input
             type="number"
             placeholder="Harga"
-            className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl focus:border-cyan-400 focus:outline-none"
+            className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl focus:border-plum-400 focus:outline-none"
           />
           <textarea
             placeholder="Deskripsi"
             rows={3}
-            className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl focus:border-cyan-400 focus:outline-none"
+            className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl focus:border-plum-400 focus:outline-none"
           />
         </div>
       </Dialog>

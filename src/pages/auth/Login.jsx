@@ -88,7 +88,7 @@ export default function Login() {
 
   return (
     <div className="bg-white rounded-2xl shadow-xl p-10">
-      <h2 className="text-3xl font-bold text-cyan-400 mb-2">Selamat Datang Kembali!</h2>
+      <h2 className="text-3xl font-bold text-plum-400 mb-2">Selamat Datang Kembali!</h2>
       <p className="text-gray-400 mb-8">Login untuk melanjutkan belanja di Jijah Boutique</p>
 
       {error && (
@@ -122,7 +122,7 @@ export default function Login() {
         </div>
 
         <div className="flex items-center gap-2 mb-6">
-          <input type="checkbox" id="remember" className="w-4 h-4 accent-cyan-400 cursor-pointer" />
+          <input type="checkbox" id="remember" className="w-4 h-4 accent-plum-400 cursor-pointer" />
           <label htmlFor="remember" className="text-sm text-gray-500 cursor-pointer">
             Remember me
           </label>
@@ -135,7 +135,7 @@ export default function Login() {
 
       <p className="text-center text-gray-500 text-sm mt-6">
         Don't have an account?{" "}
-        <NavLink to="/register" className="text-cyan-400 font-semibold hover:underline">
+        <NavLink to="/register" className="text-plum-400 font-semibold hover:underline">
           Sign up
         </NavLink>
       </p>

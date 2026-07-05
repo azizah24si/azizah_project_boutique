@@ -69,7 +69,7 @@ export default function Pagination({
               onClick={() => onPageChange(page)}
               className={`${btnBase} ${
                 currentPage === page
-                  ? "bg-cyan-400 text-white shadow-sm"
+                  ? "bg-plum-400 text-white shadow-sm"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >

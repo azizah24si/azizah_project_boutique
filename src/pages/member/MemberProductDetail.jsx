@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaStar, FaHeart, FaShoppingCart, FaWhatsapp, FaShippingFast, FaShieldAlt, FaArrowLeft, FaTag } from "react-icons/fa";
 import { useCart } from "../../contexts/CartContext";
@@ -6,6 +6,8 @@ import { useAuth } from "../../contexts/AuthContext";
 import Badge from "../../components/Badge";
 import Button from "../../components/Button";
 import { useToast } from "../../components/Toast";
+import { productsAPI } from "../../services/productsAPI";
+import Spinner from "../../components/Spinner";
 
 export default function MemberProductDetail() {
   const { id } = useParams();
@@ -14,9 +16,11 @@ export default function MemberProductDetail() {
   const { profile } = useAuth();
   const { addToast } = useToast();
   const [selectedSize, setSelectedSize] = useState("");
-  const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState("");
 
   // Member discount berdasarkan level
   const memberDiscounts = {
@@ -28,100 +32,72 @@ export default function MemberProductDetail() {
 
   const memberDiscount = memberDiscounts[profile?.member_level] || 0;
 
-  // Mock product data (in real app, fetch from API/database)
-  const allProducts = [
-    {
-      id: "1",
-      name: "Dress Floral Premium",
-      category: "Dress Collection",
-      price: 459000,
-      originalPrice: 599000,
-      rating: 4.9,
-      reviews: 127,
-      stock: 15,
-      description: "Dress floral premium dengan bahan berkualitas tinggi, nyaman dipakai untuk berbagai acara. Desain elegan dengan motif bunga yang cantik dan feminin.",
-      features: [
-        "Bahan premium cotton blend",
-        "Nyaman dan adem",
-        "Tidak mudah kusut",
-        "Tersedia berbagai ukuran",
-        "Cocok untuk segala acara"
-      ],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      colors: [
-        { name: "Pink", hex: "#ffc0cb" },
-        { name: "Blue", hex: "#87ceeb" },
-        { name: "White", hex: "#ffffff" }
-      ],
-      images: [
-        "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=600&h=800&fit=crop",
-        "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600&h=800&fit=crop",
-        "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&h=800&fit=crop"
-      ]
-    },
-    {
-      id: "2",
-      name: "Korean Style Blouse",
-      category: "Blouse Collection",
-      price: 289000,
-      originalPrice: 349000,
-      rating: 4.8,
-      reviews: 95,
-      stock: 23,
-      description: "Blouse bergaya Korea dengan desain modern dan elegan. Cocok untuk ke kantor atau acara casual.",
-      features: [
-        "Desain Korean style trendy",
-        "Bahan chiffon premium",
-        "Potongan yang flattering",
-        "Detail kancing depan",
-        "Warna-warna soft dan elegan"
-      ],
-      sizes: ["S", "M", "L", "XL"],
-      colors: [
-        { name: "Cream", hex: "#fffdd0" },
-        { name: "Sage", hex: "#b2ac88" },
-        { name: "Dusty Pink", hex: "#dcb1a0" }
-      ],
-      images: [
-        "https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=600&h=800&fit=crop",
-        "https://images.unsplash.com/photo-1624206112918-f140f087f9b5?w=600&h=800&fit=crop"
-      ]
-    },
-    {
-      id: "3",
-      name: "Vintage Outer Premium",
-      category: "Outer Collection",
-      price: 399000,
-      originalPrice: 499000,
-      rating: 4.9,
-      reviews: 86,
-      stock: 12,
-      description: "Outer premium dengan sentuhan vintage yang timeless. Sempurna untuk melengkapi outfit Anda.",
-      features: [
-        "Bahan berkualitas tinggi",
-        "Desain vintage elegan",
-        "Cocok untuk berbagai outfit",
-        "Keeping warm dan stylish",
-        "Jahitan rapi dan kuat"
-      ],
-      sizes: ["S", "M", "L", "XL"],
-      colors: [
-        { name: "Camel", hex: "#c19a6b" },
-        { name: "Black", hex: "#000000" },
-        { name: "Olive", hex: "#808000" }
-      ],
-      images: [
-        "https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=600&h=800&fit=crop"
-      ]
-    },
-  ];
+  // Load product from API
+  useEffect(() => {
+    loadProduct();
+  }, [id]);
 
-  const product = allProducts.find(p => p.id === id) || allProducts[0];
-  const [selectedImage, setSelectedImage] = useState(product.images[0]);
+  const loadProduct = async () => {
+    try {
+      setLoading(true);
+      console.log("🔍 Loading product with ID:", id);
+      
+      const data = await productsAPI.getById(id);
+      console.log("✅ Product data loaded:", data);
+      
+      // Transform product data
+      const transformedProduct = {
+        ...data,
+        price: Number(data.price),
+        image: data.image_url,
+        rating: 4.5 + Math.random() * 0.5,
+        reviews: Math.floor(Math.random() * 150) + 50,
+        // Default values for fields that might not be in database
+        sizes: data.sizes || ["S", "M", "L", "XL"],
+        colors: data.colors || [
+          { name: "Pink", hex: "#ffc0cb" },
+          { name: "Blue", hex: "#87ceeb" },
+          { name: "White", hex: "#ffffff" }
+        ],
+        images: data.images || [data.image_url],
+        features: data.features || [
+          "Bahan berkualitas premium",
+          "Nyaman dipakai",
+          "Desain trendy dan elegan",
+          "Tersedia berbagai ukuran",
+          "Cocok untuk berbagai acara"
+        ],
+      };
+      
+      console.log("✅ Transformed product:", transformedProduct);
+      setProduct(transformedProduct);
+      setSelectedImage(transformedProduct.images[0]);
+    } catch (error) {
+      console.error("❌ Error loading product:", error);
+      console.error("Error details:", error.message, error.stack);
+      addToast({
+        title: "Error",
+        description: "Gagal memuat produk: " + error.message,
+        variant: "error",
+      });
+      navigate("/member/products");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Calculate discounted price
-  const discountedPrice = product.price - (product.price * memberDiscount);
-  const savings = product.price * memberDiscount;
+  // Helper to categorize product
+  const categorizeProduct = (product) => {
+    const name = product.name.toLowerCase();
+    const desc = (product.description || "").toLowerCase();
+    const text = name + " " + desc;
+
+    if (text.includes("dress")) return "Dress Collection";
+    if (text.includes("blouse") || text.includes("blus") || text.includes("top") || text.includes("shirt")) return "Blouse Collection";
+    if (text.includes("outer") || text.includes("blazer") || text.includes("cardigan") || text.includes("jacket")) return "Outer Collection";
+    if (text.includes("hijab") || text.includes("pashmina") || text.includes("voal")) return "Hijab Collection";
+    return "Fashion Collection";
+  };
 
   const formatRupiah = (amount) => {
     return new Intl.NumberFormat("id-ID", {
@@ -132,24 +108,23 @@ export default function MemberProductDetail() {
   };
 
   const handleWhatsAppOrder = () => {
-    const message = `Halo, saya tertarik dengan produk:\n\nNama: ${product.name}\nHarga: ${formatRupiah(discountedPrice)}\nUkuran: ${selectedSize}\nWarna: ${selectedColor}\nJumlah: ${quantity}\n\nApakah produk ini tersedia?`;
+    if (!product) return;
+    
+    const discountedPrice = product.price - (product.price * memberDiscount);
+    const message = `Halo, saya tertarik dengan produk:\n\nNama: ${product.name}\nHarga: ${formatRupiah(discountedPrice)}\nUkuran: ${selectedSize}\nJumlah: ${quantity}\n\nApakah produk ini tersedia?`;
     const whatsappUrl = `https://wa.me/6281234567890?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   const handleAddToCart = () => {
+    if (!product) return;
+    
+    const discountedPrice = product.price - (product.price * memberDiscount);
+    
     if (!selectedSize) {
       addToast({
         title: "Pilih ukuran!",
         description: "Silakan pilih ukuran terlebih dahulu",
-        variant: "warning",
-      });
-      return;
-    }
-    if (!selectedColor) {
-      addToast({
-        title: "Pilih warna!",
-        description: "Silakan pilih warna terlebih dahulu",
         variant: "warning",
       });
       return;
@@ -159,13 +134,13 @@ export default function MemberProductDetail() {
       {
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: discountedPrice,
         image: product.images[0],
-        category: product.category,
+        category: product.category || categorizeProduct(product),
       },
       quantity,
       selectedSize,
-      selectedColor
+      ""
     );
     
     addToast({
@@ -175,12 +150,41 @@ export default function MemberProductDetail() {
     });
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="p-6">
+        <div className="bg-white rounded-2xl p-12 text-center">
+          <h3 className="text-2xl font-bold text-gray-800 mb-2">Produk Tidak Ditemukan</h3>
+          <p className="text-gray-600 mb-6">Maaf, produk yang Anda cari tidak ditemukan.</p>
+          <button
+            onClick={() => navigate("/member/products")}
+            className="px-6 py-3 bg-gradient-to-r from-plum-500 to-gold-500 text-white rounded-xl font-semibold hover:shadow-lg transition"
+          >
+            Kembali ke Produk
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const category = product.category || categorizeProduct(product);
+  const discountedPrice = product.price - (product.price * memberDiscount);
+  const savings = product.price * memberDiscount;
+
   return (
     <div className="p-6 space-y-6">
       {/* Back Button */}
       <button
         onClick={() => navigate("/member/products")}
-        className="inline-flex items-center gap-2 text-gray-600 hover:text-cyan-600 transition"
+        className="inline-flex items-center gap-2 text-gray-600 hover:text-plum-600 transition"
       >
         <FaArrowLeft />
         <span className="font-medium">Kembali ke Produk</span>
@@ -188,15 +192,15 @@ export default function MemberProductDetail() {
 
       {/* Member Discount Banner */}
       {memberDiscount > 0 && (
-        <div className="bg-gradient-to-r from-cyan-500 to-teal-500 rounded-2xl p-4 text-white flex items-center justify-between">
+        <div className="bg-gradient-to-r from-plum-500 to-gold-500 rounded-2xl p-4 text-white flex items-center justify-between">
           <div className="flex items-center gap-3">
             <FaTag className="text-2xl" />
             <div>
               <p className="font-bold text-lg">Member {profile?.member_level} Discount</p>
-              <p className="text-cyan-100 text-sm">Hemat {(memberDiscount * 100).toFixed(0)}% untuk produk ini</p>
+              <p className="text-plum-100 text-sm">Hemat {(memberDiscount * 100).toFixed(0)}% untuk produk ini</p>
             </div>
           </div>
-          <Badge variant="white" className="text-cyan-600 font-bold text-lg">
+          <Badge variant="white" className="text-plum-600 font-bold text-lg">
             -{(memberDiscount * 100).toFixed(0)}%
           </Badge>
         </div>
@@ -219,7 +223,7 @@ export default function MemberProductDetail() {
                 onClick={() => setSelectedImage(image)}
                 className={`rounded-xl overflow-hidden border-2 transition ${
                   selectedImage === image
-                    ? "border-cyan-500"
+                    ? "border-plum-500"
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
@@ -239,14 +243,14 @@ export default function MemberProductDetail() {
             {/* Header */}
             <div className="flex items-start justify-between mb-4">
               <div>
-                <p className="text-sm text-cyan-600 font-semibold mb-2">{product.category}</p>
+                <p className="text-sm text-plum-600 font-semibold mb-2">{category}</p>
                 <h1 className="text-3xl font-bold text-gray-800 mb-2">{product.name}</h1>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1">
                     <FaStar className="text-yellow-400" />
-                    <span className="font-bold text-gray-800">{product.rating}</span>
+                    <span className="font-bold text-gray-800">{product.rating?.toFixed(1) || "4.5"}</span>
                   </div>
-                  <span className="text-gray-500">({product.reviews} ulasan)</span>
+                  <span className="text-gray-500">({product.reviews || 0} ulasan)</span>
                 </div>
               </div>
               <button
@@ -270,7 +274,7 @@ export default function MemberProductDetail() {
                     </Badge>
                   </div>
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="text-4xl font-bold text-cyan-600">
+                    <span className="text-4xl font-bold text-plum-600">
                       {formatRupiah(discountedPrice)}
                     </span>
                   </div>
@@ -284,28 +288,32 @@ export default function MemberProductDetail() {
                 </span>
               )}
               <p className="text-sm text-green-600 font-semibold mt-2">
-                ✓ Stok tersedia: {product.stock} pcs
+                ✓ Stok tersedia: {product.stock || 0} pcs
               </p>
             </div>
 
             {/* Description */}
             <div className="mb-6 pb-6 border-b border-gray-200">
               <h3 className="font-bold text-gray-800 mb-2">Deskripsi</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">{product.description}</p>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                {product.description || "Produk berkualitas tinggi dengan desain trendy dan elegan."}
+              </p>
             </div>
 
             {/* Features */}
-            <div className="mb-6 pb-6 border-b border-gray-200">
-              <h3 className="font-bold text-gray-800 mb-3">Keunggulan Produk</h3>
-              <ul className="space-y-2">
-                {product.features.map((feature, index) => (
-                  <li key={index} className="flex items-center gap-2 text-sm text-gray-600">
-                    <div className="w-1.5 h-1.5 bg-cyan-500 rounded-full"></div>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {product.features && product.features.length > 0 && (
+              <div className="mb-6 pb-6 border-b border-gray-200">
+                <h3 className="font-bold text-gray-800 mb-3">Keunggulan Produk</h3>
+                <ul className="space-y-2">
+                  {product.features.map((feature, index) => (
+                    <li key={index} className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="w-1.5 h-1.5 bg-plum-500 rounded-full"></div>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {/* Size Selection */}
             <div className="mb-6">
@@ -317,32 +325,12 @@ export default function MemberProductDetail() {
                     onClick={() => setSelectedSize(size)}
                     className={`w-12 h-12 rounded-lg font-bold transition ${
                       selectedSize === size
-                        ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white"
+                        ? "bg-gradient-to-r from-plum-500 to-gold-500 text-white"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   >
                     {size}
                   </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Color Selection */}
-            <div className="mb-6">
-              <h3 className="font-bold text-gray-800 mb-3">Pilih Warna</h3>
-              <div className="flex gap-3">
-                {product.colors.map((color) => (
-                  <button
-                    key={color.name}
-                    onClick={() => setSelectedColor(color.name)}
-                    className={`w-12 h-12 rounded-lg border-2 transition ${
-                      selectedColor === color.name
-                        ? "border-cyan-500 scale-110"
-                        : "border-gray-200 hover:border-gray-300"
-                    }`}
-                    style={{ backgroundColor: color.hex }}
-                    title={color.name}
-                  ></button>
                 ))}
               </div>
             </div>
@@ -361,7 +349,7 @@ export default function MemberProductDetail() {
                   type="number"
                   value={quantity}
                   onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-20 h-10 text-center border-2 border-gray-200 rounded-lg font-bold focus:border-cyan-500 focus:outline-none"
+                  className="w-20 h-10 text-center border-2 border-gray-200 rounded-lg font-bold focus:border-plum-500 focus:outline-none"
                 />
                 <button
                   onClick={() => setQuantity(quantity + 1)}
@@ -393,16 +381,16 @@ export default function MemberProductDetail() {
             {/* Features Info */}
             <div className="grid grid-cols-3 gap-4 pt-6 border-t border-gray-200">
               <div className="text-center">
-                <FaShippingFast className="text-2xl text-cyan-500 mx-auto mb-2" />
+                <FaShippingFast className="text-2xl text-plum-500 mx-auto mb-2" />
                 <p className="text-xs text-gray-600 font-medium">Gratis Ongkir</p>
               </div>
               <div className="text-center">
-                <FaShieldAlt className="text-2xl text-cyan-500 mx-auto mb-2" />
+                <FaShieldAlt className="text-2xl text-plum-500 mx-auto mb-2" />
                 <p className="text-xs text-gray-600 font-medium">Garansi Kualitas</p>
               </div>
               <div className="text-center">
-                <FaStar className="text-2xl text-cyan-500 mx-auto mb-2" />
-                <p className="text-xs text-gray-600 font-medium">Rating {product.rating}</p>
+                <FaStar className="text-2xl text-plum-500 mx-auto mb-2" />
+                <p className="text-xs text-gray-600 font-medium">Rating {product.rating?.toFixed(1) || "4.5"}</p>
               </div>
             </div>
           </div>

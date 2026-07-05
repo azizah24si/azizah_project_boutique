@@ -25,6 +25,10 @@
     --color-kuning: #fbbf24;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     @apply font-barlow bg-latar;
 }

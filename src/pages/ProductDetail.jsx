@@ -71,11 +71,11 @@ export default function ProductDetail() {
             <h2 className="text-3xl font-bold text-gray-700">{product.name}</h2>
             <p className="text-gray-400 mt-1">ID: {product.id}</p>
           </div>
-          <Badge variant="cyan" size="md">{product.category}</Badge>
+          <Badge variant="plum" size="md">{product.category}</Badge>
         </div>
 
         {/* PRICE */}
-        <p className="text-3xl font-bold text-cyan-500 mb-4">{product.price}</p>
+        <p className="text-3xl font-bold text-plum-500 mb-4">{product.price}</p>
 
         {/* DESCRIPTION */}
         <p className="text-gray-500 leading-relaxed mb-8">{product.description}</p>

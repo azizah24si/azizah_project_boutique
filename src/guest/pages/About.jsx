@@ -57,7 +57,7 @@ export default function About() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-cyan-500 to-teal-500 text-white py-20">
+      <div className="bg-gradient-to-br from-plum-500 to-gold-500 text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-5xl font-bold mb-4">Tentang Kami</h1>
           <p className="text-xl opacity-90 max-w-2xl mx-auto">
@@ -115,7 +115,7 @@ export default function About() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((value, index) => (
               <div key={index} className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-2xl text-center hover:shadow-lg transition-all">
-                <div className="text-cyan-500 flex justify-center mb-4">
+                <div className="text-plum-500 flex justify-center mb-4">
                   {value.icon}
                 </div>
                 <h3 className="font-bold text-gray-800 mb-2">{value.title}</h3>
@@ -139,7 +139,7 @@ export default function About() {
               {milestones.map((milestone, index) => (
                 <div key={index} className="flex gap-6 items-start">
                   <div className="shrink-0">
-                    <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-teal-500 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
+                    <div className="w-16 h-16 bg-gradient-to-br from-plum-500 to-gold-500 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
                       {milestone.year}
                     </div>
                   </div>
@@ -171,7 +171,7 @@ export default function About() {
                 />
                 <div className="p-6 text-center">
                   <h3 className="text-xl font-bold text-gray-800 mb-1">{member.name}</h3>
-                  <p className="text-cyan-600 font-semibold mb-3">{member.role}</p>
+                  <p className="text-plum-600 font-semibold mb-3">{member.role}</p>
                   <p className="text-sm text-gray-600">{member.desc}</p>
                 </div>
               </div>
@@ -181,7 +181,7 @@ export default function About() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-gradient-to-br from-cyan-500 to-teal-500 text-white">
+      <section className="py-16 bg-gradient-to-br from-plum-500 to-gold-500 text-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>

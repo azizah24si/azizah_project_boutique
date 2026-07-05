@@ -121,7 +121,7 @@ export default function OrderDetail() {
         <div className="border-t border-gray-100 pt-6 mb-6">
           <h3 className="font-bold text-gray-700 mb-4 text-lg">Informasi Pelanggan</h3>
           <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl">
-            <Avatar name={order.customer?.full_name || "Guest"} size="lg" color="cyan" />
+            <Avatar name={order.customer?.full_name || "Guest"} size="lg" color="plum" />
             <div className="space-y-1">
               <p className="font-bold text-gray-700">{order.customer?.full_name || "Guest"}</p>
               {order.customer?.phone && (
@@ -145,7 +145,7 @@ export default function OrderDetail() {
                   <p className="text-sm text-gray-400">Qty: {item.quantity}</p>
                   <p className="text-sm text-gray-500">@Rp {item.price_per_unit?.toLocaleString("id-ID")}</p>
                 </div>
-                <p className="font-bold text-cyan-500">
+                <p className="font-bold text-plum-500">
                   Rp {(item.price_per_unit * item.quantity).toLocaleString("id-ID")}
                 </p>
               </div>
@@ -167,7 +167,7 @@ export default function OrderDetail() {
         {order.order_type === "reservation" && order.reservation_date && (
           <div className="border-t border-gray-100 pt-6 mb-6">
             <h3 className="font-bold text-gray-700 mb-2 text-lg">Waktu Reservasi</h3>
-            <p className="text-cyan-600 font-semibold bg-cyan-50 p-4 rounded-2xl">
+            <p className="text-plum-600 font-semibold bg-plum-50 p-4 rounded-2xl">
               {new Date(order.reservation_date).toLocaleString("id-ID", {
                 dateStyle: "full",
                 timeStyle: "short",
@@ -190,7 +190,7 @@ export default function OrderDetail() {
           )}
           <div className="flex justify-between text-2xl font-bold border-t border-gray-100 pt-4">
             <span>Total</span>
-            <span className="text-cyan-500">Rp {total.toLocaleString("id-ID")}</span>
+            <span className="text-plum-500">Rp {total.toLocaleString("id-ID")}</span>
           </div>
         </div>
       </div>

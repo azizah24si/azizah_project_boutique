@@ -195,7 +195,7 @@ export default function Orders() {
     {
       key: "price",
       label: "Harga",
-      render: (val) => <span className="text-cyan-500 font-semibold">{val}</span>,
+      render: (val) => <span className="text-plum-500 font-semibold">{val}</span>,
     },
     { key: "date", label: "Tanggal" },
     {
@@ -430,7 +430,7 @@ export default function Orders() {
                 Pilih Produk<span className="text-red-400 ml-1">*</span>
               </label>
               <select
-                className="w-full border rounded-xl px-4 py-3 text-sm outline-none transition appearance-none bg-white border-gray-200 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                className="w-full border rounded-xl px-4 py-3 text-sm outline-none transition appearance-none bg-white border-gray-200 focus:border-plum-400 focus:ring-2 focus:ring-plum-100"
                 value={formData.productId}
                 onChange={(e) => handleProductChange(e.target.value)}
                 required
@@ -445,13 +445,13 @@ export default function Orders() {
             </div>
 
             {selectedProduct && (
-              <div className="mt-3 p-3 bg-cyan-50 border border-cyan-200 rounded-lg">
+              <div className="mt-3 p-3 bg-plum-50 border border-plum-200 rounded-lg">
                 <div className="flex justify-between items-center">
                   <div>
                     <p className="text-sm font-semibold text-gray-700">{selectedProduct.name}</p>
                     <p className="text-xs text-gray-500 mt-1">Stock tersedia: {selectedProduct.stock} pcs</p>
                   </div>
-                  <p className="text-lg font-bold text-cyan-600">
+                  <p className="text-lg font-bold text-plum-600">
                     Rp {Number(selectedProduct.price).toLocaleString("id-ID")}
                   </p>
                 </div>
@@ -481,9 +481,9 @@ export default function Orders() {
           </div>
 
           {formData.pricePerUnit && formData.quantity && (
-            <div className="bg-cyan-50 border border-cyan-200 rounded-lg p-4">
-              <p className="text-sm text-cyan-600 font-medium mb-1">Total Transaksi</p>
-              <p className="text-2xl font-bold text-cyan-900">
+            <div className="bg-plum-50 border border-plum-200 rounded-lg p-4">
+              <p className="text-sm text-plum-600 font-medium mb-1">Total Transaksi</p>
+              <p className="text-2xl font-bold text-plum-900">
                 Rp {(formData.pricePerUnit * formData.quantity).toLocaleString("id-ID")}
               </p>
             </div>

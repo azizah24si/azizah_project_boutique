@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaSearch, FaBell, FaCog, FaUser, FaSignOutAlt, FaUserCircle, FaShoppingCart } from "react-icons/fa";
+import { FaSearch, FaBell, FaUser, FaSignOutAlt, FaUserCircle, FaShoppingCart } from "react-icons/fa";
 import Avatar from "./Avatar";
 import Dropdown from "./Dropdown";
 import Tooltip from "./Tooltip";
@@ -98,12 +98,15 @@ export default function Header() {
     navigate("/login");
   };
 
-  const profileItems = [
-    { label: "Profil Saya", icon: <FaUserCircle />, onClick: () => {} },
-    { label: "Pengaturan", icon: <FaCog />, onClick: () => {} },
-    { divider: true },
-    { label: "Logout", icon: <FaSignOutAlt />, danger: true, onClick: handleLogout },
-  ];
+  const profileItems = isMember 
+    ? [
+        { label: "Profil Saya", icon: <FaUserCircle />, onClick: () => navigate("/member/profile") },
+        { divider: true },
+        { label: "Logout", icon: <FaSignOutAlt />, danger: true, onClick: handleLogout },
+      ]
+    : [
+        { label: "Logout", icon: <FaSignOutAlt />, danger: true, onClick: handleLogout },
+      ];
 
   return (
     <div className="flex justify-between items-center mb-8 bg-white rounded-2xl px-6 py-4 shadow-sm">
@@ -131,7 +134,7 @@ export default function Header() {
           <Tooltip content="Keranjang Belanja" position="bottom">
             <button 
               onClick={() => navigate("/member/cart")}
-              className="relative cursor-pointer text-gray-400 hover:text-cyan-400 text-lg transition-colors"
+              className="relative cursor-pointer text-gray-400 hover:text-plum-400 text-lg transition-colors"
             >
               <FaShoppingCart />
               {getTotalItems() > 0 && (
@@ -149,7 +152,7 @@ export default function Header() {
             align="right"
             trigger={
               <Tooltip content="Notifikasi" position="bottom">
-                <div className="relative cursor-pointer text-gray-400 hover:text-cyan-400 text-lg transition-colors">
+                <div className="relative cursor-pointer text-gray-400 hover:text-plum-400 text-lg transition-colors">
                   <FaBell />
                   {notifCount > 0 && (
                     <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-400 rounded-full flex items-center justify-center">
@@ -163,19 +166,12 @@ export default function Header() {
           />
         )}
 
-        {/* SETTINGS */}
-        <Tooltip content="Pengaturan" position="bottom">
-          <button className="text-gray-400 hover:text-cyan-400 text-lg transition-colors">
-            <FaCog />
-          </button>
-        </Tooltip>
-
         {/* PROFILE DROPDOWN */}
         <Dropdown
           align="right"
           trigger={
             <div className="flex items-center gap-2 cursor-pointer">
-              <Avatar name={displayName} size="sm" color="cyan" status="online" />
+              <Avatar name={displayName} size="sm" color="plum" status="online" />
               <span className="text-sm font-semibold text-gray-700">{displayName}</span>
             </div>
           }

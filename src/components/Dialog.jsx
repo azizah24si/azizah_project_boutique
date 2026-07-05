@@ -104,7 +104,7 @@ export function DialogConfirm({
 }) {
   const variants = {
     danger: "bg-red-500 hover:bg-red-600",
-    primary: "bg-cyan-500 hover:bg-cyan-600",
+    primary: "bg-plum-500 hover:bg-plum-600",
     success: "bg-green-500 hover:bg-green-600",
   };
 

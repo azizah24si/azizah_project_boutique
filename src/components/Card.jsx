@@ -5,7 +5,7 @@
  * - title: string
  * - subtitle: string
  * - icon: ReactNode
- * - iconColor: "cyan" | "pink" | "green" | "orange" | "purple" (default: "cyan")
+ * - iconColor: "plum" | "pink" | "green" | "orange" | "purple" (default: "plum")
  * - value: string | number — large stat value
  * - trend: string — e.g. "+55%" shown in green/red based on sign
  * - footer: ReactNode
@@ -15,7 +15,7 @@ export default function Card({
   title,
   subtitle,
   icon,
-  iconColor = "cyan",
+  iconColor = "plum",
   value,
   trend,
   footer,
@@ -23,7 +23,7 @@ export default function Card({
   children,
 }) {
   const iconColors = {
-    cyan: "bg-gradient-to-br from-cyan-400 to-teal-400",
+    plum: "bg-gradient-to-br from-plum-500 to-gold-500",
     pink: "bg-gradient-to-br from-pink-400 to-rose-400",
     green: "bg-gradient-to-br from-green-400 to-emerald-400",
     orange: "bg-gradient-to-br from-orange-400 to-amber-400",

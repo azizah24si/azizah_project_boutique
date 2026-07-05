@@ -5,7 +5,7 @@
  * - value: number (0–100)
  * - label: string — shown above the bar
  * - showValue: boolean — show percentage text (default: true)
- * - color: "cyan" | "green" | "pink" | "orange" | "purple" (default: "cyan")
+ * - color: "plum" | "green" | "pink" | "orange" | "purple" (default: "plum")
  * - size: "sm" | "md" | "lg" (default: "md")
  * - className
  */
@@ -13,14 +13,14 @@ export default function ProgressBar({
   value = 0,
   label,
   showValue = true,
-  color = "cyan",
+  color = "plum",
   size = "md",
   className = "",
 }) {
   const clamped = Math.min(100, Math.max(0, value));
 
   const colors = {
-    cyan: "bg-cyan-400",
+    plum: "bg-plum-400",
     green: "bg-green-400",
     pink: "bg-pink-400",
     orange: "bg-orange-400",
@@ -28,7 +28,7 @@ export default function ProgressBar({
   };
 
   const textColors = {
-    cyan: "text-cyan-500",
+    plum: "text-plum-500",
     green: "text-green-500",
     pink: "text-pink-500",
     orange: "text-orange-500",

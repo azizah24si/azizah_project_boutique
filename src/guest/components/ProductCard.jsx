@@ -19,7 +19,7 @@ export default function ProductCard({ product }) {
         {product.badge && (
           <div className="absolute top-3 left-3">
             <span className={`px-3 py-1 rounded-full text-xs font-bold text-white ${
-              product.badge === "New" ? "bg-gradient-to-r from-cyan-500 to-teal-500" :
+              product.badge === "New" ? "bg-gradient-to-r from-plum-500 to-gold-500" :
               product.badge === "Sale" ? "bg-gradient-to-r from-pink-500 to-rose-500" :
               "bg-gradient-to-r from-purple-500 to-indigo-500"
             }`}>
@@ -40,7 +40,7 @@ export default function ProductCard({ product }) {
         <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
           <Link
             to={`/guest/products/${product.id}`}
-            className="block w-full py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-white rounded-xl text-sm font-bold text-center hover:shadow-lg transition"
+            className="block w-full py-3 bg-gradient-to-r from-plum-500 to-gold-500 text-white rounded-xl text-sm font-bold text-center hover:shadow-lg transition"
           >
             Lihat Detail Produk
           </Link>
@@ -51,7 +51,7 @@ export default function ProductCard({ product }) {
       <div className="p-4">
         <div className="flex items-start justify-between mb-2">
           <div className="flex-1">
-            <h3 className="font-semibold text-gray-800 line-clamp-1 group-hover:text-cyan-600 transition">
+            <h3 className="font-semibold text-gray-800 line-clamp-1 group-hover:text-plum-600 transition">
               {product.name}
             </h3>
             <p className="text-xs text-gray-500 mt-1">{product.category}</p>
@@ -64,7 +64,7 @@ export default function ProductCard({ product }) {
 
         <div className="flex items-center justify-between mt-3">
           <div>
-            <p className="text-lg font-bold text-cyan-600">
+            <p className="text-lg font-bold text-plum-600">
               {product.price}
             </p>
             {product.originalPrice && (

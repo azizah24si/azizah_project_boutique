@@ -75,7 +75,7 @@ export default function Product() {
     {
       key: "price",
       label: "Harga",
-      render: (val) => <span className="text-cyan-600 font-semibold">Rp {Number(val).toLocaleString("id-ID")}</span>,
+      render: (val) => <span className="text-plum-600 font-semibold">Rp {Number(val).toLocaleString("id-ID")}</span>,
     },
     {
       key: "stock",
@@ -312,7 +312,7 @@ export default function Product() {
             onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
           />
           <textarea
-            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-cyan-500 focus:outline-none resize-none"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-plum-500 focus:outline-none resize-none"
             rows="3"
             placeholder="Deskripsi produk (opsional)"
             value={formData.description}

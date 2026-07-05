@@ -5,7 +5,7 @@
  * - src: string — image URL
  * - name: string — used for initials fallback and alt text
  * - size: "xs" | "sm" | "md" | "lg" | "xl" (default: "md")
- * - color: "cyan" | "pink" | "green" | "orange" | "purple" (default: "cyan") — fallback bg color
+ * - color: "plum" | "pink" | "green" | "orange" | "purple" (default: "plum") — fallback bg color
  * - status: "online" | "offline" | "busy" | null (default: null)
  * - className
  */
@@ -13,7 +13,7 @@ export default function Avatar({
   src,
   name = "",
   size = "md",
-  color = "cyan",
+  color = "plum",
   status = null,
   className = "",
 }) {
@@ -34,7 +34,7 @@ export default function Avatar({
   };
 
   const colors = {
-    cyan: "bg-gradient-to-br from-cyan-400 to-teal-400",
+    plum: "bg-gradient-to-br from-plum-500 to-gold-500",
     pink: "bg-gradient-to-br from-pink-400 to-rose-400",
     green: "bg-gradient-to-br from-green-400 to-emerald-400",
     orange: "bg-gradient-to-br from-orange-400 to-amber-400",

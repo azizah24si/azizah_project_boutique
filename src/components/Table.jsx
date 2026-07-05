@@ -43,7 +43,7 @@ export default function Table({
               data.map((row, rowIndex) => (
                 <tr
                   key={rowIndex}
-                  className="border-t border-gray-100 hover:bg-cyan-50 transition"
+                  className="border-t border-gray-100 hover:bg-plum-50 transition"
                 >
                   {columns.map((col) => (
                     <td key={col.key} className="px-5 py-4 text-sm text-gray-600">
