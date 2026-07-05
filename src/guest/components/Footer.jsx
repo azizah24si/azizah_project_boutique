@@ -40,10 +40,10 @@ export default function Footer() {
           <div>
             <h4 className="font-bold text-lg mb-4">Menu Cepat</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/guest" className="text-gray-400 hover:text-cyan-400 transition">Beranda</Link></li>
-              <li><Link to="/guest/products" className="text-gray-400 hover:text-cyan-400 transition">Produk</Link></li>
-              <li><Link to="/guest/about" className="text-gray-400 hover:text-cyan-400 transition">Tentang Kami</Link></li>
-              <li><Link to="/guest/contact" className="text-gray-400 hover:text-cyan-400 transition">Kontak</Link></li>
+              <li><a href="/#beranda" className="text-gray-400 hover:text-cyan-400 transition">Beranda</a></li>
+              <li><a href="/#produk" className="text-gray-400 hover:text-cyan-400 transition">Produk</a></li>
+              <li><a href="/#tentang" className="text-gray-400 hover:text-cyan-400 transition">Tentang Kami</a></li>
+              <li><a href="/#kontak" className="text-gray-400 hover:text-cyan-400 transition">Kontak</a></li>
             </ul>
           </div>
 
