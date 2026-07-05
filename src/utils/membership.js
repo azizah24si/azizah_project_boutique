@@ -6,15 +6,15 @@ export const TIER_ORDER = ["Bronze", "Silver", "Gold", "Platinum"];
 // Minimum total spending required to *enter* each tier
 export const TIER_THRESHOLDS = {
   Bronze: 0,
-  Silver: 1000000,
-  Gold: 5000001,
-  Platinum: 15000001,
+  Silver: 1000000,    // Rp 1 juta
+  Gold: 5000000,      // Rp 5 juta
+  Platinum: 15000000, // Rp 15 juta
 };
 
 // Map total spending amount to membership tier
 export const getTierFromSpending = (totalSpending) => {
-  if (totalSpending > 15000000) return "Platinum";
-  if (totalSpending >= 5000001) return "Gold";
+  if (totalSpending >= 15000000) return "Platinum";
+  if (totalSpending >= 5000000) return "Gold";
   if (totalSpending >= 1000000) return "Silver";
   return "Bronze";
 };
