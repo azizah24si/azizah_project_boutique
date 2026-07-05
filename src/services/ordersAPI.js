@@ -170,7 +170,7 @@ export const createSalesOrder = async (orderData) => {
 
   if (itemsError) throw itemsError;
 
-  // ✅ 3. KURANGI STOK PRODUK
+  // ✅ KURANGI STOK LANGSUNG saat produk dipesan
   for (const item of items) {
     if (item.product_id) {
       const { error: stockError } = await supabase.rpc('decrement_stock', {
@@ -180,7 +180,9 @@ export const createSalesOrder = async (orderData) => {
 
       if (stockError) {
         console.error(`⚠️ Gagal mengurangi stok produk ${item.product_id}:`, stockError);
-        // Tidak throw error agar order tetap jadi, tapi log untuk monitoring
+        // Log error tapi order tetap jadi
+      } else {
+        console.log(`✅ Stok berhasil dikurangi untuk produk ${item.product_id}: -${item.quantity}`);
       }
     }
   }
@@ -245,6 +247,21 @@ export const getOrderById = async (orderId) => {
 
 // Update order status (admin only)
 export const updateOrderStatus = async (orderId, status) => {
+  // 1. Get current order
+  const { data: currentOrder, error: fetchError } = await supabase
+    .from("sales_orders")
+    .select(`
+      *,
+      items:order_items(*)
+    `)
+    .eq("id", orderId)
+    .single();
+
+  if (fetchError) throw fetchError;
+
+  const oldStatus = currentOrder.status;
+
+  // 2. Update order status
   const { data, error } = await supabase
     .from("sales_orders")
     .update({ status })
@@ -253,6 +270,41 @@ export const updateOrderStatus = async (orderId, status) => {
     .single();
 
   if (error) throw error;
+
+  // 3. ✅ Update membership tier ketika order completed
+  if (status === "completed" && oldStatus !== "completed") {
+    console.log("📦 Order completed, updating membership tier...");
+    
+    if (currentOrder.customer_id) {
+      try {
+        await updateMembershipTier(currentOrder.customer_id);
+        console.log("✅ Membership tier updated");
+      } catch (tierError) {
+        console.error("⚠️ Failed to update membership tier:", tierError);
+      }
+    }
+  }
+
+  // 4. ✅ KEMBALIKAN STOK jika order dibatalkan
+  if (status === "cancelled" && oldStatus !== "cancelled") {
+    console.log("🔄 Order cancelled, restoring stock...");
+    
+    for (const item of currentOrder.items) {
+      if (item.product_id) {
+        const { error: stockError } = await supabase.rpc('increment_stock', {
+          product_id_param: item.product_id,
+          quantity_param: item.quantity
+        });
+
+        if (stockError) {
+          console.error(`⚠️ Gagal mengembalikan stok produk ${item.product_id}:`, stockError);
+        } else {
+          console.log(`✅ Stock restored for product ${item.product_id}: +${item.quantity}`);
+        }
+      }
+    }
+  }
+
   return data;
 };
 
