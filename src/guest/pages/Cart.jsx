@@ -54,12 +54,13 @@ export default function Cart() {
 
       // Prepare order items
       const items = cartItems.map((item) => ({
+        product_id: item.id, // ✅ Kirim product_id untuk validasi & pengurangan stok
         product_name: item.name,
         quantity: item.quantity,
         price_per_unit: formatPrice(item.price),
       }));
 
-      // Create order
+      // Create order (validasi stok akan dilakukan di dalam createSalesOrder)
       const order = await createSalesOrder({
         customerId: customer.id,
         items,
@@ -78,7 +79,12 @@ export default function Cart() {
       navigate("/guest/my-orders");
     } catch (error) {
       console.error("Checkout error:", error);
-      alert("Gagal membuat order: " + error.message);
+      // ✅ Tampilkan error yang lebih informatif jika stok tidak cukup
+      if (error.message.includes("Stok")) {
+        alert("❌ Checkout gagal!\n\n" + error.message + "\n\nSilakan update keranjang Anda.");
+      } else {
+        alert("Gagal membuat order: " + error.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -149,8 +155,16 @@ export default function Cart() {
                         </button>
                         <span className="w-12 text-center font-bold">{item.quantity}</span>
                         <button
-                          onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
-                          className="w-8 h-8 bg-gray-100 rounded-lg font-bold hover:bg-gray-200 transition"
+                          onClick={() => {
+                            // ✅ Validasi stok jika tersedia
+                            if (item.stock && item.quantity >= item.stock) {
+                              alert(`Stok tidak mencukupi! Hanya tersedia ${item.stock} pcs untuk produk ini.`);
+                              return;
+                            }
+                            updateQuantity(item.cartItemId, item.quantity + 1);
+                          }}
+                          disabled={item.stock && item.quantity >= item.stock}
+                          className="w-8 h-8 bg-gray-100 rounded-lg font-bold hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           +
                         </button>
@@ -167,6 +181,9 @@ export default function Cart() {
                         </button>
                       </div>
                     </div>
+                    {item.stock && item.quantity >= item.stock && (
+                      <p className="text-sm text-orange-600 mt-2">⚠️ Maksimal stok tercapai ({item.stock} pcs)</p>
+                    )}
                   </div>
                 </div>
               </div>

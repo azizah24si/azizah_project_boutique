@@ -114,6 +114,29 @@ export const createSalesOrder = async (orderData) => {
     notes = "",
   } = orderData;
 
+  // ✅ VALIDASI STOK SEBELUM ORDER DIBUAT
+  for (const item of items) {
+    if (item.product_id) {
+      // Get current stock
+      const { data: product, error: productError } = await supabase
+        .from("products")
+        .select("stock, name")
+        .eq("id", item.product_id)
+        .single();
+
+      if (productError) {
+        throw new Error(`Gagal mengecek stok produk: ${productError.message}`);
+      }
+
+      // Check if stock is sufficient
+      if (product.stock < item.quantity) {
+        throw new Error(
+          `Stok ${product.name} tidak mencukupi! Tersedia: ${product.stock}, Dipesan: ${item.quantity}`
+        );
+      }
+    }
+  }
+
   // 1. Create the order
   const { data: order, error: orderError } = await supabase
     .from("sales_orders")
@@ -146,6 +169,21 @@ export const createSalesOrder = async (orderData) => {
     .insert(orderItems);
 
   if (itemsError) throw itemsError;
+
+  // ✅ 3. KURANGI STOK PRODUK
+  for (const item of items) {
+    if (item.product_id) {
+      const { error: stockError } = await supabase.rpc('decrement_stock', {
+        product_id_param: item.product_id,
+        quantity_param: item.quantity
+      });
+
+      if (stockError) {
+        console.error(`⚠️ Gagal mengurangi stok produk ${item.product_id}:`, stockError);
+        // Tidak throw error agar order tetap jadi, tapi log untuk monitoring
+      }
+    }
+  }
 
   return order;
 };

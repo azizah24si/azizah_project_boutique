@@ -94,6 +94,17 @@ export default function ProductDetail() {
       return;
     }
 
+    // ✅ Validasi stok
+    if (product.stock === 0) {
+      alert("Stok produk habis!");
+      return;
+    }
+
+    if (quantity > product.stock) {
+      alert(`Stok tidak mencukupi! Hanya tersedia ${product.stock} pcs untuk produk ini.`);
+      return;
+    }
+
     addToCart(
       {
         id: product.id,
@@ -101,6 +112,7 @@ export default function ProductDetail() {
         price: product.price,
         image: product.images[0],
         category: categorizeProduct(product),
+        stock: product.stock, // ✅ Simpan info stok di cart
       },
       quantity,
       selectedSize,
@@ -210,7 +222,13 @@ export default function ProductDetail() {
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-4xl font-bold text-plum-600">{product.price}</span>
                 </div>
-                <p className="text-sm text-green-600 font-semibold">✓ Stok tersedia: {product.stock || 0} pcs</p>
+                {product.stock === 0 ? (
+                  <p className="text-sm text-red-600 font-bold">✗ Stok habis</p>
+                ) : product.stock <= 5 ? (
+                  <p className="text-sm text-orange-600 font-bold">⚠️ Stok terbatas: hanya {product.stock} pcs tersisa</p>
+                ) : (
+                  <p className="text-sm text-green-600 font-semibold">✓ Stok tersedia: {product.stock} pcs</p>
+                )}
               </div>
 
               {/* Description */}
@@ -269,26 +287,40 @@ export default function ProductDetail() {
                   <input
                     type="number"
                     value={quantity}
-                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                    min="1"
+                    max={product?.stock || 999}
+                    onChange={(e) => {
+                      const value = Math.max(1, Math.min(product?.stock || 999, parseInt(e.target.value) || 1));
+                      setQuantity(value);
+                    }}
                     className="w-20 h-10 text-center border-2 border-gray-200 rounded-lg font-bold focus:border-plum-500 focus:outline-none"
                   />
                   <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="w-10 h-10 bg-gray-100 rounded-lg font-bold hover:bg-gray-200 transition"
+                    onClick={() => setQuantity(Math.min(product?.stock || 999, quantity + 1))}
+                    disabled={quantity >= (product?.stock || 999)}
+                    className="w-10 h-10 bg-gray-100 rounded-lg font-bold hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     +
                   </button>
                 </div>
+                {quantity >= (product?.stock || 0) && product?.stock > 0 && (
+                  <p className="text-sm text-orange-600 mt-2">⚠️ Maksimal stok tercapai</p>
+                )}
               </div>
 
               {/* Action Buttons */}
               <div className="flex gap-3 mb-6">
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 py-4 bg-gradient-to-r from-plum-500 to-gold-500 text-white font-bold rounded-xl hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-2"
+                  disabled={!product.stock || product.stock === 0}
+                  className={`flex-1 py-4 font-bold rounded-xl flex items-center justify-center gap-2 transition-all ${
+                    !product.stock || product.stock === 0
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-gradient-to-r from-plum-500 to-gold-500 text-white hover:shadow-xl hover:scale-105"
+                  }`}
                 >
                   <FaShoppingCart className="text-xl" />
-                  Tambah ke Keranjang
+                  {!product.stock || product.stock === 0 ? "Stok Habis" : "Tambah ke Keranjang"}
                 </button>
                 <button
                   onClick={handleWhatsAppOrder}

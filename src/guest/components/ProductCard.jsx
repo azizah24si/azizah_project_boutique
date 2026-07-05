@@ -16,7 +16,19 @@ export default function ProductCard({ product }) {
         />
         
         {/* Badge */}
-        {product.badge && (
+        {product.stock === 0 ? (
+          <div className="absolute top-3 left-3">
+            <span className="px-3 py-1 rounded-full text-xs font-bold text-white bg-gradient-to-r from-gray-500 to-gray-600">
+              Stok Habis
+            </span>
+          </div>
+        ) : product.stock <= 5 ? (
+          <div className="absolute top-3 left-3">
+            <span className="px-3 py-1 rounded-full text-xs font-bold text-white bg-gradient-to-r from-orange-500 to-red-500">
+              Stok Terbatas
+            </span>
+          </div>
+        ) : product.badge ? (
           <div className="absolute top-3 left-3">
             <span className={`px-3 py-1 rounded-full text-xs font-bold text-white ${
               product.badge === "New" ? "bg-gradient-to-r from-plum-500 to-gold-500" :
@@ -26,7 +38,7 @@ export default function ProductCard({ product }) {
               {product.badge}
             </span>
           </div>
-        )}
+        ) : null}
 
         {/* Favorite Button */}
         <button
@@ -40,9 +52,19 @@ export default function ProductCard({ product }) {
         <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
           <Link
             to={`/guest/products/${product.id}`}
-            className="block w-full py-3 bg-gradient-to-r from-plum-500 to-gold-500 text-white rounded-xl text-sm font-bold text-center hover:shadow-lg transition"
+            className={`block w-full py-3 rounded-xl text-sm font-bold text-center hover:shadow-lg transition ${
+              product.stock === 0 
+                ? "bg-gray-400 text-white cursor-not-allowed" 
+                : "bg-gradient-to-r from-plum-500 to-gold-500 text-white"
+            }`}
+            onClick={(e) => {
+              if (product.stock === 0) {
+                e.preventDefault();
+                alert("Produk ini sedang stok habis");
+              }
+            }}
           >
-            Lihat Detail Produk
+            {product.stock === 0 ? "Stok Habis" : "Lihat Detail Produk"}
           </Link>
         </div>
       </div>
@@ -73,8 +95,14 @@ export default function ProductCard({ product }) {
               </p>
             )}
           </div>
-          <div className="text-xs text-gray-500">
-            Stok: <span className="font-semibold text-gray-700">{product.stock}</span>
+          <div className="text-xs">
+            {product.stock === 0 ? (
+              <span className="font-semibold text-red-600">Habis</span>
+            ) : product.stock <= 5 ? (
+              <span className="font-semibold text-orange-600">Sisa {product.stock}</span>
+            ) : (
+              <span className="font-semibold text-green-600">Stok: {product.stock}</span>
+            )}
           </div>
         </div>
       </div>

@@ -130,6 +130,25 @@ export default function MemberProductDetail() {
       return;
     }
 
+    // ✅ Validasi stok
+    if (quantity > product.stock) {
+      addToast({
+        title: "Stok tidak mencukupi!",
+        description: `Hanya tersedia ${product.stock} pcs untuk produk ini`,
+        variant: "error",
+      });
+      return;
+    }
+
+    if (product.stock === 0) {
+      addToast({
+        title: "Stok habis!",
+        description: "Produk ini sedang tidak tersedia",
+        variant: "error",
+      });
+      return;
+    }
+
     addToCart(
       {
         id: product.id,
@@ -137,6 +156,7 @@ export default function MemberProductDetail() {
         price: discountedPrice,
         image: product.images[0],
         category: product.category || categorizeProduct(product),
+        stock: product.stock, // ✅ Simpan info stok di cart
       },
       quantity,
       selectedSize,
@@ -287,9 +307,15 @@ export default function MemberProductDetail() {
                   {formatRupiah(product.price)}
                 </span>
               )}
-              <p className="text-sm text-green-600 font-semibold mt-2">
-                ✓ Stok tersedia: {product.stock || 0} pcs
-              </p>
+              {product.stock === 0 ? (
+                <p className="text-sm text-red-600 font-bold mt-2">✗ Stok habis</p>
+              ) : product.stock <= 5 ? (
+                <p className="text-sm text-orange-600 font-bold mt-2">⚠️ Stok terbatas: hanya {product.stock} pcs tersisa</p>
+              ) : (
+                <p className="text-sm text-green-600 font-semibold mt-2">
+                  ✓ Stok tersedia: {product.stock} pcs
+                </p>
+              )}
             </div>
 
             {/* Description */}
@@ -348,12 +374,18 @@ export default function MemberProductDetail() {
                 <input
                   type="number"
                   value={quantity}
-                  onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                  min="1"
+                  max={product?.stock || 999}
+                  onChange={(e) => {
+                    const value = Math.max(1, Math.min(product?.stock || 999, parseInt(e.target.value) || 1));
+                    setQuantity(value);
+                  }}
                   className="w-20 h-10 text-center border-2 border-gray-200 rounded-lg font-bold focus:border-plum-500 focus:outline-none"
                 />
                 <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="w-10 h-10 bg-gray-100 rounded-lg font-bold hover:bg-gray-200 transition"
+                  onClick={() => setQuantity(Math.min(product?.stock || 999, quantity + 1))}
+                  disabled={quantity >= (product?.stock || 999)}
+                  className="w-10 h-10 bg-gray-100 rounded-lg font-bold hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   +
                 </button>
@@ -364,11 +396,12 @@ export default function MemberProductDetail() {
             <div className="flex gap-3 mb-6">
               <Button
                 onClick={handleAddToCart}
-                variant="gradient"
+                disabled={!product.stock || product.stock === 0}
+                variant={!product.stock || product.stock === 0 ? "secondary" : "gradient"}
                 className="flex-1"
                 icon={<FaShoppingCart />}
               >
-                Tambah ke Keranjang
+                {!product.stock || product.stock === 0 ? "Stok Habis" : "Tambah ke Keranjang"}
               </Button>
               <button
                 onClick={handleWhatsAppOrder}
