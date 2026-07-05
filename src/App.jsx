@@ -54,7 +54,6 @@ function App() {
           {/* 🌐 GUEST LAYOUT - Public Website (Untuk Pengunjung Yang BELUM Login) */}
           <Route path="/guest" element={<GuestLayout />}>
             <Route index element={<GuestHome />} />
-            <Route path="home" element={<GuestHome />} />
             <Route path="products/:id" element={<GuestProductDetail />} />
           </Route>
 

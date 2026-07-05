@@ -142,13 +142,13 @@ export default function ProductDetail() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
         {/* Back Button */}
-        <Link
-          to="/guest/products"
+        <button
+          onClick={() => navigate(-1)}
           className="inline-flex items-center gap-2 mb-6 text-gray-600 hover:text-plum-600 transition"
         >
           <FaArrowLeft />
-          <span className="font-medium">Kembali ke Produk</span>
-        </Link>
+          <span className="font-medium">Kembali</span>
+        </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Images Section */}

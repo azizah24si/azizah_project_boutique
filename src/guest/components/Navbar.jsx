@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaShoppingBag, FaBars, FaTimes, FaPhone, FaWhatsapp, FaShoppingCart, FaUser } from "react-icons/fa";
 import { useCart } from "../../contexts/CartContext";
@@ -6,32 +6,114 @@ import { useAuth } from "../../contexts/AuthContext";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("beranda");
   const location = useLocation();
   const { getTotalItems } = useCart();
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
 
   const navLinks = [
-    { name: "Beranda", path: "/guest" },
-    { name: "Produk", path: "/guest/products" },
-    { name: "Tentang Kami", path: "/guest/about" },
-    { name: "Kontak", path: "/guest/contact" },
+    { name: "Beranda", hash: "#beranda" },
+    { name: "Produk", hash: "#produk" },
+    { name: "Tentang Kami", hash: "#tentang" },
+    { name: "Kontak", hash: "#kontak" },
   ];
 
-  const isActive = (path) => location.pathname === path;
+  // Intersection Observer untuk mendeteksi section aktif
+  useEffect(() => {
+    if (location.pathname !== "/guest" && location.pathname !== "/") return;
+
+    const observerOptions = {
+      root: null,
+      rootMargin: "-80px 0px -40% 0px",
+      threshold: [0, 0.25, 0.5, 0.75, 1]
+    };
+
+    let visibleSections = new Map();
+
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        const sectionId = entry.target.id;
+        
+        if (entry.isIntersecting) {
+          visibleSections.set(sectionId, entry.intersectionRatio);
+        } else {
+          visibleSections.delete(sectionId);
+        }
+      });
+
+      // Cari section dengan ratio tertinggi
+      let maxRatio = 0;
+      let activeId = "beranda";
+      
+      visibleSections.forEach((ratio, id) => {
+        if (ratio > maxRatio) {
+          maxRatio = ratio;
+          activeId = id;
+        }
+      });
+
+      if (maxRatio > 0) {
+        setActiveSection(activeId);
+        window.history.replaceState(null, "", `#${activeId}`);
+      }
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    const sections = ["beranda", "produk", "tentang", "kontak"];
+    
+    sections.forEach((sectionId) => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    // Set initial dari hash
+    const hash = location.hash.replace("#", "");
+    if (hash && sections.includes(hash)) {
+      setActiveSection(hash);
+      setTimeout(() => {
+        document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+
+    return () => {
+      sections.forEach((sectionId) => {
+        const element = document.getElementById(sectionId);
+        if (element) observer.unobserve(element);
+      });
+      visibleSections.clear();
+    };
+  }, [location.pathname, location.hash]);
+
+  const handleNavClick = (e, hash) => {
+    e.preventDefault();
+    if (location.pathname === "/guest" || location.pathname === "/") {
+      document.querySelector(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      navigate("/guest" + hash);
+    }
+    setIsOpen(false);
+  };
+
+  const isActive = (hash) => {
+    if (location.pathname !== "/guest" && location.pathname !== "/") return false;
+    return activeSection === hash.replace("#", "");
+  };
 
   return (
     <>
       {/* Top Bar - Info Kontak */}
-      <div className="bg-gradient-to-r from-cyan-500 to-teal-500 text-white py-2 px-4">
+      <div className="bg-gradient-to-r from-plum-500 to-gold-500 text-white py-2 px-4">
         <div className="container mx-auto flex justify-between items-center text-sm">
           <div className="flex items-center gap-4">
-            <a href="tel:+6281234567890" className="flex items-center gap-2 hover:text-cyan-100 transition">
+            <a href="tel:+6281234567890" className="flex items-center gap-2 hover:text-plum-100 transition">
               <FaPhone className="text-xs" />
               <span className="hidden md:inline">+62 812-3456-7890</span>
             </a>
             <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" 
-               className="flex items-center gap-2 hover:text-cyan-100 transition">
+               className="flex items-center gap-2 hover:text-plum-100 transition">
               <FaWhatsapp />
               <span className="hidden md:inline">WhatsApp</span>
             </a>
@@ -48,11 +130,11 @@ export default function Navbar() {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link to="/guest" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <div className="w-10 h-10 bg-gradient-to-br from-plum-400 to-gold-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                 <FaShoppingBag className="text-white text-xl" />
               </div>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-plum-600 to-gold-600 bg-clip-text text-transparent">
                   Jijah Boutique
                 </h1>
                 <p className="text-xs text-gray-500">Fashion & Style</p>
@@ -62,23 +144,24 @@ export default function Navbar() {
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                    isActive(link.path)
-                      ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white"
+                <a
+                  key={link.hash}
+                  href={link.hash}
+                  onClick={(e) => handleNavClick(e, link.hash)}
+                  className={`px-4 py-2 rounded-lg font-medium text-sm transition-all cursor-pointer ${
+                    isActive(link.hash)
+                      ? "bg-gradient-to-r from-plum-500 to-gold-500 text-white"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
                   {link.name}
-                </Link>
+                </a>
               ))}
               
               {/* Cart Icon */}
               <Link
                 to={user ? "/member/cart" : "/login"}
-                className="ml-2 relative p-2 text-gray-700 hover:text-cyan-600 transition"
+                className="ml-2 relative p-2 text-gray-700 hover:text-plum-600 transition"
               >
                 <FaShoppingCart className="text-2xl" />
                 {getTotalItems() > 0 && (
@@ -92,7 +175,7 @@ export default function Navbar() {
               {user ? (
                 <div className="ml-2 relative group">
                   <button className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium text-sm transition">
-                    <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                    <div className="w-8 h-8 bg-gradient-to-br from-plum-400 to-gold-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
                       {(profile?.full_name || "U").charAt(0).toUpperCase()}
                     </div>
                     <span className="max-w-[120px] truncate">{profile?.full_name || "Member"}</span>
@@ -102,21 +185,21 @@ export default function Navbar() {
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                     <Link
                       to="/member"
-                      className="block px-4 py-3 text-gray-700 hover:bg-cyan-50 rounded-t-xl transition"
+                      className="block px-4 py-3 text-gray-700 hover:bg-plum-50 rounded-t-xl transition"
                     >
                       <FaUser className="inline mr-2" />
                       Dashboard
                     </Link>
                     <Link
                       to="/member/orders"
-                      className="block px-4 py-3 text-gray-700 hover:bg-cyan-50 transition"
+                      className="block px-4 py-3 text-gray-700 hover:bg-plum-50 transition"
                     >
                       <FaShoppingBag className="inline mr-2" />
                       Pesanan Saya
                     </Link>
                     <Link
                       to="/member/profile"
-                      className="block px-4 py-3 text-gray-700 hover:bg-cyan-50 transition"
+                      className="block px-4 py-3 text-gray-700 hover:bg-plum-50 transition"
                     >
                       <FaUser className="inline mr-2" />
                       Profil Saya
@@ -157,18 +240,18 @@ export default function Navbar() {
           {isOpen && (
             <div className="md:hidden py-4 border-t border-gray-200">
               {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-4 py-3 rounded-lg font-medium transition-all ${
-                    isActive(link.path)
-                      ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white"
+                <a
+                  key={link.hash}
+                  href={link.hash}
+                  onClick={(e) => handleNavClick(e, link.hash)}
+                  className={`block px-4 py-3 rounded-lg font-medium transition-all cursor-pointer ${
+                    isActive(link.hash)
+                      ? "bg-gradient-to-r from-plum-500 to-gold-500 text-white"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
                   {link.name}
-                </Link>
+                </a>
               ))}
               
               <Link
